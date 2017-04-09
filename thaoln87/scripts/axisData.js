@@ -33,7 +33,7 @@ var yScale = d3.scaleLinear()
     .range([margin.top, h - margin.bottom]);
 
 // define x-axis with scale
-var xAxis = d3.axisTop(xScale)
+var xAxis = d3.axisTop(xScale);
     // set tick values by data
     //.tickValues(data.map(function(d) {return d.x;}));
 // define y-axis with scale
@@ -116,9 +116,13 @@ svg.on("click", function(){
     xAxisGroup.transition().call(xAxis);
     yAxisGroup.transition().call(yAxis);
 
-    // initial for updating
-    var c = svg.selectAll("circle").data(data)
-        .enter()
+    // move all old circles to coordinates with new axis
+    svg.selectAll("circle").data(data).transition().duration(1500)
+        .ease(d3.easeElastic)
+        .attrs(circleAttrs);
+
+    // update new circles
+    var c = svg.selectAll("circle").data(data).enter()
         .append("circle")
         .attrs(circleInitialAttrs)
         .on("mouseover", handleMouseOver)
