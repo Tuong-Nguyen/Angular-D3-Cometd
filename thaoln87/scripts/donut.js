@@ -2,10 +2,16 @@
  * Created by lnthao on 4/10/2017.
  */
 var myApp = angular.module("myApp", []);
+ myApp.controller("MainCtrl", function($scope){
+     d3.json("data/donut-data.json", function(err, data) {
+        if (err) { throw err; }
+        $scope.data = data;
+        $scope.$apply();
+     });
+ })
 myApp.directive("donutChart", function () {
    function link(scope, element, attr) {
        var color = d3.schemeCategory10;
-       var data = scope.data;
        var width = 300;
        var height = 300;
        var min = Math.min(width, height);
@@ -20,17 +26,19 @@ myApp.directive("donutChart", function () {
        // center the donut
            .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
-       var arcs = g.selectAll("path").data(pie(data))
-           .enter().append("path")
-           .style("stroke", "white")
-           .attrs({
-               "d": arc,
-               "fill": function(d, i){
-                   return color[i];
-               }
-           });
+       var arcs = g.selectAll("path");
+
        scope.$watch('data', function(data) {
-           arcs.data(pie(data)).attr('d', arc);
+           if (!data) return;
+           arcs.data(pie(data))
+               .enter().append("path")
+               .style("stroke", "white")
+               .attrs({
+                   "d": arc,
+                   "fill": function(d, i){
+                       return color[i];
+                   }
+               });
        }, true); // watch for changes within data itself
 
    }
