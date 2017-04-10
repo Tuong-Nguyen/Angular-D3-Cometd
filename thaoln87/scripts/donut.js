@@ -2,13 +2,23 @@
  * Created by lnthao on 4/10/2017.
  */
 var myApp = angular.module("myApp", []);
+var dataPath = "data/donut-data.json";
  myApp.controller("MainCtrl", function($scope){
-     d3.json("data/donut-data.json", function(err, data) {
+     d3.json(dataPath, function(err, data) {
         if (err) { throw err; }
         $scope.data = data;
         $scope.$apply();
      });
- })
+ });
+ myApp.controller("MainCtrlNg", function($scope, $http){
+     // cannot use style $http.get(..).success(..)
+    $http.get(dataPath).then(function(response) {
+        $scope.data = response.data;
+        // no need to call $scope.$apply(), angular will do this automatically
+    }, function(err) {
+        throw err;
+    });
+ });
 myApp.directive("donutChart", function () {
    function link(scope, element, attr) {
        var color = d3.schemeCategory10;
