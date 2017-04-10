@@ -4,19 +4,7 @@
 var myApp = angular.module("myApp", []);
 myApp.directive("elasticCircleChart", function() {
     function link(scope, el, attr){
-        var data = [
-            { x: 100, y: 110},
-            { x: 12, y: 35},
-            { x: 101, y: 10},
-            { x: 45, y: 64},
-            { x: 75, y: 20},
-            { x: 130, y: 60},
-            { x: 15, y: 115},
-            { x: 81, y: 2},
-            { x: 99, y: 78},
-            { x: 60, y: 110},
-            { x: 0, y: 0}
-        ];
+        var data = scope.data;
 
         var w = window.innerWidth;
         var h = window.innerHeight;
@@ -139,7 +127,8 @@ myApp.directive("elasticCircleChart", function() {
     }
     return {
         link: link,
-        restict: 'E'
+        restict: 'E',
+        scope: { data: '=' }
     };
 
 });
