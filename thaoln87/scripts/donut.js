@@ -23,7 +23,7 @@ var dataPath = "data/donut-data.json";
  });
 myApp.directive("donutChart", function () {
    function link(scope, element, attr) {
-       var color = d3.schemeCategory10;
+       var color = d3.scaleOrdinal(d3.schemeCategory10);
        var width = 300;
        var height = 300;
        var min = Math.min(width, height);
@@ -48,7 +48,7 @@ myApp.directive("donutChart", function () {
                .attrs({
                    "d": arc,
                    "fill": function(d, i){
-                       return color[i];
+                       return color(i);
                    }
                });
        }, true); // watch for changes within data itself
