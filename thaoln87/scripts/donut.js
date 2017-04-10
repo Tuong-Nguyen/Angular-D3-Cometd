@@ -10,14 +10,16 @@ var dataPath = "data/donut-data.json";
         $scope.$apply();
      });
  });
- myApp.controller("MainCtrlNg", function($scope, $http){
-     // cannot use style $http.get(..).success(..)
-    $http.get(dataPath).then(function(response) {
-        $scope.data = response.data;
-        // no need to call $scope.$apply(), angular will do this automatically
-    }, function(err) {
-        throw err;
-    });
+ myApp.controller("MainCtrlNg", function($scope, $http, $interval){
+     $interval(function(){
+         // cannot use style $http.get(..).success(..)
+         $http.get(dataPath).then(function(response) {
+             $scope.data = response.data;
+             // no need to call $scope.$apply(), angular will do this automatically
+         }, function(err) {
+             throw err;
+         });
+     }, 1000);
  });
 myApp.directive("donutChart", function () {
    function link(scope, element, attr) {
