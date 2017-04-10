@@ -13,7 +13,7 @@ var data = [
     { x: 99, y: 78},
     { x: 60, y: 110},
     { x: 0, y: 0}
-]
+];
 
 var w = window.innerWidth;
 var h = window.innerHeight;
@@ -33,7 +33,7 @@ var yScale = d3.scaleLinear()
     .range([margin.top, h - margin.bottom]);
 
 // define x-axis with scale
-var xAxis = d3.axisTop(xScale)
+var xAxis = d3.axisTop(xScale);
     // set tick values by data
     //.tickValues(data.map(function(d) {return d.x;}));
 // define y-axis with scale
@@ -109,22 +109,20 @@ svg.on("click", function(){
     data.push(newData);
 
     // change scales
-    xScale.domain([0, d3.max(data, function(d) { return d.x; }) + 10])
-    yScale.domain([0, d3.max(data, function(d) { return d.y; }) + 10])
+    xScale.domain([0, d3.max(data, function(d) { return d.x; }) + 10]);
+    yScale.domain([0, d3.max(data, function(d) { return d.y; }) + 10]);
 
     // moving axises
     xAxisGroup.transition().call(xAxis);
     yAxisGroup.transition().call(yAxis);
 
-    var c = svg.selectAll("circle").data(data)
-
-    c.transition()
-        .duration(1500)
+    // move all old circles to coordinates with new axis
+    svg.selectAll("circle").data(data).transition().duration(1500)
         .ease(d3.easeElastic)
-        .attrs(circleAttrs)
+        .attrs(circleAttrs);
 
-    // initial for updating
-    c.enter()
+    // update new circles
+    var c = svg.selectAll("circle").data(data).enter()
         .append("circle")
         .attrs(circleInitialAttrs)
         .on("mouseover", handleMouseOver)
