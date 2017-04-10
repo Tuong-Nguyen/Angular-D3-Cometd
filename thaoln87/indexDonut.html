@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>D3 Donut Chart</title>
 </head>
-<body ng-app="myApp">
-<donut-chart data="[10, 20, 30]"></donut-chart>
-<donut-chart data="[30, 20, 10, 40]"></donut-chart>
+<body ng-app="myApp" ng-init="chart=[10,20,30]">
+<input type="range" ng-model="chart[0]" > <br/>
+<input type="range" ng-model="chart[1]" > <br/>
+<input type="range" ng-model="chart[2]" > <br/>
+<donut-chart data="chart"></donut-chart>
 <script src="d3/d3.min.js"></script>
 <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>

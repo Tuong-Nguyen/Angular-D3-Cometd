@@ -20,7 +20,7 @@ myApp.directive("donutChart", function () {
        // center the donut
            .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
-       g.selectAll("path").data(pie(data))
+       var arcs = g.selectAll("path").data(pie(data))
            .enter().append("path")
            .style("stroke", "white")
            .attrs({
@@ -29,6 +29,10 @@ myApp.directive("donutChart", function () {
                    return color[i];
                }
            });
+       scope.$watch('data', function(data) {
+           arcs.data(pie(data)).attr('d', arc);
+       }, true); // watch for changes within data itself
+
    }
    return {
        link: link,
