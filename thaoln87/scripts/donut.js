@@ -5,7 +5,7 @@ var myApp = angular.module("myApp", []);
 myApp.directive("donutChart", function () {
    function link(scope, element, attr) {
        var color = d3.schemeCategory10;
-       var data = [10, 20, 30];
+       var data = scope.data;
        var width = 300;
        var height = 300;
        var min = Math.min(width, height);
@@ -32,6 +32,7 @@ myApp.directive("donutChart", function () {
    }
    return {
        link: link,
-       restrict: "E"
+       restrict: "E",
+       scope: {data: "="}
    }
 });
