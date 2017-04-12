@@ -3,11 +3,22 @@
  */
 (function() {
 // 'global' variable to store reference to the database
-    var db;
+    var db, input;
 
     databaseOpen(function () {
         alert("The database has been opened");
+        input = document.getElementById('todo_text');
+        document.body.addEventListener('submit', onSubmit);
     });
+
+    function onSubmit(e) {
+        e.preventDefault();
+        addTodo(input.value, function() {
+            alert("Added!");
+            // clear textbox
+            input.value = '';
+        });
+    }
 
     function databaseOpen(callback) {
         // Open a database, specify the name and version
@@ -31,4 +42,19 @@
     function databaseError(e) {
         console.error('An IndexedDB error has occurred', e);
     }
+
+    function addTodo(text, callback) {
+        var transaction = db.transaction(['todo'], 'readwrite');
+        var store = transaction.objectStore('todo');
+        var request = store.put({
+            text: text,
+            timeStamp: Date.now()
+        });
+
+        transaction.oncomplete = function(e) {
+            callback();
+        };
+        request.onerror = databaseError;
+    }
+
 }());
