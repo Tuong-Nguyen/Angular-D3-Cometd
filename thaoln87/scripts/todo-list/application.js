@@ -9,15 +9,23 @@
         alert("The database has been opened");
         input = document.getElementById('todo_text');
         document.body.addEventListener('submit', onSubmit);
+        getTodos(renderData);
     });
 
     function onSubmit(e) {
         e.preventDefault();
         addTodo(input.value, function() {
-            alert("Added!");
             // clear textbox
             input.value = '';
         });
+    }
+
+    function renderData(todos) {
+        var html = '';
+        todos.forEach(function(todo) {
+            html += '<li>' + todo.text  + '</li>';
+        });
+        document.getElementById('todo_list').innerHTML = html;
     }
 
     function databaseOpen(callback) {
@@ -43,6 +51,7 @@
         console.error('An IndexedDB error has occurred', e);
     }
 
+    /* CRUD to-do */
     function addTodo(text, callback) {
         var transaction = db.transaction(['todo'], 'readwrite');
         var store = transaction.objectStore('todo');
@@ -55,6 +64,27 @@
             callback();
         };
         request.onerror = databaseError;
+    }
+
+    function getTodos(callback) {
+        var transaction = db.transaction(['todo'], 'readonly');
+        var store = transaction.objectStore('todo');
+        // get entry with key >= 0 (get all)
+        var keyRange = IDBKeyRange.lowerBound(0);
+        var cursorRequest = store.openCursor(keyRange);
+
+        var data = [];
+        // Fires once per row in the store
+        cursorRequest.onsuccess = function(e) {
+            var result = e.target.result;
+
+            if (result) {
+                data.push(result.value);
+                result.continue();
+            } else {
+                callback(data);
+            }
+        }
     }
 
 }());
