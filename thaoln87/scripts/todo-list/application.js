@@ -9,15 +9,20 @@
         alert("The database has been opened");
         input = document.getElementById('todo_text');
         document.body.addEventListener('submit', onSubmit);
-        getTodos(renderData);
+        loadData();
     });
 
     function onSubmit(e) {
         e.preventDefault();
         addTodo(input.value, function() {
+            loadData();
             // clear textbox
             input.value = '';
         });
+    }
+
+    function loadData() {
+        getTodos(renderData);
     }
 
     function renderData(todos) {
