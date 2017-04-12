@@ -21,6 +21,23 @@
         });
     }
 
+    function addOnClickEventListener() {
+        // convert HtmlCollection to array using ES6
+        var lis = Array.from(document.getElementById("todo_list").getElementsByTagName("li"));
+        lis.forEach(function (li) {
+            li.addEventListener('click', onClick);
+        });
+    }
+
+    function onClick(e) {
+        if (e.target.hasAttribute('id')) {
+            var intId = parseInt(e.target.getAttribute('id'), 0);
+            deleteTodo(intId, function() {
+               loadData();
+            });
+        }
+    }
+
     function loadData() {
         getTodos(renderData);
     }
@@ -28,9 +45,10 @@
     function renderData(todos) {
         var html = '';
         todos.forEach(function(todo) {
-            html += '<li>' + todo.text  + '</li>';
+            html += '<li id="'+ todo.timeStamp +'">' + todo.text  + '</li>';
         });
         document.getElementById('todo_list').innerHTML = html;
+        addOnClickEventListener();
     }
 
     function databaseOpen(callback) {
@@ -90,6 +108,16 @@
                 callback(data);
             }
         }
+    }
+
+    function deleteTodo(id, callback) {
+        var transaction = db.transaction(['todo'], 'readwrite');
+        var store = transaction.objectStore('todo');
+        var request = store.delete(id);
+        transaction.oncomplete = function(e) {
+            callback();
+        }
+        request.onerror = databaseError;
     }
 
 }());
