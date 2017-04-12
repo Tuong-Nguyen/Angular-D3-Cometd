@@ -114,6 +114,7 @@
         }).curve(d3.curveNatural);
 
     function plot(params) {
+        // Draw the axis
         this.append("g")
             .classed("x axis", true)
             .attr("transform", "translate(0," + height + ")")
