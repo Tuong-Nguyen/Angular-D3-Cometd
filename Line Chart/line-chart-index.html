@@ -70,12 +70,10 @@
 		// parse the date / time
 		var dateParser = d3.timeParse("%Y/%m/%d");
 
-		//var dateParser = d3.time.format("%Y/%m/%d").parse;
 
 		var x = d3.scaleTime()
 				.domain(d3.extent(data, function(d){
-					var date = dateParser(d.date);
-					return date;
+                    return dateParser(d.date);
 				}))
 				.range([0,width]);
 
