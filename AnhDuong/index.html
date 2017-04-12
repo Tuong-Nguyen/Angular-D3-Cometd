@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Scater Chart</title>
+    <title>Scatter Chart</title>
     <link rel="stylesheet" href="main.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script type="text/javascript" src="survey_data.js"></script>
@@ -30,7 +30,6 @@ var chart = svg.append("g")
 			.classed("display", true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    
 // ================== SCALE ==================
 /* @Scale for resizing data will be fit pre-defined SVG Coordinate space
     
@@ -43,17 +42,23 @@ var chart = svg.append("g")
     tickSize: Config the size of tick
 */ 
     
-
 var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 var x = d3.scaleLinear()
 		.domain(d3.extent(data,function(d){
 			return d.age;
 		}))
 		.range([0, width]);
+
 var y = d3.scaleLinear()
 		.domain([1,5])
 		.range([height,0]);
-    
+
+var responseScale = d3.scaleLinear()
+    .domain(d3.extent(data, function(d){
+        return d.responses;
+    }))
+    .range([2,15]);
+
 var tickValues = [18,25,32,39,46,53,60,67,74];
 var xAxis = d3.axisBottom()
 			.scale(x)
@@ -73,24 +78,18 @@ var yAxis = d3.axisLeft()
 var xGridlines = d3.axisBottom()
 					.scale(x)
 					.tickValues(tickValues)
-					.tickSize(height,height)
+					.tickSize(height, 0)
 					.tickFormat("");
 					
 var yGridlines = d3.axisLeft()
 					.scale(y)
-					.tickSize(-width,0,0)
+					.tickSize(-width, 0, 0)
 					.tickFormat("");
 
-var responseScale = d3.scaleLinear()
-		.domain(d3.extent(data, function(d){
-			return d.responses;
-		}))
-		.range([2,15]);
 
-		
 
 function drawAxis(params){
-        
+
     // Draw GridLines
     this.append("g")
         .call(params.gridlines.x)
@@ -186,7 +185,7 @@ function plot(params){
 				str += "Age: " + d.age + ", ";
 				str += "Responses: " + d.responses + ", ";
 				str += "Average Rating: " + d.value;
-				str += ""
+				str += "";
 				d3.select(".chart-header").text(str);
 			})
 			.on("mouseout", function(d,i){
