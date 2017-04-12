@@ -9,6 +9,7 @@
         alert("The database has been opened");
         input = document.getElementById('todo_text');
         document.body.addEventListener('submit', onSubmit);
+        document.getElementById('searchBtn').addEventListener('click', onClickButtonSearch);
         loadData();
     });
 
@@ -19,6 +20,10 @@
             // clear textbox
             input.value = '';
         });
+    }
+
+    function onClickButtonSearch(e) {
+        getByContent(input.value, renderData);
     }
 
     function addEventListenerToAllItem() {
@@ -82,7 +87,8 @@
         request.onupgradeneeded = function (e) {
             db = e.target.result;
             e.target.transaction.onerror = databaseError;
-            db.createObjectStore('todo', {keyPath: 'timeStamp'});
+            var objectStoreTodo = db.createObjectStore('todo', {keyPath: 'timeStamp'});
+            objectStoreTodo.createIndex("text", "text", { unique: false });
         };
     }
 
@@ -149,4 +155,27 @@
         request.onerror = databaseError;
     }
 
+    function getByContent(keyword, callback) {
+        var transaction = db.transaction(['todo'], 'readonly');
+        var store = transaction.objectStore('todo');
+        var index = store.index('text');
+        // use a trick to get startswith "keyword" item by adding highest value character
+        var rangeMemoStartsWith = IDBKeyRange.bound(keyword, keyword + '\uffff');
+        // prev: The cursor shows all records, including duplicates.
+        // It starts at the upper bound of the key range and moves downwards
+        var cursorRequest = index.openCursor(rangeMemoStartsWith, 'prev');
+
+        var data = [];
+        // Fires once per row in the store
+        cursorRequest.onsuccess = function(e) {
+            var result = e.target.result;
+
+            if (result) {
+                data.push(result.value);
+                result.continue();
+            } else {
+                callback(data);
+            }
+        };
+    }
 }());
