@@ -21,11 +21,12 @@
         });
     }
 
-    function addOnClickEventListener() {
+    function addEventListenerToAllItem() {
         // convert HtmlCollection to array using ES6
         var lis = Array.from(document.getElementById("todo_list").getElementsByTagName("li"));
         lis.forEach(function (li) {
             li.addEventListener('click', onClick);
+            li.addEventListener('mouseover', onHover, true);
         });
     }
 
@@ -38,6 +39,21 @@
         }
     }
 
+    function onHover(e) {
+        if (e.target.hasAttribute('id')) {
+            var intId = parseInt(e.target.getAttribute('id'), 0);
+            getTodo(intId, renderDetail);
+        }
+    }
+
+    function renderDetail(todo) {
+        var detailDiv = document.getElementById('detail');
+        var html = '<div class="memoAt">At: ' + new Date(todo.timeStamp) + '</div>';
+        html += '<br/>';
+        html += '<div class="memo">' + todo.text + '</div>';
+        detailDiv.innerHTML = html;
+    }
+
     function loadData() {
         getTodos(renderData);
     }
@@ -48,7 +64,7 @@
             html += '<li id="'+ todo.timeStamp +'">' + todo.text  + '</li>';
         });
         document.getElementById('todo_list').innerHTML = html;
-        addOnClickEventListener();
+        addEventListenerToAllItem();
     }
 
     function databaseOpen(callback) {
@@ -108,6 +124,19 @@
                 callback(data);
             }
         }
+    }
+
+    function getTodo(id, callback) {
+        var transaction = db.transaction(['todo'], 'readonly');
+        var store = transaction.objectStore('todo');
+        var request = store.get(id);
+        request.onsuccess = function(e) {
+            var data = e.target.result;
+            if (data) {
+                callback(data);
+            }
+        }
+        request.onerror = databaseError;
     }
 
     function deleteTodo(id, callback) {
