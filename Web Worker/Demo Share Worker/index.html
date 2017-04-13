@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+	</head>
+	<body>
+		<h1>Hello Web Workers!</h1>
+		<script>
+			let worker = new SharedWorker('worker.js');
+
+			worker.port.start();
+			worker.port.addEventListener('message', function (e) {
+				console.log(e.data);
+			});
+		</script>
+	</body>
+</html>
