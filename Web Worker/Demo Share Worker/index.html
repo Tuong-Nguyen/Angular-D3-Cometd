@@ -6,12 +6,18 @@
 	<body>
 		<h1>Hello Web Workers!</h1>
 		<script>
+			//Initial SharedWorker
 			let worker = new SharedWorker('worker.js');
-
+			//Start worker
+			//With dedicated it work start implicit
+			//With shared worker, u need to start worker explicit 
 			worker.port.start();
+
+			//Receive data
 			worker.port.addEventListener('message', function (e) {
 				console.log(e.data);
 			});
+			
 		</script>
 	</body>
 </html>
