@@ -2,7 +2,7 @@
  * Created by lnthao on 4/14/2017.
  */
 
-function databaseOpen(callback) {
+function databaseOpen(callback, databaseError) {
     // Open a database, specify the name and version
     var version = 1;
     var request = indexedDB.open('todos', version);
@@ -22,7 +22,7 @@ function databaseOpen(callback) {
     };
 }
 
-function addTodo(text, callback) {
+function addTodo(text, callback, databaseError) {
     var transaction = db.transaction(['todo'], 'readwrite');
     var store = transaction.objectStore('todo');
     var request = store.put({
@@ -36,7 +36,7 @@ function addTodo(text, callback) {
     request.onerror = databaseError;
 }
 
-function getTodos(callback) {
+function getTodos(callback, databaseError) {
     var transaction = db.transaction(['todo'], 'readonly');
     var store = transaction.objectStore('todo');
     // get entry with key >= 0 (get all)
@@ -55,9 +55,11 @@ function getTodos(callback) {
             callback(data);
         }
     }
+
+    cursorRequest.onerror = databaseError
 }
 
-function getTodo(id, callback) {
+function getTodo(id, callback, databaseError) {
     var transaction = db.transaction(['todo'], 'readonly');
     var store = transaction.objectStore('todo');
     var request = store.get(id);
@@ -70,7 +72,7 @@ function getTodo(id, callback) {
     request.onerror = databaseError;
 }
 
-function deleteTodo(id, callback) {
+function deleteTodo(id, callback, databaseError) {
     var transaction = db.transaction(['todo'], 'readwrite');
     var store = transaction.objectStore('todo');
     var request = store.delete(id);
@@ -80,7 +82,7 @@ function deleteTodo(id, callback) {
     request.onerror = databaseError;
 }
 
-function getByContent(keyword, callback) {
+function getByContent(keyword, callback, databaseError) {
     var transaction = db.transaction(['todo'], 'readonly');
     var store = transaction.objectStore('todo');
     var index = store.index('text');
@@ -102,4 +104,6 @@ function getByContent(keyword, callback) {
             callback(data);
         }
     };
+
+    cursorRequest.onerror = databaseError;
 }

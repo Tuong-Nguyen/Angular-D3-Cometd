@@ -18,11 +18,11 @@ function onSubmit(e) {
         loadData();
         // clear textbox
         input.value = '';
-    });
+    }, errorHandler);
 }
 
 function onClickButtonSearch(e) {
-    getByContent(input.value, renderData);
+    getByContent(input.value, renderData, errorHandler);
 }
 
 function addEventListenerToAllItem() {
@@ -39,14 +39,14 @@ function onClick(e) {
         var intId = parseInt(e.target.getAttribute('id'), 0);
         deleteTodo(intId, function() {
            loadData();
-        });
+        }, errorHandler);
     }
 }
 
 function onHover(e) {
     if (e.target.hasAttribute('id')) {
         var intId = parseInt(e.target.getAttribute('id'), 0);
-        getTodo(intId, renderDetail);
+        getTodo(intId, renderDetail, errorHandler);
     }
 }
 
@@ -59,7 +59,7 @@ function renderDetail(todo) {
 }
 
 function loadData() {
-    getTodos(renderData);
+    getTodos(renderData, errorHandler);
 }
 
 function renderData(todos) {
@@ -71,6 +71,6 @@ function renderData(todos) {
     addEventListenerToAllItem();
 }
 
-function databaseError(e) {
+function errorHandler(e) {
     console.error('An IndexedDB error has occurred', e);
 }
