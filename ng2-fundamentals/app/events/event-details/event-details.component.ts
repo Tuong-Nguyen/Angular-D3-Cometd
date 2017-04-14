@@ -1,4 +1,5 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {EventService} from "../shared/event.service";
 /**
  * Created by nctuong on 4/14/2017.
  */
@@ -9,4 +10,15 @@ import {Component} from "@angular/core";
   `],
   templateUrl: "app/events/event-details/event-details.component.html",
 })
-export class EventDetailsComponent {}
+export class EventDetailsComponent implements OnInit {
+  public event: any;
+
+  constructor(private eventService: EventService) {
+
+  }
+
+  public ngOnInit(): void {
+    this.event = this.eventService.getEvent(1);
+  }
+
+}

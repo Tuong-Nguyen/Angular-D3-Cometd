@@ -9,6 +9,9 @@ export class EventService {
     return EVENTS;
   }
 
+  public getEvent(id: number) {
+    return EVENTS[id];
+  }
 }
 
 const EVENTS = [
