@@ -13,6 +13,7 @@ import {EventService} from "./events/shared/event.service";
 import {NavBarComponent} from "./nav/navbar.component";
 import {appRoutes} from "./routes";
 import {CreateEventComponent} from "./events/create-event.component";
+import {Error404Component} from "./errors/404.component";
 
 @NgModule({
   bootstrap: [EventsAppComponent],
@@ -23,6 +24,7 @@ import {CreateEventComponent} from "./events/create-event.component";
     NavBarComponent,
     EventDetailsComponent,
     CreateEventComponent,
+    Error404Component,
   ],
   imports: [
     BrowserModule,

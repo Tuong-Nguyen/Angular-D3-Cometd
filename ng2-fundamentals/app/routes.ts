@@ -2,6 +2,7 @@ import {Routes} from "@angular/router";
 import {EventDetailsComponent} from "./events/event-details/event-details.component";
 import {EventsListComponent} from "./events/events-list.component";
 import {CreateEventComponent} from "./events/create-event.component";
+import {Error404Component} from "./errors/404.component";
 
 /**
  * Created by nctuong on 4/14/2017.
@@ -9,6 +10,7 @@ import {CreateEventComponent} from "./events/create-event.component";
 
 export const appRoutes: Routes = [
   {path: "events", component: EventsListComponent },
+  {path: "404", component: Error404Component},
   {path: "events/create", component: CreateEventComponent},
   {path: "events/:id", component: EventDetailsComponent},
   {path: "", redirectTo: "events", pathMatch: "full"},
