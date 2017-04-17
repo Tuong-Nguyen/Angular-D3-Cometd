@@ -3,23 +3,47 @@
  */
 import {Observable} from "rxjs";
 
-let numbers = [1, 2, 5];
-let source = Observable.from(numbers);
+/* Cold observable */
 
-class MyObserver {
-    next(value) {
-        console.log(`value: ${value}` );
-    }
+// let numbers = [1, 2, 5];
+// let source = Observable.from(numbers);
+//
+// class MyObserver {
+//     next(value) {
+//         console.log(`value: ${value}` );
+//     }
+//
+//     error(e) {
+//         console.log(`error: ${e}`);
+//     }
+//
+//     complete() {
+//         console.log(`completed`);
+//     }
+// }
+// source.subscribe(new MyObserver());
+// numbers.push(4);
+//
+// console.log('Current time: ' + Date.now());
 
-    error(e) {
-        console.log(`error: ${e}`);
-    }
+/* Hot observable */
 
-    complete() {
-        console.log(`completed`);
-    }
-}
-source.subscribe(new MyObserver());
-numbers.push(4);
+// Creates a sequence
+let source = Observable.interval(1000);
 
-console.log('Current time: ' + Date.now());
+// Convert the sequence into a hot sequence
+let hot = source.publish();
+
+// No value is pushed to 1st subscription at this point
+let subscription1 = hot.subscribe(
+    (x) => { console.log('Observer 1: onNext: %s', x); },
+    (e) => { console.log('Observer 1: onError: %s', e); },
+    () => { console.log('Observer 1: onCompleted'); });
+
+hot.connect();
+
+// delay 1,5s to subscribe
+var subscription2 = hot.delay(1500).subscribe(
+    (x) => { console.log('Observer 2: onNext: %s', x); },
+    (e) => { console.log('Observer 2: onError: %s', e); },
+    () => { console.log('Observer 2: onCompleted'); });
