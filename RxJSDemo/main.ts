@@ -8,6 +8,7 @@ let button = document.getElementById("getBtn");
 
 let click = Observable.fromEvent(button, "click");
 
+// return an observable for data stream
 function load(url: string) {
     return Observable.create(observer => {
         let xhr = new XMLHttpRequest();
@@ -24,6 +25,7 @@ function load(url: string) {
 
 }
 
+// render the movies
 function renderMovies(movies) {
     movies.forEach(m => {
         let div = document.createElement("div");
@@ -32,6 +34,7 @@ function renderMovies(movies) {
     });
 }
 
+// transform emitting item from load's observable to click's observable
 click.flatMap(e => load("data/movies.json"))
     .subscribe(
         renderMovies,
