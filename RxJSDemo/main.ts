@@ -14,14 +14,18 @@ function load(url: string) {
         let xhr = new XMLHttpRequest();
 
         xhr.addEventListener("load", ()=> {
-            let data = JSON.parse(xhr.responseText);
-            observer.next(data);
-            observer.complete();
+            if (xhr.status === 200) {
+                let data = JSON.parse(xhr.responseText);
+                observer.next(data);
+                observer.complete();
+            } else {
+                observer.error(xhr.statusText);
+            }
         });
 
         xhr.open("GET", url);
         xhr.send();
-    });
+    }).retry(3);
 
 }
 
@@ -35,7 +39,7 @@ function renderMovies(movies) {
 }
 
 // transform emitting item from load's observable to click's observable
-click.flatMap(e => load("data/movies.json"))
+click.flatMap(e => load("data/moviess.json"))
     .subscribe(
         renderMovies,
         e => console.log(`error: ${e}`),
