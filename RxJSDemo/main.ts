@@ -18,8 +18,9 @@ function renderMovies(movies) {
     });
 }
 
+var merged = load("data/movies.json").merge(load("data/movies_plus.json"));
 // transform emitting item from load's observable to click's observable
-click.flatMap(e => load("data/moviess.json"))
+click.flatMap(e => merged)
     .subscribe(
         renderMovies,
         e => console.log(`error: ${e}`),
