@@ -9,21 +9,32 @@ let button = document.getElementById("getBtn");
 let click = Observable.fromEvent(button, "click");
 
 function load(url: string) {
-    let xhr = new XMLHttpRequest();
-    xhr.addEventListener("load", ()=> {
-       let movies = JSON.parse(xhr.responseText);
-       movies.forEach(m => {
-           let div = document.createElement("div");
-           div.innerText = m.title;
-           output.appendChild(div);
-       });
+    return Observable.create(observer => {
+        let xhr = new XMLHttpRequest();
+
+        xhr.addEventListener("load", ()=> {
+            let data = JSON.parse(xhr.responseText);
+            observer.next(data);
+            observer.complete();
+        });
+
+        xhr.open("GET", url);
+        xhr.send();
     });
-    xhr.open("GET", url);
-    xhr.send();
+
 }
 
-click.subscribe(
-    x => load("data/movies.json"),
-    e => console.log(`error: ${e}`),
-    () => console.log("complete")
-)
+function renderMovies(movies) {
+    movies.forEach(m => {
+        let div = document.createElement("div");
+        div.innerText = m.title;
+        output.appendChild(div);
+    });
+}
+
+click.flatMap(e => load("data/movies.json"))
+    .subscribe(
+        renderMovies,
+        e => console.log(`error: ${e}`),
+        () => console.log("complete")
+    );
