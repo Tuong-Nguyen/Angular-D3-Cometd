@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello Swagger</title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.js"></script>
+<script>
+    var petstore = require(['index']);
+    var apiInstance = new SwaggerPetstore.PetApi();
+    apiInstance.findPetsByStatus("available", function(error, data, response) {
+            if (error) {
+                console.error(error);
+            } else {
+                console.log('API called successfully. Returned data: ' + data);
+            }
+    });
+</script>
+</body>
+</html>

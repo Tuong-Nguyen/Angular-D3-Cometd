@@ -1,0 +1,18 @@
+{
+  "name": "swagger_petstore",
+  "version": "1.0.0",
+  "description": "This_is_a_sample_server_Petstore_server___You_can_find_out_more_about_Swagger_at__httpswagger_io_httpswagger_io_or_on__irc_freenode_net_swagger_httpswagger_ioirc___For_this_sample_you_can_use_the_api_key_special_key_to_test_the_authorization_filters_",
+  "license": "Apache-2.0",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --recursive"
+  },
+  "dependencies": {
+    "superagent": "1.7.1"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.4",
+    "sinon": "1.17.3",
+    "expect.js": "~0.3.1"
+  }
+}
