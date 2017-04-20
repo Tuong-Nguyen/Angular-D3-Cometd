@@ -10,6 +10,8 @@
     "rxjs": "^5.3.0"
   },
   "devDependencies": {
+    "requirejs": "^2.3.3",
+    "superagent": "^3.5.2",
     "ts-loader": "^2.0.3",
     "typescript": "^2.2.2",
     "typings": "^2.1.1",

@@ -4,9 +4,35 @@
     <meta charset="UTF-8">
     <title>Hello RxJS</title>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="petstoreCtrl">
 <input type="button" value="Get Movies" id="getBtn" />
 <div id="output"></div>
 <script src="app.js"></script>
+<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.15/angular.min.js"></script>-->
+<!--<script src="petstore_angular.js"></script>-->
+<!--<script src="petstoreCtrl.js"></script>-->
+<script src="node_modules/requirejs/require.js"></script>
+<!--<script src="node_modules/superagent/superagent.js"></script>-->
+<script src="scripts/petstore.js"></script>
+<script>
+    var args = {};
+    args['status'] = "available";
+    var pet = new Pet();
+    pet.findPetsByStatus(args).then(function(response) {
+        /* success callback */
+        console.log("Result of Pet.findPetsByStatus");
+        var result = response.obj;
+        // print parsed result
+        console.log(result);
+        // print raw response in string
+        console.log(response.data.toString());
+    }, function(response) {
+        /* error callback */
+        console.log('Error for Pet.findPetsByStatus:', response.message); // status code
+        //console.log(response.data.toString()); // raw response
+        //console.log(response.headers); // http headers for JS
+        //console.log(response.headers.normalized); // http headers for Node.js
+    });
+</script>
 </body>
 </html>
