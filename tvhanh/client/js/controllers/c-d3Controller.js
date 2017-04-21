@@ -37,9 +37,9 @@
 		    extended: false, // default: false
 		    disabled: false, // default: false
 		    refreshDataOnly: true, // default: true
-		    deepWatchOptions: true, // default: true
-		    deepWatchData: true, // default: true
-		    deepWatchDataDepth: 2, // default: 2
+		    deepWatchOptions: false, // default: true
+		    deepWatchData: false, // default: true
+		    deepWatchDataDepth: 1, // default: 2
 		    debounce: 10 // default: 10
 		};
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>D3</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="./js/vendor/angular-socket-io/socket.io.js" type="text/javascript"></script>
+		<script src="./js/vendor/angular-socket-io/socket.min.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.js"></script>
+		<script src="./js/vendor/d3/angular-nvd3.js" type="text/javascript"></script>
+		<script src="./js/module/m-client.js" type="text/javascript"></script>
+		<script src="./js/config/config.js" type="text/javascript"></script>
+		<script src="./js/factories/fa-socket.js"></script>
+		<script src="./js/filter/fi-stringToObject.js" type="text/javascript"></script>
+		<script src="./js/services/s-kafka.js" type="text/javascript"></script>
+		<script src="./js/controllers/c-consumerController.js"></script>
+	</head>
+	<body ng-app="client">
+		<div class="container" ng-init="initPage()" ng-controller="consumerController">
+			<ul>
+				<li ng-repeat="record in records"> recode.value</li>
+			</ul>
+		</div>
+	</body>
+</html>
