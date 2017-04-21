@@ -65,7 +65,7 @@ paths:
           description: Topic not found
         '422':
           description: Unprocessable entity
-  '/topics/{topic_name}':
+  '/topics/{topic_name}/partitions':
     get:
       description: Get a list of partitions for the topic.
       operationId: getPartitionsForTopic
