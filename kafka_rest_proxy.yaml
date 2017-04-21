@@ -13,6 +13,8 @@ schemes:
 tags:
   - name: topic
     description: Topic APIs
+  - name: partition
+    description: Partition APIs
   - name: consumer
     description: Consumer APIs
 paths:
@@ -93,7 +95,7 @@ paths:
   '/topics/{topic_name}/partitions':
     get:
       tags:
-        - topic
+        - partition
       description: Get a list of partitions for the topic.
       operationId: getPartitionsForTopic
       produces:
@@ -114,7 +116,7 @@ paths:
   '/topics/{topic_name}/partitions/{partition_id}':
     get:
       tags:
-        - topic
+        - partition
       description: Get metadata about a single partition in the topic.
       operationId: getPartitionMetadataInTopic
       produces:
@@ -129,7 +131,7 @@ paths:
           in: path
           description: ID of the partition to inspect
           required: true
-          type: string
+          type: integer
       responses:
         '200':
           description: Successful operation
@@ -137,6 +139,45 @@ paths:
             $ref: '#/definitions/Partition'
         '404':
           description: Topic or partition not found
+    post:
+      tags:
+        - partition
+      description: Produce messages to one partition of the topic.
+      operationId: produceMessageToPartitionOfTopic
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic to produce the messages to
+          required: true
+          type: string
+        - name: partition_id
+          in: path
+          description: Partition to produce the messages to
+          required: true
+          type: integer
+        - name: records
+          in: body
+          description:  A list of records to produce to partition.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Record'
+      responses:
+        '200':
+          description: Successfull operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Offset'
+        '404':
+          description: Topic not found
+        '422':
+          description: Unprocessable entity
   '/consumers/{group_name}/instances/{instance}':
     delete:
       tags:
