@@ -6,7 +6,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-host: 11.11.254.102:8082
+host: '11.11.254.102:8082'
 basePath: /
 schemes:
   - http
@@ -19,10 +19,6 @@ paths:
         - application/json
       responses:
         '200':
-          headers:
-           Access-Control-Allow-Origin:
-            type: string
-            default: '*'
           description: List of topic names
           schema:
             type: array
@@ -44,60 +40,97 @@ paths:
         '200':
           description: Successful operation
           schema:
-           $ref: '#/definitions/Topic'
+            $ref: '#/definitions/Topic'
         '404':
           description: Topic not found
     post:
-      description: 'Produce messages to a topic, optionally specifying keys or partitions for the messages. If no partition is provided, one will be chosen based on the hash of the key. If no key is provided, the partition will be chosen for each message in a round-robin fashion.'
+      description: >-
+        Produce messages to a topic, optionally specifying keys or partitions
+        for the messages. If no partition is provided, one will be chosen based
+        on the hash of the key. If no key is provided, the partition will be
+        chosen for each message in a round-robin fashion.
       operationId: produceMessageToTopic
       consumes:
         - application/json
       produces:
         - application/json
-      parameters: []
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic to produce the messages to
+          required: true
+          type: string
       responses:
         '404':
           description: Topic not found
         '422':
           description: Unprocessable entity
+  '/topics/{topic_name}':
+    get:
+      description: Get a list of partitions for the topic.
+      operationId: getPartitionsForTopic
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Partition'
+        '404':
+          description: Topic not found
 definitions:
- Topic:
-  type: object
-  properties:
-   name:
-    type: string
-   configs:
-    type: string
-   partitions:
-    type: array
-    items:
-     $ref: '#/definitions/Partition'
- Partition:
-   type: object
-   properties:
-    partition:
-     type: integer
-    leader:
-     type: integer
-    replicas:
-     type: array
-     items:
-      $ref: '#/definitions/Replica'
- Replica:
-   type: object
-   properties:
-    broker:
-     type: integer
-    leader:
-     type: boolean
-    sync:
-     type: boolean
- Record:
-  type: object
-  properties:
-   key:
+  Topic:
     type: object
-   value:
+    properties:
+      name:
+        type: string
+        description: Name of the topic
+      configs:
+        type: string
+        description: Per-topic configuration overrides
+      partitions:
+        type: array
+        description: List of partitions for this topic
+        items:
+          $ref: '#/definitions/Partition'
+  Partition:
     type: object
-   partition:
-    type: integer
+    properties:
+      partition:
+        type: integer
+        description: ID of the partition
+      leader:
+        type: integer
+        description: Broker ID of the leader for this partition
+      replicas:
+        type: array
+        description: List of brokers acting as replicas for this partition
+        items:
+          $ref: '#/definitions/Replica'
+  Replica:
+    type: object
+    properties:
+      broker:
+        type: integer
+        description: broker ID of the replica
+      leader:
+        type: boolean
+        description: true if this replica is the leader for the partition
+      sync:
+        type: boolean
+        description:  true if this replica is currently in sync with the leader
+  Record:
+    type: object
+    properties:
+      key:
+        type: object
+      value:
+        type: object
+      partition:
+        type: integer
