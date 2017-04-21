@@ -10,9 +10,14 @@ host: '11.11.254.102:8082'
 basePath: /
 schemes:
   - http
+tags:
+  - name: topic
+    description: Topic APIs
 paths:
   /topics:
     get:
+      tags:
+        - topic
       description: Get a list of Kafka topics.
       operationId: getTopics
       produces:
@@ -26,6 +31,8 @@ paths:
               type: string
   '/topics/{topic_name}':
     get:
+      tags:
+        - topic
       description: Get metadata about a specific topic.
       operationId: getTopicMetadata
       produces:
@@ -44,6 +51,8 @@ paths:
         '404':
           description: Topic not found
     post:
+      tags:
+        - topic
       description: >-
         Produce messages to a topic, optionally specifying keys or partitions
         for the messages. If no partition is provided, one will be chosen based
@@ -67,6 +76,8 @@ paths:
           description: Unprocessable entity
   '/topics/{topic_name}/partitions':
     get:
+      tags:
+        - topic
       description: Get a list of partitions for the topic.
       operationId: getPartitionsForTopic
       produces:
@@ -86,6 +97,8 @@ paths:
           description: Topic not found
   '/topics/{topic_name}/partitions/{partition_id}':
     get:
+      tags:
+        - topic
       description: Get metadata about a single partition in the topic.
       operationId: getPartitionMetadataInTopic
       produces:
