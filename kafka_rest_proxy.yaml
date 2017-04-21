@@ -247,10 +247,10 @@ definitions:
     type: object
     properties:
       key:
-        type: object
+        type: string
         description: The message key, formatted according to the embedded format, or null to omit a key (optional)
       value:
-        type: object
+        type: string
         description: The message value, formatted according to the embedded format
       partition:
         type: integer
