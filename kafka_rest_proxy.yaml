@@ -84,6 +84,30 @@ paths:
             $ref: '#/definitions/Partition'
         '404':
           description: Topic not found
+  '/topics/{topic_name}/partitions/{partition_id}':
+    get:
+      description: Get metadata about a single partition in the topic.
+      operationId: getPartitionMetadataInTopic
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic
+          required: true
+          type: string
+        - name: partition_id
+          in: path
+          description: ID of the partition to inspect
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Partition'
+        '404':
+          description: Topic or partition not found
 definitions:
   Topic:
     type: object
