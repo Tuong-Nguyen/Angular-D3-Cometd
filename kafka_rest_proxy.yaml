@@ -13,6 +13,8 @@ schemes:
 tags:
   - name: topic
     description: Topic APIs
+  - name: consumer
+    description: Consumer APIs
 paths:
   /topics:
     get:
@@ -69,7 +71,21 @@ paths:
           description: Name of the topic to produce the messages to
           required: true
           type: string
+        - name: records
+          in: body
+          description:  A list of records to produce to the topic.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Record'
       responses:
+        '200':
+          description: Successfull operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Offset'
         '404':
           description: Topic not found
         '422':
@@ -121,8 +137,31 @@ paths:
             $ref: '#/definitions/Partition'
         '404':
           description: Topic or partition not found
+  '/consumers/{group_name}/instances/{instance}':
+    delete:
+      tags:
+        - consumer
+      description: Destroy the consumer instance.
+      operationId: destroyConsumer
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
 definitions:
   Topic:
+    description: The topics resource provides information about the topics in your Kafka cluster and their current state
     type: object
     properties:
       name:
@@ -137,6 +176,7 @@ definitions:
         items:
           $ref: '#/definitions/Partition'
   Partition:
+    description: The partitions resource provides per-partition metadata, including the current leaders and replicas for each partition
     type: object
     properties:
       partition:
@@ -167,7 +207,27 @@ definitions:
     properties:
       key:
         type: object
+        description: The message key, formatted according to the embedded format, or null to omit a key (optional)
       value:
         type: object
+        description: The message value, formatted according to the embedded format
       partition:
         type: integer
+        description: Partition to store the message in (optional)
+  Offset:
+    type: object
+    properties:
+      partition:
+        type: integer
+        description: Partition the message was published to, or null if publishing the message failed
+      offset:
+        type: integer
+        format: int64
+        description: Offset of the message, or null if publishing the message failed
+      error_code:
+        type: integer
+        format: int64
+        description: An error code classifying the reason this operation failed, or null if it succeeded.
+      error:
+        type: string
+        description: An error message describing why the operation failed, or null if it succeeded
