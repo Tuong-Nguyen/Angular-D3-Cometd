@@ -302,7 +302,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/OffsetForPartition'
+              $ref: '#/definitions/OffsetForPartitionWithMetadata'
         404:
           description: Partition or consumer instance not found
   '/consumers/{group_name}/instances/{instance}/subscription':
@@ -443,6 +443,99 @@ paths:
               $ref: '#/definitions/PartitionInTopic'
         404:
           description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/positions':
+    post:
+      tags:
+        - consumer
+      description: Overrides the fetch offsets that the consumer will use for the next set of records to fetch.
+      operationId: setFetchOffsets
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: offsets
+          in: body
+          description: A list of offsets
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OffsetForPartition'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/positions/beginning':
+    post:
+      tags:
+        - consumer
+      description: Seek to the first offset for each of the given partitions.
+      operationId: seekToFirstOffsetOfPartitions
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/positions/end':
+    post:
+      tags:
+        - consumer
+      description: Seek to the last offset for each of the given partitions.
+      operationId: seekToLastOffsetOfPartitions
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
@@ -531,6 +624,18 @@ definitions:
         items:
           $ref: '#/definitions/Offset'
   OffsetForPartition:
+    type: object
+    properties:
+      topic:
+        type: string
+        description: Name of the topic
+      partition:
+        type: integer
+        description: Partition ID
+      offset:
+        type: integer
+        description: The offset to commit
+  OffsetForPartitionWithMetadata:
     type: object
     properties:
       topic:
