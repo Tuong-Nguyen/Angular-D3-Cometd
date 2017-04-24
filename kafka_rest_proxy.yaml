@@ -85,9 +85,7 @@ paths:
         '200':
           description: Successfull operation
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Offset'
+            $ref: '#/definitions/OffsetWithAvroSchema'
         '404':
           description: Topic not found
         '422':
@@ -171,9 +169,7 @@ paths:
         '200':
           description: Successfull operation
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Offset'
+            $ref: '#/definitions/OffsetWithAvroSchema'
         '404':
           description: Topic not found
         '422':
@@ -245,6 +241,8 @@ definitions:
         description:  true if this replica is currently in sync with the leader
   Record:
     type: object
+    required:
+     - value
     properties:
       key:
         type: string
@@ -272,3 +270,15 @@ definitions:
       error:
         type: string
         description: An error message describing why the operation failed, or null if it succeeded
+  OffsetWithAvroSchema:
+    type: object
+    properties:
+      key_schema_id:
+        type: integer
+        description: ID returned by a previous request using the same schema. This ID corresponds to the ID of the schema in the registry.
+      value_schema_id:
+        type: integer
+        description: ID returned by a previous request using the same schema. This ID corresponds to the ID of the schema in the registry.
+      offsets:
+        type: array
+        $ref: '#/definitions/Offset'
