@@ -358,6 +358,27 @@ paths:
           description: Consumer instance not found
         409:
           description: Subscription to topics, partitions and pattern are mutually exclusive.
+    delete:
+      tags:
+        - consumer
+      description: Unsubscribe from topics currently subscribed.
+      operationId: unsubscribe
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
