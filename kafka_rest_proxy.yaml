@@ -17,6 +17,8 @@ tags:
     description: Partition APIs
   - name: consumer
     description: Consumer APIs
+  - name: broker
+    description: Broker APIs
 paths:
   /topics:
     get:
@@ -574,6 +576,15 @@ paths:
           description: Consumer instance not found
         406:
           description: Consumer format does not match the embedded format requested by the Accept header.
+  '/brokers':
+    get:
+      tags:
+       - broker
+      description: Get a list of brokers.
+      operationId: getIDs
+      responses:
+        200:
+          description: OK
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
