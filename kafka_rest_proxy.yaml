@@ -238,6 +238,37 @@ paths:
           description: OK
         404:
           description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/offsets':
+    post:
+      tags:
+        - consumer
+      description: Commit a list of offsets for the consumer. When the post body is empty, it commits all the records that have been fetched by the consumer instance
+      operationId: commitOffsets
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: offsets
+          in: body
+          description: A list of offsets to commit for partitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OffsetForPartition'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
@@ -325,6 +356,18 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Offset'
+  OffsetForPartition:
+    type: object
+    properties:
+      topic:
+        type: string
+        description: Name of the topic
+      partition:
+        type: integer
+        description: Partition ID
+      offset:
+        type: integer
+        description: The offset to commit
   ConsumerResponse:
     type: object
     properties:
