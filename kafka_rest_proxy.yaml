@@ -269,6 +269,42 @@ paths:
           description: OK
         404:
           description: Consumer instance not found
+    get:
+      tags:
+        - consumer
+      description: Get the last committed offsets for the given partitions (whether the commit happened by this process or another).
+      operationId: getLastCommittedOffsetsForPartition
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions to find the last committed offsets for
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionRequest'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OffsetForPartition'
+        404:
+          description: Partition or consumer instance not found
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
@@ -368,6 +404,9 @@ definitions:
       offset:
         type: integer
         description: The offset to commit
+      metadata:
+        type: string
+        description: Metadata for the committed offset
   ConsumerResponse:
     type: object
     properties:
@@ -377,3 +416,12 @@ definitions:
       base_uri:
         description: Base URI used to construct URIs for subsequent requests against this consumer instance. This will be of the form http://hostname:port/consumers/consumer_group/instances/instance_id.
         type: string
+  PartitionRequest:
+    type: object
+    properties:
+      topic:
+        description: Name of the topic
+        type: string
+      partition:
+        description: Partition ID
+        type: integer
