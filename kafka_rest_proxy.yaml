@@ -305,6 +305,34 @@ paths:
               $ref: '#/definitions/OffsetForPartition'
         404:
           description: Partition or consumer instance not found
+  '/consumer/{group_name}/instances/{instance}/subscription':
+    post:
+      tags:
+        - consumer
+      description: Subscribe to the given list of topics or a topic pattern to get dynamically assigned partitions. If a prior subscription exists, it would be replaced by the latest subscription.
+      operationId: subscribesTopics
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: topics
+          in: body
+          schema:
+            $ref: '#/definitions/TopicSubscriptionRequest'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+        409:
+          description: Subscription to topics, partitions and pattern are mutually exclusive.
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
@@ -425,3 +453,16 @@ definitions:
       partition:
         description: Partition ID
         type: integer
+  TopicSubscriptionRequest:
+    type: object
+    properties:
+      topics:
+        description: A list of topics to subscribe
+        type: array
+        items:
+          properties:
+            topic:
+              type: string
+      topic_pattern:
+        description: A REGEX pattern. topics_pattern and topics fields are mutually exclusive.
+        type: string
