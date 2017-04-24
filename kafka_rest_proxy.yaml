@@ -295,7 +295,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/PartitionRequest'
+              $ref: '#/definitions/PartitionInTopic'
       responses:
         200:
           description: OK
@@ -305,12 +305,14 @@ paths:
               $ref: '#/definitions/OffsetForPartition'
         404:
           description: Partition or consumer instance not found
-  '/consumer/{group_name}/instances/{instance}/subscription':
+  '/consumers/{group_name}/instances/{instance}/subscription':
     post:
       tags:
         - consumer
       description: Subscribe to the given list of topics or a topic pattern to get dynamically assigned partitions. If a prior subscription exists, it would be replaced by the latest subscription.
       operationId: subscribesTopics
+      produces:
+        - application/json
       parameters:
         - name: group_name
           in: path
@@ -338,6 +340,8 @@ paths:
         - consumer
       description: Get the current subscribed list of topics.
       operationId: getTopicsSubscriptions
+      consumes:
+        - application/json
       parameters:
         - name: group_name
           in: path
@@ -377,6 +381,66 @@ paths:
       responses:
         200:
           description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/assignments':
+    post:
+      tags:
+        - consumer
+      description: Manually assign a list of partitions to this consumer.
+      operationId: assignPartitions
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions to assign to this consumer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+        409:
+          description: Subscription to topics, partitions and pattern are mutually exclusive.
+    get:
+      tags:
+        - consumer
+      description: Get the list of partitions currently manually assigned to this consumer.
+      operationId: getPartitions
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
         404:
           description: Consumer instance not found
 definitions:
@@ -490,7 +554,7 @@ definitions:
       base_uri:
         description: Base URI used to construct URIs for subsequent requests against this consumer instance. This will be of the form http://hostname:port/consumers/consumer_group/instances/instance_id.
         type: string
-  PartitionRequest:
+  PartitionInTopic:
     type: object
     properties:
       topic:
