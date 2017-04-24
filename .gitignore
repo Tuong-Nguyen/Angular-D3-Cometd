@@ -4,3 +4,4 @@
 .idea/
 ng2-fundamentals/node_modules
 ./RxJSDemo/node_modules
+tools/
