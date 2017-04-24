@@ -333,6 +333,31 @@ paths:
           description: Consumer instance not found
         409:
           description: Subscription to topics, partitions and pattern are mutually exclusive.
+    get:
+      tags:
+        - consumer
+      description: Get the current subscribed list of topics.
+      operationId: getTopicsSubscriptions
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Topics'
+        404:
+          description: Consumer instance not found
+        409:
+          description: Subscription to topics, partitions and pattern are mutually exclusive.
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
@@ -453,16 +478,17 @@ definitions:
       partition:
         description: Partition ID
         type: integer
+  Topics:
+    description: A list of topic name
+    type: array
+    items:
+      type: string
   TopicSubscriptionRequest:
     type: object
     properties:
       topics:
         description: A list of topics to subscribe
-        type: array
-        items:
-          properties:
-            topic:
-              type: string
+        $ref: '#/definitions/Topics'
       topic_pattern:
         description: A REGEX pattern. topics_pattern and topics fields are mutually exclusive.
         type: string
