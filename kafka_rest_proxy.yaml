@@ -536,6 +536,44 @@ paths:
           description: OK
         404:
           description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/records':
+    get:
+      tags:
+        - consumer
+      description: Fetch data for the topics or partitions specified using one of the subscribe/assign APIs.
+      operationId: fetchData
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: timeout
+          in: query
+          description: The number of milliseconds for the underlying client library poll(timeout) request to fetch the records. Default to 5000ms.
+          type: integer
+        - name: max_bytes
+          in: query
+          description: The maximum number of bytes of unencoded keys and values that should be included in the response. This provides approximate control over the size of responses and the amount of memory required to store the decoded response. The actual limit will be the minimum of this setting and the server-side configuration consumer.request.max.bytes. Default is unlimited.
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RecordInfo'
+        404:
+          description: Consumer instance not found
+        406:
+          description: Consumer format does not match the embedded format requested by the Accept header.
 definitions:
   Topic:
     description: The topics resource provides information about the topics in your Kafka cluster and their current state
@@ -593,6 +631,25 @@ definitions:
       partition:
         type: integer
         description: Partition to store the message in (optional)
+  RecordInfo:
+    type: object
+    properties:
+      topic:
+        type: string
+        description: The topic
+      key:
+        type: string
+        description: The message key, formatted according to the embedded format
+      value:
+        type: string
+        description: The message value, formatted according to the embedded format
+      partition:
+        type: integer
+        description: Partition to store the message in
+      offset:
+        type: integer
+        format: int64
+        description: Offset of the message
   Offset:
     type: object
     properties:
