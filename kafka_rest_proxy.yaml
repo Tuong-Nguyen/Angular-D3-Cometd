@@ -1,0 +1,752 @@
+swagger: '2.0'
+info:
+  description: Confluent Kafka REST proxy
+  version: 1.0.0
+  title: Kafka REST proxy
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: '11.11.254.102:8082'
+basePath: /
+schemes:
+  - http
+tags:
+  - name: topic
+    description: Topic APIs
+  - name: partition
+    description: Partition APIs
+  - name: consumer
+    description: Consumer APIs
+  - name: broker
+    description: Broker APIs
+paths:
+  /topics:
+    get:
+      tags:
+        - topic
+      description: Get a list of Kafka topics.
+      operationId: getTopics
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: List of topic names
+          schema:
+            type: array
+            items:
+              type: string
+  '/topics/{topic_name}':
+    get:
+      tags:
+        - topic
+      description: Get metadata about a specific topic.
+      operationId: getTopicMetadata
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic to get metadata about
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Topic'
+        '404':
+          description: Topic not found
+    post:
+      tags:
+        - topic
+      description: >-
+        Produce messages to a topic, optionally specifying keys or partitions
+        for the messages. If no partition is provided, one will be chosen based
+        on the hash of the key. If no key is provided, the partition will be
+        chosen for each message in a round-robin fashion.
+      operationId: produceMessageToTopic
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic to produce the messages to
+          required: true
+          type: string
+        - name: records
+          in: body
+          description:  A list of records to produce to the topic.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Record'
+      responses:
+        '200':
+          description: Successfull operation
+          schema:
+            $ref: '#/definitions/OffsetWithAvroSchema'
+        '404':
+          description: Topic not found
+        '422':
+          description: Unprocessable entity
+  '/topics/{topic_name}/partitions':
+    get:
+      tags:
+        - partition
+      description: Get a list of partitions for the topic.
+      operationId: getPartitionsForTopic
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Partition'
+        '404':
+          description: Topic not found
+  '/topics/{topic_name}/partitions/{partition_id}':
+    get:
+      tags:
+        - partition
+      description: Get metadata about a single partition in the topic.
+      operationId: getPartitionMetadataInTopic
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic
+          required: true
+          type: string
+        - name: partition_id
+          in: path
+          description: ID of the partition to inspect
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Partition'
+        '404':
+          description: Topic or partition not found
+    post:
+      tags:
+        - partition
+      description: Produce messages to one partition of the topic.
+      operationId: produceMessageToPartitionOfTopic
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: topic_name
+          in: path
+          description: Name of the topic to produce the messages to
+          required: true
+          type: string
+        - name: partition_id
+          in: path
+          description: Partition to produce the messages to
+          required: true
+          type: integer
+        - name: records
+          in: body
+          description:  A list of records to produce to partition.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Record'
+      responses:
+        '200':
+          description: Successfull operation
+          schema:
+            $ref: '#/definitions/OffsetWithAvroSchema'
+        '404':
+          description: Topic not found
+        '422':
+          description: Unprocessable entity.
+  '/consumers/{group_name}':
+    post:
+      tags:
+        - consumer
+      description: Create a new consumer instance in the consumer group
+      operationId: createInstanceToGroup
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group.
+          required: true
+          type: string
+        - name: consumer_request
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                description: Name for the consumer instance, which will be used in URLs for the consumer. This must be unique, at least within the proxy process handling the request. If omitted, falls back on the automatically generated ID. Using automatically generated names is recommended for most use cases.
+                type: string
+              format:
+                description: The format of consumed messages, which is used to convert messages into a JSON-compatible form. Valid values "binary", "avro", "json". If unspecified, defaults to “binary”.
+                type: string
+              auto.offset.reset:
+                description: Sets the auto.offset.reset setting for the consumer
+                type: string
+              auto.commit.enable:
+                description: Sets the auto.commit.enable setting for the consumer
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ConsumerResponse'
+        409:
+          description: Consumer instance with the specified name already exists.
+        422:
+          description: Invalid consumer configuration. One of the settings specified in the request contained an invalid value.
+  '/consumers/{group_name}/instances/{instance}':
+    delete:
+      tags:
+        - consumer
+      description: Destroy the consumer instance.
+      operationId: destroyConsumer
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/offsets':
+    post:
+      tags:
+        - consumer
+      description: Commit a list of offsets for the consumer. When the post body is empty, it commits all the records that have been fetched by the consumer instance
+      operationId: commitOffsets
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: offsets
+          in: body
+          description: A list of offsets to commit for partitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OffsetForPartition'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+    get:
+      tags:
+        - consumer
+      description: Get the last committed offsets for the given partitions (whether the commit happened by this process or another).
+      operationId: getLastCommittedOffsetsForPartition
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions to find the last committed offsets for
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OffsetForPartitionWithMetadata'
+        404:
+          description: Partition or consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/subscription':
+    post:
+      tags:
+        - consumer
+      description: Subscribe to the given list of topics or a topic pattern to get dynamically assigned partitions. If a prior subscription exists, it would be replaced by the latest subscription.
+      operationId: subscribesTopics
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: topics
+          in: body
+          schema:
+            $ref: '#/definitions/TopicSubscriptionRequest'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+        409:
+          description: Subscription to topics, partitions and pattern are mutually exclusive.
+    get:
+      tags:
+        - consumer
+      description: Get the current subscribed list of topics.
+      operationId: getTopicsSubscriptions
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Topics'
+        404:
+          description: Consumer instance not found
+        409:
+          description: Subscription to topics, partitions and pattern are mutually exclusive.
+    delete:
+      tags:
+        - consumer
+      description: Unsubscribe from topics currently subscribed.
+      operationId: unsubscribe
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/assignments':
+    post:
+      tags:
+        - consumer
+      description: Manually assign a list of partitions to this consumer.
+      operationId: assignPartitions
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions to assign to this consumer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+        409:
+          description: Subscription to topics, partitions and pattern are mutually exclusive.
+    get:
+      tags:
+        - consumer
+      description: Get the list of partitions currently manually assigned to this consumer.
+      operationId: getPartitions
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/positions':
+    post:
+      tags:
+        - consumer
+      description: Overrides the fetch offsets that the consumer will use for the next set of records to fetch.
+      operationId: setFetchOffsets
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: offsets
+          in: body
+          description: A list of offsets
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OffsetForPartition'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/positions/beginning':
+    post:
+      tags:
+        - consumer
+      description: Seek to the first offset for each of the given partitions.
+      operationId: seekToFirstOffsetOfPartitions
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/positions/end':
+    post:
+      tags:
+        - consumer
+      description: Seek to the last offset for each of the given partitions.
+      operationId: seekToLastOffsetOfPartitions
+      produces:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: partitions
+          in: body
+          description: A list of partitions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartitionInTopic'
+      responses:
+        200:
+          description: OK
+        404:
+          description: Consumer instance not found
+  '/consumers/{group_name}/instances/{instance}/records':
+    get:
+      tags:
+        - consumer
+      description: Fetch data for the topics or partitions specified using one of the subscribe/assign APIs.
+      operationId: fetchData
+      consumes:
+        - application/json
+      parameters:
+        - name: group_name
+          in: path
+          description: The name of the consumer group
+          required: true
+          type: string
+        - name: instance
+          in: path
+          description: The ID of the consumer instance
+          required: true
+          type: string
+        - name: timeout
+          in: query
+          description: The number of milliseconds for the underlying client library poll(timeout) request to fetch the records. Default to 5000ms.
+          type: integer
+        - name: max_bytes
+          in: query
+          description: The maximum number of bytes of unencoded keys and values that should be included in the response. This provides approximate control over the size of responses and the amount of memory required to store the decoded response. The actual limit will be the minimum of this setting and the server-side configuration consumer.request.max.bytes. Default is unlimited.
+          type: integer
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RecordInfo'
+        404:
+          description: Consumer instance not found
+        406:
+          description: Consumer format does not match the embedded format requested by the Accept header.
+  '/brokers':
+    get:
+      tags:
+       - broker
+      description: Get a list of brokers.
+      operationId: getIDs
+      responses:
+        200:
+          description: OK
+definitions:
+  Topic:
+    description: The topics resource provides information about the topics in your Kafka cluster and their current state
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the topic
+      configs:
+        type: string
+        description: Per-topic configuration overrides
+      partitions:
+        type: array
+        description: List of partitions for this topic
+        items:
+          $ref: '#/definitions/Partition'
+  Partition:
+    description: The partitions resource provides per-partition metadata, including the current leaders and replicas for each partition
+    type: object
+    properties:
+      partition:
+        type: integer
+        description: ID of the partition
+      leader:
+        type: integer
+        description: Broker ID of the leader for this partition
+      replicas:
+        type: array
+        description: List of brokers acting as replicas for this partition
+        items:
+          $ref: '#/definitions/Replica'
+  Replica:
+    type: object
+    properties:
+      broker:
+        type: integer
+        description: broker ID of the replica
+      leader:
+        type: boolean
+        description: true if this replica is the leader for the partition
+      sync:
+        type: boolean
+        description:  true if this replica is currently in sync with the leader
+  Record:
+    type: object
+    required:
+     - value
+    properties:
+      key:
+        type: string
+        description: The message key, formatted according to the embedded format, or null to omit a key (optional)
+      value:
+        type: string
+        description: The message value, formatted according to the embedded format
+      partition:
+        type: integer
+        description: Partition to store the message in (optional)
+  RecordInfo:
+    type: object
+    properties:
+      topic:
+        type: string
+        description: The topic
+      key:
+        type: string
+        description: The message key, formatted according to the embedded format
+      value:
+        type: string
+        description: The message value, formatted according to the embedded format
+      partition:
+        type: integer
+        description: Partition to store the message in
+      offset:
+        type: integer
+        format: int64
+        description: Offset of the message
+  Offset:
+    type: object
+    properties:
+      partition:
+        type: integer
+        description: Partition the message was published to, or null if publishing the message failed
+      offset:
+        type: integer
+        format: int64
+        description: Offset of the message, or null if publishing the message failed
+      error_code:
+        type: integer
+        format: int64
+        description: An error code classifying the reason this operation failed, or null if it succeeded.
+      error:
+        type: string
+        description: An error message describing why the operation failed, or null if it succeeded
+  OffsetWithAvroSchema:
+    type: object
+    properties:
+      key_schema_id:
+        type: integer
+        description: ID returned by a previous request using the same schema. This ID corresponds to the ID of the schema in the registry.
+      value_schema_id:
+        type: integer
+        description: ID returned by a previous request using the same schema. This ID corresponds to the ID of the schema in the registry.
+      offsets:
+        type: array
+        items:
+          $ref: '#/definitions/Offset'
+  OffsetForPartition:
+    type: object
+    properties:
+      topic:
+        type: string
+        description: Name of the topic
+      partition:
+        type: integer
+        description: Partition ID
+      offset:
+        type: integer
+        description: The offset to commit
+  OffsetForPartitionWithMetadata:
+    type: object
+    properties:
+      topic:
+        type: string
+        description: Name of the topic
+      partition:
+        type: integer
+        description: Partition ID
+      offset:
+        type: integer
+        description: The offset to commit
+      metadata:
+        type: string
+        description: Metadata for the committed offset
+  ConsumerResponse:
+    type: object
+    properties:
+      instance_id:
+        description: Unique ID for the consumer instance in this group.
+        type: string
+      base_uri:
+        description: Base URI used to construct URIs for subsequent requests against this consumer instance. This will be of the form http://hostname:port/consumers/consumer_group/instances/instance_id.
+        type: string
+  PartitionInTopic:
+    type: object
+    properties:
+      topic:
+        description: Name of the topic
+        type: string
+      partition:
+        description: Partition ID
+        type: integer
+  Topics:
+    description: A list of topic name
+    type: array
+    items:
+      type: string
+  TopicSubscriptionRequest:
+    type: object
+    properties:
+      topics:
+        description: A list of topics to subscribe
+        $ref: '#/definitions/Topics'
+      topic_pattern:
+        description: A REGEX pattern. topics_pattern and topics fields are mutually exclusive.
+        type: string
