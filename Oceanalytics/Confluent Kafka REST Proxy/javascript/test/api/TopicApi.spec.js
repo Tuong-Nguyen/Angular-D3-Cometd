@@ -28,7 +28,10 @@
   var instance;
 
   beforeEach(function() {
-    instance = new KafkaRestProxy.TopicApi();
+    var apiClient = new KafkaRestProxy.ApiClient();
+    // apiClient.basePath = "http://11.11.254.102:8082";
+
+    instance = new KafkaRestProxy.TopicApi(apiClient);
   });
 
   var getProperty = function(object, getter, property) {
@@ -49,35 +52,40 @@
 
   describe('TopicApi', function() {
     describe('getTopicMetadata', function() {
-      it('should call getTopicMetadata successfully', function(done) {
+      it('of __consumer_offsets should return 50 partitions', function(done) {
         //uncomment below and update the code to test getTopicMetadata
-        //instance.getTopicMetadata(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
+        var topicName = "__consumer_offsets";
+        instance.getTopicMetadata(topicName, function(error, data) {
+         if (error) throw error;
+         expect(data.partitions.length).to.be(50);
+         done();
+        });
       });
     });
     describe('getTopics', function() {
-      it('should call getTopics successfully', function(done) {
-        //uncomment below and update the code to test getTopics
-        //instance.getTopics(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
+      it('should return Topics having __consumer_offsets topic', function(done) {
+        instance.getTopics(function(error, data, response) {
+          if (error) {
+            done(error);
+            return;
+          }
+          expect(data).to.contain("__consumer_offsets");
+          done();
+        });
       });
     });
     describe('produceMessageToTopic', function() {
       it('should call produceMessageToTopic successfully', function(done) {
-        //uncomment below and update the code to test produceMessageToTopic
-        //instance.produceMessageToTopic(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
+        var record = new KafkaRestProxy.Record();
+        record.value = "Hello World";
+        instance.produceMessageToTopic("test", {records: [record]}, function(error, data, response) {
+         if (error) {
+           done(error);
+           return;
+         }
+         done();
+        });
       });
     });
   });
-
 }));
