@@ -4,28 +4,55 @@
 
         var config = {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    "Content-Type": "application/vnd.kafka.v2+json"
                 }
             };
-        var basaeUlr = "http://localhost:8082";
+        var basaeUlr = "http://11.11.254.102:8082";
         
-        var addRecord = function (data) {
-            return $http.post(basaeUlr + '/topics/test/partitions/0', data).then(function (response) {
+        var addRecord = function (data, topic) {
+            var config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/vnd.kafka.v2+json, application/vnd.kafka+json, application/json"
+                }
+            };
+            return $http.post(basaeUlr + '/topics/' + topic, data, config).then(function (response) {
                 return response.data;
             });
          };
 
-         var getRecords = function (data) {
-            return $http.get(basaeUlr + '/consumers/hanh/instances/hanh/topics/test').then(function (response) {
+        var getRecords = function (urlInstance) {
+            return $http.get(urlInstance + '/records', config).then(function (response) {
                 return response.data;
             });
-         };
+        };
+
+        var createInstance = function (groupName, data) {
+            return $http.post(basaeUlr + '/consumers/' + groupName, data, config).then(function (response) {
+                return response.data;
+            });
+        };
+
+        var subscribe = function (urlInstance, data) {
+            return $http.post(urlInstance + '/subscription', data, config).then(function (response) {
+                return response.data;
+            });
+        };
+
+
+        var deleteInstance = function (urlInstance) {
+            return $http.delete(urlInstance, config).then(function (response) {
+                return response.data;
+            });
+        };
 
         //Return result
         return {
             addRecord: addRecord,
-            getRecords: getRecords
+            getRecords: getRecords,
+            createInstance: createInstance,
+            deleteInstance: deleteInstance,
+            subscribe: subscribe
         };
     };
     client.factory('kafka', kafka);

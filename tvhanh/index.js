@@ -28,6 +28,15 @@ app.get('/line-chart', function(req, res){
 	res.sendFile(__dirname + '/client/line-chart.html');
 })
 
+
+app.get('/producer', function(req, res){
+	res.sendFile(__dirname + '/client/producer.html');
+})
+
+app.get('/consumer', function(req, res){
+	res.sendFile(__dirname + '/client/consumer.html');
+})
+
 var data = [{
 	    key: "Cumulative Return",
 	    values: [

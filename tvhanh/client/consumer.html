@@ -23,10 +23,21 @@
 		<script src="./js/controllers/c-consumerController.js"></script>
 	</head>
 	<body ng-app="client">
-		<div class="container" ng-init="initPage()" ng-controller="consumerController">
-			<ul>
-				<li ng-repeat="record in records"> recode.value</li>
-			</ul>
+		<div class="container" ng-init="createInstance()" ng-controller="consumerController">
+			<div class="row">
+				<button type="button" class="btn btn-primary" ng-click="createInstance()"> Reconnect</button>
+				<button type="button" class="btn btn-primary" ng-click="deleteInstance()"> Disconnect</button>
+			</div>
+			<div class="row" ng-show="display">
+				<ul>
+					<li ng-repeat="record in records track by $index"> {{record}}</li>
+				</ul>
+			</div>
+
+			<div class="row" ng-show="!display" style="height: 200px">
+				<img src="./image/loading.gif" alt="" style="margin-top: 200px; margin-left: 40%">
+			</div>
+			
 		</div>
 	</body>
 </html>
