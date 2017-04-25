@@ -80,9 +80,7 @@ paths:
           description:  A list of records to produce to the topic.
           required: true
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Record'
+            $ref: '#/definitions/ProduceMessages'
       responses:
         '200':
           description: Successfull operation
@@ -642,6 +640,13 @@ definitions:
       partition:
         type: integer
         description: Partition to store the message in (optional)
+  ProduceMessages:
+    type: object
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/Record'
   RecordInfo:
     type: object
     properties:
