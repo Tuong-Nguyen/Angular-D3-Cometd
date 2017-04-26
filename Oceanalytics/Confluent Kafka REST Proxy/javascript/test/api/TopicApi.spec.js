@@ -53,7 +53,7 @@
   describe('TopicApi', function() {
     describe('getTopicMetadata', function() {
       it('of __consumer_offsets should return 50 partitions', function(done) {
-        //uncomment below and update the code to test getTopicMetadata
+
         var topicName = "__consumer_offsets";
         instance.getTopicMetadata(topicName, function(error, data) {
          if (error) throw error;
@@ -76,9 +76,13 @@
     });
     describe('produceMessageToTopic', function() {
       it('should call produceMessageToTopic successfully', function(done) {
+
         var record = new KafkaRestProxy.Record();
         record.value = "Hello World";
-        instance.produceMessageToTopic("test", {records: [record]}, function(error, data, response) {
+
+        var produceMessages = new KafkaRestProxy.ProduceMessages();
+        produceMessages.records = [record];
+        instance.produceMessageToTopic("test", produceMessages, function(error, data, response) {
          if (error) {
            done(error);
            return;

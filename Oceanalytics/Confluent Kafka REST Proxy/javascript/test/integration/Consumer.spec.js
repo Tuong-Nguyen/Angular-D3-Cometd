@@ -51,10 +51,110 @@
     }
 
     describe('Consumer', function() {
+        /**
+         * Send a message to topic
+         * @param topicName
+         * @param message
+         * @param doneCallBack
+         */
+        function sendMessage(topicName, message , doneCallBack) {
+            var produceMessages = new KafkaRestProxy.ProduceMessages();
+            var createTopicMessage = new KafkaRestProxy.Record();
+            createTopicMessage.value = message;
+            produceMessages.records = [createTopicMessage];
+            var topicApi = new KafkaRestProxy.TopicApi();
+
+            topicApi.produceMessageToTopic(topicName, produceMessages, function (error, data) {
+                if (error) {
+                    doneCallBack(error);
+                }
+            });
+            doneCallBack();
+        }
+
+        /**
+         * Create an consumer instance and subscribe it to a topic
+         * @param consumerName
+         * @param groupName
+         * @param done
+         * @param topicName
+         */
+        function createConsumerAndSubscribeTopic(consumerName, groupName, topicName, done) {
+            var consumerApi = new KafkaRestProxy.ConsumerApi();
+
+            var consumerRequest = new KafkaRestProxy.ConsumerRequest();
+            consumerRequest.name = consumerName;
+            consumerRequest.format = "json";
+            consumerRequest["auto.offset.reset"] = "latest";
+            consumerRequest["auto.commit.enable"] = "true";
+
+            consumerApi.createInstanceToGroup(groupName, {consumerRequest: consumerRequest}, function (error, data) {
+                if (error) {
+                    if (error.response.res.statusCode !== 409) { // instance exists.
+                        done(error);
+                        return;
+                    }
+                }
+                // subscribe for the topic
+                var topicRequest = new KafkaRestProxy.TopicSubscriptionRequest();
+                topicRequest.topics = [topicName];
+
+                consumerApi.subscribesTopics(groupName, consumerName, {topics: topicRequest}, function (error, data) {
+                    if (error) {
+                        done(data);
+                        return;
+                    }
+
+                    done();
+                });
+            });
+        }
+
         describe('read', function() {
+            const topicName = "testing_topic";
+            const groupName = "test_group";
+            const consumerName = "Consumer_Test";
+
+            before(function (done) {
+                // create a topic "testing_topic"
+                sendMessage(topicName, "Create Topic", done);
+            });
+
             it('should read message from a message', function(done) {
-                //TODO: implementation
-                done();
+                // act
+                // create an consumer instance
+                createConsumerAndSubscribeTopic(consumerName, groupName, topicName, function (error) {
+                    if(error){
+                        done(error);
+                        return;
+                    }
+                    sendMessage(topicName, "Message", function(error){
+                        if(error){
+                            done(error);
+                            return;
+                        }
+                        var consumerApi = new KafkaRestProxy.ConsumerApi();
+                        consumerApi.fetchData(groupName, consumerName, null, function (error, data) {
+                            if (error) {
+                                done(error);
+                                return;
+                            }
+                            // assert
+                            expect(data.length).to.greaterThan(0);
+                            var found = false;
+                            for (var i = 0; i < data.length; i++) {
+                                var message = data[i];
+                                if (message.value === "Message") {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            expect(found).to.be(true);
+
+                            done();
+                        });
+                    });
+                });
             });
 
             it("twice should return new messages in the 2nd read", function(done) {
@@ -67,6 +167,7 @@
                 done();
             });
         });
+
         describe('instance', function() {
             it('should automatically removed after X seconds', function(done) {
                 //TODO: implementation
