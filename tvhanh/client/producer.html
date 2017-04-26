@@ -23,7 +23,8 @@
 		<script src="./js/controllers/c-producerController.js"></script>
 	</head>
 	<body ng-app="client">
-		<div class="container" ng-init="initPage()" ng-controller="producerController">
+		<div class="container" ng-init="createInstance()" ng-controller="producerController">
+			<span ng-bind="instanceName"></span>
 			<form>
 			  <div class="form-group">
 			    <label for="value">Value:</label>
@@ -31,6 +32,11 @@
 			  </div>
 			  <button type="submit" class="btn btn-default" ng-click="addRecord()">Submit</button>
 			</form>
+			<div class="row">
+				<ul>
+					<li ng-repeat="record in records track by $index"> {{record}}</li>
+				</ul>
+			</div>
 		</div>
 	</body>
 </html>
