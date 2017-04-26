@@ -27,7 +27,7 @@ paths:
       description: Get a list of Kafka topics.
       operationId: getTopics
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       responses:
         '200':
           description: List of topic names
@@ -42,7 +42,7 @@ paths:
       description: Get metadata about a specific topic.
       operationId: getTopicMetadata
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: topic_name
           in: path
@@ -66,7 +66,7 @@ paths:
         chosen for each message in a round-robin fashion.
       operationId: produceMessageToTopic
       consumes:
-        - application/json
+        - application/vnd.kafka.json.v2+json
       produces:
         - application/json
       parameters:
@@ -80,9 +80,7 @@ paths:
           description:  A list of records to produce to the topic.
           required: true
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Record'
+            $ref: '#/definitions/ProduceMessages'
       responses:
         '200':
           description: Successfull operation
@@ -99,7 +97,7 @@ paths:
       description: Get a list of partitions for the topic.
       operationId: getPartitionsForTopic
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: topic_name
           in: path
@@ -120,7 +118,7 @@ paths:
       description: Get metadata about a single partition in the topic.
       operationId: getPartitionMetadataInTopic
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: topic_name
           in: path
@@ -145,9 +143,9 @@ paths:
       description: Produce messages to one partition of the topic.
       operationId: produceMessageToPartitionOfTopic
       consumes:
-        - application/json
+        - application/vnd.kafka.v2+json
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: topic_name
           in: path
@@ -183,9 +181,9 @@ paths:
       description: Create a new consumer instance in the consumer group
       operationId: createInstanceToGroup
       consumes:
-        - application/json
+        - application/vnd.kafka.v2+json
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -201,7 +199,8 @@ paths:
                 description: Name for the consumer instance, which will be used in URLs for the consumer. This must be unique, at least within the proxy process handling the request. If omitted, falls back on the automatically generated ID. Using automatically generated names is recommended for most use cases.
                 type: string
               format:
-                description: The format of consumed messages, which is used to convert messages into a JSON-compatible form. Valid values "binary", "avro", "json". If unspecified, defaults to “binary”.
+                default: json
+                description: The format of consumed messages, it must be JSON.
                 type: string
               auto.offset.reset:
                 description: Sets the auto.offset.reset setting for the consumer
@@ -247,7 +246,7 @@ paths:
       description: Commit a list of offsets for the consumer. When the post body is empty, it commits all the records that have been fetched by the consumer instance
       operationId: commitOffsets
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -277,9 +276,9 @@ paths:
       description: Get the last committed offsets for the given partitions (whether the commit happened by this process or another).
       operationId: getLastCommittedOffsetsForPartition
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       consumes:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -314,7 +313,9 @@ paths:
       description: Subscribe to the given list of topics or a topic pattern to get dynamically assigned partitions. If a prior subscription exists, it would be replaced by the latest subscription.
       operationId: subscribesTopics
       produces:
-        - application/json
+        - application/vnd.kafka.json.v2+json
+      consumes:
+        - application/vnd.kafka.json.v2+json
       parameters:
         - name: group_name
           in: path
@@ -343,7 +344,7 @@ paths:
       description: Get the current subscribed list of topics.
       operationId: getTopicsSubscriptions
       consumes:
-        - application/json
+        - application/vnd.kafka.json.v2+json
       parameters:
         - name: group_name
           in: path
@@ -392,7 +393,7 @@ paths:
       description: Manually assign a list of partitions to this consumer.
       operationId: assignPartitions
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -424,7 +425,7 @@ paths:
       description: Get the list of partitions currently manually assigned to this consumer.
       operationId: getPartitions
       consumes:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -452,7 +453,7 @@ paths:
       description: Overrides the fetch offsets that the consumer will use for the next set of records to fetch.
       operationId: setFetchOffsets
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -483,7 +484,7 @@ paths:
       description: Seek to the first offset for each of the given partitions.
       operationId: seekToFirstOffsetOfPartitions
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -514,7 +515,7 @@ paths:
       description: Seek to the last offset for each of the given partitions.
       operationId: seekToLastOffsetOfPartitions
       produces:
-        - application/json
+        - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path
@@ -545,7 +546,9 @@ paths:
       description: Fetch data for the topics or partitions specified using one of the subscribe/assign APIs.
       operationId: fetchData
       consumes:
-        - application/json
+        - application/vnd.kafka.json.v2+json
+      produces:
+        - application/vnd.kafka.json.v2+json
       parameters:
         - name: group_name
           in: path
@@ -642,6 +645,13 @@ definitions:
       partition:
         type: integer
         description: Partition to store the message in (optional)
+  ProduceMessages:
+    type: object
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/Record'
   RecordInfo:
     type: object
     properties:
