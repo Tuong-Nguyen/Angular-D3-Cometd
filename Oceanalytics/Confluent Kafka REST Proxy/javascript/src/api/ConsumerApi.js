@@ -89,7 +89,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = null;
 
       return this.apiClient.callApi(
@@ -143,7 +143,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = null;
 
       return this.apiClient.callApi(
@@ -190,8 +190,8 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
-      var accepts = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.v2+json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = ConsumerResponse;
 
       return this.apiClient.callApi(
@@ -299,8 +299,8 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
-      var accepts = [];
+      var contentTypes = ['application/vnd.kafka.json.v2+json'];
+      var accepts = ['application/vnd.kafka.json.v2+json'];
       var returnType = [RecordInfo];
 
       return this.apiClient.callApi(
@@ -354,8 +354,8 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
-      var accepts = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.v2+json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = [OffsetForPartitionWithMetadata];
 
       return this.apiClient.callApi(
@@ -406,7 +406,7 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.v2+json'];
       var accepts = [];
       var returnType = [PartitionInTopic];
 
@@ -458,7 +458,7 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.json.v2+json'];
       var accepts = [];
       var returnType = Topics;
 
@@ -513,7 +513,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = null;
 
       return this.apiClient.callApi(
@@ -567,7 +567,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = null;
 
       return this.apiClient.callApi(
@@ -621,7 +621,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = null;
 
       return this.apiClient.callApi(
@@ -674,8 +674,8 @@
       };
 
       var authNames = [];
-      var contentTypes = [];
-      var accepts = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.json.v2+json'];
+      var accepts = ['application/vnd.kafka.json.v2+json'];
       var returnType = null;
 
       return this.apiClient.callApi(

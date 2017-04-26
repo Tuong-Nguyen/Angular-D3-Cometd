@@ -70,7 +70,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="commitOffsets"></a>
 # **commitOffsets**
@@ -123,7 +123,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="createInstanceToGroup"></a>
 # **createInstanceToGroup**
@@ -172,8 +172,8 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Content-Type**: application/vnd.kafka.v2+json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="destroyConsumer"></a>
 # **destroyConsumer**
@@ -276,8 +276,8 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Content-Type**: application/vnd.kafka.json.v2+json
+ - **Accept**: application/vnd.kafka.json.v2+json
 
 <a name="getLastCommittedOffsetsForPartition"></a>
 # **getLastCommittedOffsetsForPartition**
@@ -329,8 +329,8 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Content-Type**: application/vnd.kafka.v2+json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="getPartitions"></a>
 # **getPartitions**
@@ -378,7 +378,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: application/vnd.kafka.v2+json
  - **Accept**: Not defined
 
 <a name="getTopicsSubscriptions"></a>
@@ -427,7 +427,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: application/vnd.kafka.json.v2+json
  - **Accept**: Not defined
 
 <a name="seekToFirstOffsetOfPartitions"></a>
@@ -481,7 +481,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="seekToLastOffsetOfPartitions"></a>
 # **seekToLastOffsetOfPartitions**
@@ -534,7 +534,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="setFetchOffsets"></a>
 # **setFetchOffsets**
@@ -587,7 +587,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="subscribesTopics"></a>
 # **subscribesTopics**
@@ -639,8 +639,8 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Content-Type**: application/vnd.kafka.json.v2+json
+ - **Accept**: application/vnd.kafka.json.v2+json
 
 <a name="unsubscribe"></a>
 # **unsubscribe**

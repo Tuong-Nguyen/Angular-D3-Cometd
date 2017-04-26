@@ -87,7 +87,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = Partition;
 
       return this.apiClient.callApi(
@@ -132,7 +132,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = Partition;
 
       return this.apiClient.callApi(
@@ -189,8 +189,8 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
-      var accepts = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.v2+json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = OffsetWithAvroSchema;
 
       return this.apiClient.callApi(

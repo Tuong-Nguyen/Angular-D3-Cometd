@@ -84,10 +84,11 @@
    */
   exports.prototype['name'] = undefined;
   /**
-   * The format of consumed messages, which is used to convert messages into a JSON-compatible form. Valid values \"binary\", \"avro\", \"json\". If unspecified, defaults to “binary”.
+   * The format of consumed messages, it must be JSON.
    * @member {String} format
+   * @default 'json'
    */
-  exports.prototype['format'] = undefined;
+  exports.prototype['format'] = 'json';
   /**
    * Sets the auto.offset.reset setting for the consumer
    * @member {String} auto.offset.reset

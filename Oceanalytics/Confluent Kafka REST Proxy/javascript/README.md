@@ -103,6 +103,7 @@ Class | Method | HTTP request | Description
  - [KafkaRestProxy.OffsetWithAvroSchema](docs/OffsetWithAvroSchema.md)
  - [KafkaRestProxy.Partition](docs/Partition.md)
  - [KafkaRestProxy.PartitionInTopic](docs/PartitionInTopic.md)
+ - [KafkaRestProxy.ProduceMessages](docs/ProduceMessages.md)
  - [KafkaRestProxy.Record](docs/Record.md)
  - [KafkaRestProxy.RecordInfo](docs/RecordInfo.md)
  - [KafkaRestProxy.Replica](docs/Replica.md)

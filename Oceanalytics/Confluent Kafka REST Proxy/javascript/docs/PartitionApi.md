@@ -56,7 +56,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="getPartitionsForTopic"></a>
 # **getPartitionsForTopic**
@@ -102,7 +102,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="produceMessageToPartitionOfTopic"></a>
 # **produceMessageToPartitionOfTopic**
@@ -153,6 +153,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Content-Type**: application/vnd.kafka.v2+json
+ - **Accept**: application/vnd.kafka.v2+json
 

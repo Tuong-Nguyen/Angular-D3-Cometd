@@ -53,7 +53,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="getTopics"></a>
 # **getTopics**
@@ -93,7 +93,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/vnd.kafka.v2+json
 
 <a name="produceMessageToTopic"></a>
 # **produceMessageToTopic**
@@ -111,7 +111,7 @@ var apiInstance = new KafkaRestProxy.TopicApi();
 
 var topicName = "topicName_example"; // String | Name of the topic to produce the messages to
 
-var records = [new KafkaRestProxy.Record()]; // [Record] | A list of records to produce to the topic.
+var records = new KafkaRestProxy.ProduceMessages(); // ProduceMessages | A list of records to produce to the topic.
 
 
 var callback = function(error, data, response) {
@@ -129,7 +129,7 @@ apiInstance.produceMessageToTopic(topicName, records, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **topicName** | **String**| Name of the topic to produce the messages to | 
- **records** | [**[Record]**](Record.md)| A list of records to produce to the topic. | 
+ **records** | [**ProduceMessages**](ProduceMessages.md)| A list of records to produce to the topic. | 
 
 ### Return type
 
@@ -141,6 +141,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: application/vnd.kafka.json.v2+json
  - **Accept**: application/json
 

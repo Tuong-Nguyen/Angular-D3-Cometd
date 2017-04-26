@@ -14,18 +14,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/OffsetWithAvroSchema', 'model/Record', 'model/Topic'], factory);
+    define(['ApiClient', 'model/OffsetWithAvroSchema', 'model/ProduceMessages', 'model/Topic'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/OffsetWithAvroSchema'), require('../model/Record'), require('../model/Topic'));
+    module.exports = factory(require('../ApiClient'), require('../model/OffsetWithAvroSchema'), require('../model/ProduceMessages'), require('../model/Topic'));
   } else {
     // Browser globals (root is window)
     if (!root.KafkaRestProxy) {
       root.KafkaRestProxy = {};
     }
-    root.KafkaRestProxy.TopicApi = factory(root.KafkaRestProxy.ApiClient, root.KafkaRestProxy.OffsetWithAvroSchema, root.KafkaRestProxy.Record, root.KafkaRestProxy.Topic);
+    root.KafkaRestProxy.TopicApi = factory(root.KafkaRestProxy.ApiClient, root.KafkaRestProxy.OffsetWithAvroSchema, root.KafkaRestProxy.ProduceMessages, root.KafkaRestProxy.Topic);
   }
-}(this, function(ApiClient, OffsetWithAvroSchema, Record, Topic) {
+}(this, function(ApiClient, OffsetWithAvroSchema, ProduceMessages, Topic) {
   'use strict';
 
   /**
@@ -80,7 +80,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = Topic;
 
       return this.apiClient.callApi(
@@ -118,7 +118,7 @@
 
       var authNames = [];
       var contentTypes = [];
-      var accepts = ['application/json'];
+      var accepts = ['application/vnd.kafka.v2+json'];
       var returnType = ['String'];
 
       return this.apiClient.callApi(
@@ -139,7 +139,7 @@
     /**
      * Produce messages to a topic, optionally specifying keys or partitions for the messages. If no partition is provided, one will be chosen based on the hash of the key. If no key is provided, the partition will be chosen for each message in a round-robin fashion.
      * @param {String} topicName Name of the topic to produce the messages to
-     * @param {Array.<module:model/Record>} records A list of records to produce to the topic.
+     * @param {module:model/ProduceMessages} records A list of records to produce to the topic.
      * @param {module:api/TopicApi~produceMessageToTopicCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/OffsetWithAvroSchema}
      */
@@ -168,7 +168,7 @@
       };
 
       var authNames = [];
-      var contentTypes = ['application/json'];
+      var contentTypes = ['application/vnd.kafka.json.v2+json'];
       var accepts = ['application/json'];
       var returnType = OffsetWithAvroSchema;
 

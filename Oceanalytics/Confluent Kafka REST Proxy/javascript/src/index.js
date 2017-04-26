@@ -14,12 +14,12 @@
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/ConsumerRequest', 'model/ConsumerResponse', 'model/Offset', 'model/OffsetForPartition', 'model/OffsetForPartitionWithMetadata', 'model/OffsetWithAvroSchema', 'model/Partition', 'model/PartitionInTopic', 'model/Record', 'model/RecordInfo', 'model/Replica', 'model/Topic', 'model/TopicSubscriptionRequest', 'model/Topics', 'api/BrokerApi', 'api/ConsumerApi', 'api/PartitionApi', 'api/TopicApi'], factory);
+    define(['ApiClient', 'model/ConsumerRequest', 'model/ConsumerResponse', 'model/Offset', 'model/OffsetForPartition', 'model/OffsetForPartitionWithMetadata', 'model/OffsetWithAvroSchema', 'model/Partition', 'model/PartitionInTopic', 'model/ProduceMessages', 'model/Record', 'model/RecordInfo', 'model/Replica', 'model/Topic', 'model/TopicSubscriptionRequest', 'model/Topics', 'api/BrokerApi', 'api/ConsumerApi', 'api/PartitionApi', 'api/TopicApi'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('./ApiClient'), require('./model/ConsumerRequest'), require('./model/ConsumerResponse'), require('./model/Offset'), require('./model/OffsetForPartition'), require('./model/OffsetForPartitionWithMetadata'), require('./model/OffsetWithAvroSchema'), require('./model/Partition'), require('./model/PartitionInTopic'), require('./model/Record'), require('./model/RecordInfo'), require('./model/Replica'), require('./model/Topic'), require('./model/TopicSubscriptionRequest'), require('./model/Topics'), require('./api/BrokerApi'), require('./api/ConsumerApi'), require('./api/PartitionApi'), require('./api/TopicApi'));
+    module.exports = factory(require('./ApiClient'), require('./model/ConsumerRequest'), require('./model/ConsumerResponse'), require('./model/Offset'), require('./model/OffsetForPartition'), require('./model/OffsetForPartitionWithMetadata'), require('./model/OffsetWithAvroSchema'), require('./model/Partition'), require('./model/PartitionInTopic'), require('./model/ProduceMessages'), require('./model/Record'), require('./model/RecordInfo'), require('./model/Replica'), require('./model/Topic'), require('./model/TopicSubscriptionRequest'), require('./model/Topics'), require('./api/BrokerApi'), require('./api/ConsumerApi'), require('./api/PartitionApi'), require('./api/TopicApi'));
   }
-}(function(ApiClient, ConsumerRequest, ConsumerResponse, Offset, OffsetForPartition, OffsetForPartitionWithMetadata, OffsetWithAvroSchema, Partition, PartitionInTopic, Record, RecordInfo, Replica, Topic, TopicSubscriptionRequest, Topics, BrokerApi, ConsumerApi, PartitionApi, TopicApi) {
+}(function(ApiClient, ConsumerRequest, ConsumerResponse, Offset, OffsetForPartition, OffsetForPartitionWithMetadata, OffsetWithAvroSchema, Partition, PartitionInTopic, ProduceMessages, Record, RecordInfo, Replica, Topic, TopicSubscriptionRequest, Topics, BrokerApi, ConsumerApi, PartitionApi, TopicApi) {
   'use strict';
 
   /**
@@ -99,6 +99,11 @@
      * @property {module:model/PartitionInTopic}
      */
     PartitionInTopic: PartitionInTopic,
+    /**
+     * The ProduceMessages model constructor.
+     * @property {module:model/ProduceMessages}
+     */
+    ProduceMessages: ProduceMessages,
     /**
      * The Record model constructor.
      * @property {module:model/Record}
