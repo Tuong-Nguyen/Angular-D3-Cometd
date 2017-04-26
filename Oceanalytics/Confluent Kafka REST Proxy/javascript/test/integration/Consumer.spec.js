@@ -14,7 +14,7 @@
  *
  */
 
-(function(root, factory) {
+(function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD.
         define(['expect.js', '../../src/index'], factory);
@@ -25,39 +25,39 @@
         // Browser globals (root is window)
         factory(root.expect, root.KafkaRestProxy);
     }
-}(this, function(expect, KafkaRestProxy) {
+}(this, function (expect, KafkaRestProxy) {
     'use strict';
 
     var instance;
 
-    beforeEach(function() {
+    beforeEach(function () {
         instance = new KafkaRestProxy.ConsumerApi();
     });
 
-    var getProperty = function(object, getter, property) {
+    var getProperty = function (object, getter, property) {
         // Use getter method if present; otherwise, get the property directly.
         if (typeof object[getter] === 'function')
             return object[getter]();
         else
             return object[property];
-    }
+    };
 
-    var setProperty = function(object, setter, property, value) {
+    var setProperty = function (object, setter, property, value) {
         // Use setter method if present; otherwise, set the property directly.
         if (typeof object[setter] === 'function')
             object[setter](value);
         else
             object[property] = value;
-    }
+    };
 
-    describe('Consumer', function() {
+    describe('Consumer', function () {
         /**
          * Send a message to topic
          * @param topicName
          * @param message
          * @param doneCallBack
          */
-        function sendMessage(topicName, message , doneCallBack) {
+        function sendMessage(topicName, message, doneCallBack) {
             var produceMessages = new KafkaRestProxy.ProduceMessages();
             var createTopicMessage = new KafkaRestProxy.Record();
             createTopicMessage.value = message;
@@ -69,7 +69,7 @@
                     doneCallBack(error);
                 }
             });
-            doneCallBack();
+            setTimeout(doneCallBack, 500); // wait for some time for consumer to get message.
         }
 
         /**
@@ -101,7 +101,7 @@
 
                 consumerApi.subscribesTopics(groupName, consumerName, {topics: topicRequest}, function (error, data) {
                     if (error) {
-                        done(data);
+                        done(error);
                         return;
                     }
 
@@ -110,29 +110,101 @@
             });
         }
 
-        describe('read', function() {
+        describe('read', function () {
             const topicName = "testing_topic";
             const groupName = "test_group";
             const consumerName = "Consumer_Test";
 
             before(function (done) {
                 // create a topic "testing_topic"
-                sendMessage(topicName, "Create Topic", done);
-            });
-
-            it('should read message from a message', function(done) {
-                // act
-                // create an consumer instance
-                createConsumerAndSubscribeTopic(consumerName, groupName, topicName, function (error) {
-                    if(error){
+                sendMessage(topicName, "Create Topic", function (error) {
+                    if (error) {
                         done(error);
                         return;
                     }
-                    sendMessage(topicName, "Message", function(error){
-                        if(error){
+                    createConsumerAndSubscribeTopic(consumerName, groupName, topicName, done);
+                });
+            });
+
+            it('should read message from a message', function (done) {
+                // act
+                const messageTest = "Message_Test" + Date.now();
+                sendMessage(topicName, messageTest, function (error) {
+                    if (error) {
+                        done(error);
+                        return;
+                    }
+
+                    var consumerApi = new KafkaRestProxy.ConsumerApi();
+                    consumerApi.fetchData(groupName, consumerName, null, function (error, data) {
+                        if (error) {
                             done(error);
                             return;
                         }
+                        // assert
+                        expect(data.length).to.greaterThan(0);
+                        var found = false;
+                        for (var i = 0; i < data.length; i++) {
+                            var message = data[i];
+                            if (message.value === messageTest) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        expect(found).to.be(true);
+
+                        done();
+                    });
+                });
+            });
+
+            it("twice should return new messages in the 2nd read", function (done) {
+                var message1 = "TestMessage " + Date.now();
+                sendMessage(topicName, message1, function (error) {
+                    if (error) {
+                        done(error);
+                        return;
+                    }
+
+                    var consumerApi = new KafkaRestProxy.ConsumerApi();
+                    consumerApi.fetchData(groupName, consumerName, null, function (error, data) {
+                        if (error) {
+                            done(error);
+                            return;
+                        }
+                        // assert
+                        expect(data.length).to.greaterThan(0);
+                        var found = false;
+                        for (var i = 0; i < data.length; i++) {
+                            var message = data[i];
+                            if (message.value === message1) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        expect(found).to.be(true);
+
+                        var message2 = "Message 2 " + Date.now();
+                        sendMessage(topicName, message2, function (error) {
+                            if (error) {
+                                done(error);
+                                return;
+                            }
+
+                            consumerApi.fetchData(groupName, consumerName, null, function (error, data) {
+                                if (error) {
+                                    done(error);
+                                    return;
+                                }
+                                // assert
+                                expect(data.length).to.be(1);
+                                expect(data[0].value).to.be(message2);
+                                done();
+                            });
+                        });
+                    });
+
+                    it("return empty when no new messages in topic", function (done) {
                         var consumerApi = new KafkaRestProxy.ConsumerApi();
                         consumerApi.fetchData(groupName, consumerName, null, function (error, data) {
                             if (error) {
@@ -140,38 +212,35 @@
                                 return;
                             }
                             // assert
-                            expect(data.length).to.greaterThan(0);
-                            var found = false;
-                            for (var i = 0; i < data.length; i++) {
-                                var message = data[i];
-                                if (message.value === "Message") {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            expect(found).to.be(true);
+                            expect(data.length).to.be(0);
 
                             done();
                         });
+                        done();
                     });
                 });
-            });
 
-            it("twice should return new messages in the 2nd read", function(done) {
-                //TODO: implementation
-               done();
-            });
 
-            it("wait for 5 seconds and return empty when no new messages in topic", function (done) {
-                //TODO: implementation
-                done();
             });
         });
 
-        describe('instance', function() {
-            it('should automatically removed after X seconds', function(done) {
-                //TODO: implementation
-                done();
+        describe('instance', function () {
+            const groupName = "Group_Name";
+            const consumerName = "Instance_Name";
+            beforeEach(function(done){
+                createConsumerAndSubscribeTopic(consumerName, groupName, "Simple_Topic", done);
+            });
+
+            // Increasing the timeout to 20 seconds but do not see the consumer deleted.
+            it('should automatically removed after X seconds', function (done) {
+                setTimeout(function(){
+                    var consumerApi = new KafkaRestProxy.ConsumerApi();
+                    consumerApi.fetchData(groupName, consumerName, null, function (error, data) {
+                        expect(error).to.not.be(null);
+                        expect(error.response.res.statusCode).to.be(404);
+                        done();
+                    });
+                }, 20000);
             });
         });
     });
