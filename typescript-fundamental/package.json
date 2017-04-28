@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "jasmine": "^2.6.0",
     "tslint": "^5.1.0",
     "typescript": "^2.3.1"
   },
