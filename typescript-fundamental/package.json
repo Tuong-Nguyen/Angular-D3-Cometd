@@ -10,7 +10,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "jasmine"
+    "compile": "tsc -p .",
+    "test": "npm run compile && jasmine"
   },
   "author": "",
   "license": "ISC"
