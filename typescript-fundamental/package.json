@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/jasmine": "^2.5.47",
     "axios": "^0.16.1",
     "jasmine": "^2.6.0",
     "tslint": "^5.1.0",
