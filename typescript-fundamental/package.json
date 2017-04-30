@@ -13,7 +13,8 @@
   "devDependencies": {},
   "scripts": {
     "compile": "tsc -p .",
-    "test": "npm run compile && jasmine"
+    "pretest": "npm run compile",
+    "test": "jasmine"
   },
   "author": "",
   "license": "ISC"
