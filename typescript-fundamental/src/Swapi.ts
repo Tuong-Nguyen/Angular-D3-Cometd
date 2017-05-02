@@ -3,6 +3,9 @@
  */
 import axios, {AxiosInstance, AxiosPromise, AxiosRequestConfig} from "axios";
 
+/**
+ * The class is a wrapper for swapi.co web service
+ */
 export default class Swapi {
     private instance: AxiosInstance;
     constructor() {
