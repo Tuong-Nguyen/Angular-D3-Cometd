@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@types/chalk": "^0.4.31",
+    "@types/faker": "^4.1.0",
     "@types/jasmine": "^2.5.47",
     "@types/node": "^7.0.14",
     "axios": "^0.16.1",
