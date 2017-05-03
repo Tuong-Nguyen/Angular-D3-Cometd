@@ -3,20 +3,23 @@
  */
 import {schema as jsonSchema} from "./mockDataSchema";
 import fs = require("fs");
-import Chalk = require("chalk");
+import chalk = require("chalk");
+import faker = require("faker");
 
 declare function require(name: string): any;
 //noinspection TsLint
-var jsf = require("json-schema-faker");
+const jsf = require("json-schema-faker");
+jsf.extend("faker", () => faker);
 
-const data = JSON.stringify(jsf(jsonSchema));
-
-fs.writeFile("./src/api/db.json", data, (error) => {
-    if (error) {
-        //noinspection TsLint
-        return console.log(Chalk.red(error.message));
-    } else {
-        //noinspection TsLint
-        console.log(Chalk.green("Mock data is generated"));
-    }
+jsf(jsonSchema).then( (sampleData: any) => {
+    fs.writeFile("./src/api/db.json", JSON.stringify(sampleData), (error) => {
+        if (error) {
+            //noinspection TsLint
+            return console.log(chalk.red(error.message));
+        } else {
+            //noinspection TsLint
+            console.log(chalk.green("Mock data is generated"));
+        }
+    });
 });
+
