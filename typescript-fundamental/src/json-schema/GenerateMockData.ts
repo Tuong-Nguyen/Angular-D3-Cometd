@@ -4,10 +4,12 @@
 import {schema as jsonSchema} from "./mockDataSchema";
 import fs = require("fs");
 import chalk = require("chalk");
+import faker = require("faker");
 
 declare function require(name: string): any;
 //noinspection TsLint
 const jsf = require("json-schema-faker");
+jsf.extend("faker", () => faker);
 
 jsf(jsonSchema).then( (sampleData: any) => {
     fs.writeFile("./src/api/db.json", JSON.stringify(sampleData), (error) => {
