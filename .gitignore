@@ -6,3 +6,10 @@ ng2-fundamentals/node_modules
 ./RxJSDemo/node_modules
 tools/
 Oceanalytics/Confluent Kafka REST Proxy/javascript/node_modules/
+Oceanalytics/Demo/node_modules
+typescript-fundamental/node_modules
+typescript-fundamental/debug.log
+typescript-fundamental/src/**/*.js.map
+typescript-fundamental/src/**/*.js
+typescript-fundamental/spec/**/*.js
+typescript-fundamental/spec/**/*.js.map
