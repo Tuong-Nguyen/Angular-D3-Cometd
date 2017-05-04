@@ -28,7 +28,6 @@ describe('TopicApi', () => {
         };
         topicApi.produceMessageToTopic('testTopic', records)
           .subscribe((result) => {
-            console.log('Hello');
             expect(result).toBeDefined();
             expect(result.offsets.length).toBe(1);
           });
