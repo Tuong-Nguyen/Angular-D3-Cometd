@@ -23,7 +23,8 @@
     "compile:watch": "tsc --watch -p .",
     "test": "jasmine",
     "generate-mock-data": "node ./src/json-schema/GenerateMockData.js",
-    "start-mockapi": "json-server --watch src/api/db.json --port 3001"
+    "start-mockapi": "json-server --watch src/api/db.json --port 3001",
+    "start-mockapi-middleware": "json-server --watch src/api/db.json --middlewares src/server/middlewares/delayMiddleware.js --port 3001"
   },
   "author": "",
   "license": "ISC"
