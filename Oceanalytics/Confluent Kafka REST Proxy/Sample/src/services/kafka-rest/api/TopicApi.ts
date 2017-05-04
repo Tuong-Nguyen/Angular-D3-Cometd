@@ -27,7 +27,7 @@ import { Configuration } from '../configuration';
 
 @Injectable()
 export class TopicApi {
-    protected basePath = 'http://11.11.254.102:8082/';
+    protected basePath = 'http://11.11.254.102:8082';
     public defaultHeaders: Headers = new Headers();
     public configuration: Configuration = new Configuration();
 
