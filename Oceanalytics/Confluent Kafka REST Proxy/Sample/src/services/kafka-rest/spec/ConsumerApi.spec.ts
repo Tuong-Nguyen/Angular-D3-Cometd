@@ -1,4 +1,4 @@
-import {async, inject, TestBed} from '@angular/core/testing';
+import {async, TestBed} from '@angular/core/testing';
 import {HttpModule} from '@angular/http';
 import {ConsumerApi} from '../api/ConsumerApi';
 import {Observable} from 'rxjs/Rx';
