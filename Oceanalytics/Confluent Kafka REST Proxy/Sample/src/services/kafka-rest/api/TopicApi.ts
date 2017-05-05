@@ -191,10 +191,11 @@ export class TopicApi {
 
         // to determine the Accept header
         const produces: string[] = [
-            'application/json'
+            'application/vnd.kafka.v2+json, application/vnd.kafka+json, application/json'
         ];
 
-        headers.set('Content-Type', 'application/json');
+        headers.set('Content-Type', consumes);
+        headers.set('Accept', produces);
 
         let requestOptions: RequestOptionsArgs = new RequestOptions({
             method: RequestMethod.Post,

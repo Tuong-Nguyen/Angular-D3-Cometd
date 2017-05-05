@@ -29,11 +29,11 @@ export interface ConsumerRequest {
     /**
      * Sets the auto.offset.reset setting for the consumer
      */
-    autoOffsetReset?: string;
+    'auto.offset.reset'?: string;
 
     /**
      * Sets the auto.commit.enable setting for the consumer
      */
-    autoCommitEnable?: string;
+    'auto.commit.enable'?: string;
 
 }

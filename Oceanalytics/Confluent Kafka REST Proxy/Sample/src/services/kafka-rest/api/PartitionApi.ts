@@ -208,7 +208,7 @@ export class PartitionApi {
             'application/vnd.kafka.v2+json'
         ];
 
-        headers.set('Content-Type', 'application/json');
+        headers.set('Content-Type', produces);
 
         let requestOptions: RequestOptionsArgs = new RequestOptions({
             method: RequestMethod.Post,

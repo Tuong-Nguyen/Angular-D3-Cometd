@@ -16,12 +16,12 @@ export interface ConsumerResponse {
     /**
      * Unique ID for the consumer instance in this group.
      */
-    instanceId?: string;
+    instance_id?: string;
 
     /**
      * Base URI used to construct URIs for subsequent requests against this consumer instance.
      * This will be of the form http://hostname:port/consumers/consumer_group/instances/instance_id.
      */
-    baseUri?: string;
+    base_uri?: string;
 
 }

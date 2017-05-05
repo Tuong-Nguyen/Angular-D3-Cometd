@@ -316,7 +316,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
@@ -363,7 +363,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
@@ -406,7 +406,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', consumes);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
@@ -443,10 +443,12 @@ export class ConsumerApi {
       throw new Error('Required parameter instance was null or undefined when calling destroyConsumer.');
     }
     // to determine the Content-Type header
-    const consumes: string[] = [];
+    const consumes: string[] = ['application/vnd.kafka.v2+json'];
 
     // to determine the Accept header
-    const produces: string[] = [];
+    const produces: string[] = ['application/vnd.kafka.v2+json'];
+
+    headers.set('Content-Type', consumes);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Delete,
@@ -506,6 +508,9 @@ export class ConsumerApi {
       'application/vnd.kafka.json.v2+json'
     ];
 
+    headers.set('Content-Type', consumes);
+    headers.set('Accept', produces);
+
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Get,
       headers: headers,
@@ -552,7 +557,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Get,
@@ -681,7 +686,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
@@ -728,7 +733,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
@@ -775,7 +780,7 @@ export class ConsumerApi {
       'application/vnd.kafka.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
@@ -824,7 +829,8 @@ export class ConsumerApi {
       'application/vnd.kafka.json.v2+json'
     ];
 
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', consumes);
+    headers.set('Accept', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
       method: RequestMethod.Post,
