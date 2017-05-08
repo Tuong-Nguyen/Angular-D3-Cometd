@@ -223,6 +223,10 @@ paths:
         - consumer
       description: Destroy the consumer instance.
       operationId: destroyConsumer
+      consumes:
+          - application/vnd.kafka.v2+json
+      produces:
+          - application/vnd.kafka.v2+json
       parameters:
         - name: group_name
           in: path

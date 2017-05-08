@@ -6,7 +6,7 @@ import axios, {AxiosInstance, AxiosPromise, AxiosRequestConfig} from "axios";
 /**
  * The class is a wrapper for swapi.co web service
  */
-export default class Swapi {
+class Swapi {
     private instance: AxiosInstance;
     constructor() {
         const requestConfig: AxiosRequestConfig = {
@@ -19,3 +19,5 @@ export default class Swapi {
         return this.instance.get("people/" + id + "/");
     }
 }
+
+export {Swapi};

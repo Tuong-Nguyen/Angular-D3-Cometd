@@ -14,6 +14,7 @@
     "jasmine": "^2.6.0",
     "json-schema-faker": "^0.5.0-rc1",
     "json-server": "^0.10.0",
+    "rxjs": "^5.3.1",
     "tslint": "^5.1.0",
     "typescript": "^2.3.2"
   },
@@ -23,7 +24,8 @@
     "compile:watch": "tsc --watch -p .",
     "test": "jasmine",
     "generate-mock-data": "node ./src/json-schema/GenerateMockData.js",
-    "start-mockapi": "json-server --watch src/api/db.json --port 3001"
+    "start-mockapi": "json-server src/api/db.json --port 3001",
+    "start-mockapi-middleware": "json-server src/api/db.json --middlewares src/server/middlewares/delayMiddleware.js --port 3001"
   },
   "author": "",
   "license": "ISC"
