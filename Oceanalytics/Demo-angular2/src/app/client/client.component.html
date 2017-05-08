@@ -13,11 +13,11 @@
 
   <!-- Main content -->
   <section class="content">
-
     <!-- Default box -->
     <div class="box">
       <div class="box-header with-border">
         <h3 class="box-title">Client Progress</h3>
+        <span [innerHtml]="instanceName"></span>
 
         <div class="box-tools pull-right">
           <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -31,16 +31,16 @@
           <!-- select -->
           <div class="form-group">
             <label>Measure topics</label>
-            <select  class="form-control">
-              <option value="AgentPerformanceRealTimeMeasures">Agent Performance real-time measures</option>
-              <option value="AgentByAccountRealTimeMeasures">Agent by Account real-time measures</option>
-              <option value="AgentByRoutingServiceRealRimeMeasures">Agent By Routing Service real-time measures</option>
-              <option value="RoutingServiceRealTimeMeasures">Routing Service real-time measures</option>
-              <option value="AgentIntervalMovingWindowRealTimeMeasures">Agent Interval Moving Window real-time measures</option>
-              <option value="AgentByAccountIntervalMovingWindowRealTimeMeasures
+            <select  class="form-control" [(ngModel)]="measuresStream">
+              <option [ngValue]="AgentPerformanceRealTimeMeasures">Agent Performance real-time measures</option>
+              <option [ngValue]="AgentByAccountRealTimeMeasures">Agent by Account real-time measures</option>
+              <option [ngValue]="AgentByRoutingServiceRealRimeMeasures">Agent By Routing Service real-time measures</option>
+              <option [ngValue]="RoutingServiceRealTimeMeasures">Routing Service real-time measures</option>
+              <option [ngValue]="AgentIntervalMovingWindowRealTimeMeasures">Agent Interval Moving Window real-time measures</option>
+              <option [ngValue]="AgentByAccountIntervalMovingWindowRealTimeMeasures
                         ">Agent By Account Interval Moving Window real-time measures </option>
-              <option value="AgentByRoutingServiceMovingWindowRealTimeMeasures">Agent By Routing Service Moving Window real-time measures</option>
-              <option value="RoutingServiceMovingWindowRealTimeMeasures">Routing Service Moving Window real-time measures</option>
+              <option [ngValue]="AgentByRoutingServiceMovingWindowRealTimeMeasures">Agent By Routing Service Moving Window real-time measures</option>
+              <option [ngValue]="RoutingServiceMovingWindowRealTimeMeasures">Routing Service Moving Window real-time measures</option>
             </select>
           </div>
           <button type="submit" class="btn btn-primary" ng-click="addRecord()">Submit</button>
