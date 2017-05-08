@@ -31,19 +31,28 @@
           <!-- select -->
           <div class="form-group">
             <label>Measure topics</label>
-            <select  class="form-control" [(ngModel)]="measuresStream">
-              <option [ngValue]="AgentPerformanceRealTimeMeasures">Agent Performance real-time measures</option>
-              <option [ngValue]="AgentByAccountRealTimeMeasures">Agent by Account real-time measures</option>
-              <option [ngValue]="AgentByRoutingServiceRealRimeMeasures">Agent By Routing Service real-time measures</option>
-              <option [ngValue]="RoutingServiceRealTimeMeasures">Routing Service real-time measures</option>
-              <option [ngValue]="AgentIntervalMovingWindowRealTimeMeasures">Agent Interval Moving Window real-time measures</option>
-              <option [ngValue]="AgentByAccountIntervalMovingWindowRealTimeMeasures
-                        ">Agent By Account Interval Moving Window real-time measures </option>
-              <option [ngValue]="AgentByRoutingServiceMovingWindowRealTimeMeasures">Agent By Routing Service Moving Window real-time measures</option>
-              <option [ngValue]="RoutingServiceMovingWindowRealTimeMeasures">Routing Service Moving Window real-time measures</option>
-            </select>
+            <ng-select
+              [options]="options"
+              [multiple]="false"
+              placeholder="Select multiple"
+              (opened)="onMultipleOpened()"
+              (closed)="onMultipleClosed()"
+              (selected)="onMultipleSelected($event)"
+              (deselected)="onMultipleDeselected($event)">
+            </ng-select>
+            <!--<select  class="form-control" [(ngModel)]="measuresStream">-->
+              <!--<option [ngValue]="AgentPerformanceRealTimeMeasures">Agent Performance real-time measures</option>-->
+              <!--<option [ngValue]="AgentByAccountRealTimeMeasures">Agent by Account real-time measures</option>-->
+              <!--<option [ngValue]="AgentByRoutingServiceRealRimeMeasures">Agent By Routing Service real-time measures</option>-->
+              <!--<option [ngValue]="RoutingServiceRealTimeMeasures">Routing Service real-time measures</option>-->
+              <!--<option [ngValue]="AgentIntervalMovingWindowRealTimeMeasures">Agent Interval Moving Window real-time measures</option>-->
+              <!--<option [ngValue]="AgentByAccountIntervalMovingWindowRealTimeMeasures-->
+                        <!--">Agent By Account Interval Moving Window real-time measures </option>-->
+              <!--<option [ngValue]="AgentByRoutingServiceMovingWindowRealTimeMeasures">Agent By Routing Service Moving Window real-time measures</option>-->
+              <!--<option [ngValue]="RoutingServiceMovingWindowRealTimeMeasures">Routing Service Moving Window real-time measures</option>-->
+            <!--</select>-->
           </div>
-          <button type="submit" class="btn btn-primary" ng-click="addRecord()">Submit</button>
+          <button type="submit" class="btn btn-primary" (click)="addRecord('RSR', input)">Submit</button>
 
         </form>
         <div class="box" style="margin-top: 30px;">
@@ -61,14 +70,14 @@
                 <th>Measure topics</th>
                 <th style="width: 40px">code</th>
               </tr>
-              <!--<tr ng-repeat="record in records track by $index">-->
-                <!--<td ng-bind="$index"></td>-->
-                <!--<td ng-bind="record.key"></td>-->
-                <!--<td ng-bind="record.value.kafkaTopicName">-->
-                <!--<td ng-bind="record.topic">-->
-                <!--</td>-->
-                <!--<td><span class="badge bg-red" ng-bind="record.value.time"></span></td>-->
-              <!--</tr>-->
+              <tr *ngFor="let item of messages">
+                <td ng-bind="$index"></td>
+                <td ng-bind="item.key"></td>
+                <td ng-bind="item.value.kafkaTopicName">
+                <td ng-bind="item.topic">
+                </td>
+                <td><span class="badge bg-red" ng-bind="item.value.time"></span></td>
+              </tr>
             </table>
           </div>
           <!-- /.box-body -->

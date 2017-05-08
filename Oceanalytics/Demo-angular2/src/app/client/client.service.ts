@@ -47,10 +47,10 @@ export class ClientService {
    */
   getRecord(urlInstance): Observable<any> {
     const apiUrl = urlInstance + '/records';
-    const headers = new Headers({ 'Accept': 'application/vnd.kafka.json.v2+json'});
+    const headers = new Headers({'Accept': 'application/vnd.kafka.json.v2+json'});
     const options = new RequestOptions({ headers: headers });
 
-    return this.http.post(apiUrl, options).map((res: Response) => res.json())
+    return this.http.get(apiUrl, options).map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json() || environment.generalErr));
   }
 

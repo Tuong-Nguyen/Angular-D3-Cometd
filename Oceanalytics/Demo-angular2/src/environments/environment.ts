@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  server: 'http://localhost:8082',
+  server: 'http://11.11.254.102:8082',
   generalErr: 'Internal error'
 };
