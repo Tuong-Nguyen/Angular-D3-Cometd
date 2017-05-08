@@ -36,6 +36,10 @@ export class ServerComponent implements OnInit, OnChanges {
   public isPending : Boolean = false;
 
 
+  public dtrs : any;
+  public tpName : string;
+
+
 
 
   createInstance(): any{
@@ -112,11 +116,11 @@ export class ServerComponent implements OnInit, OnChanges {
 						if (data.length > 0) {
 							this.records = this.records.concat(data);
 							for (var i = 0; i < data.length; i++) {
-								if (data[i].value.pump) {
+								if (data[i].value.pump === undefined) {
 									this.status = "Listening Pump";
 									this.flag = false;
 									topicName = data[i].value.subscriptionRequest.measuresStream;
-
+									this.tpName = data[i].value.subscriptionRequest.measuresStream;
 									//push message to topic
 									dataTmp1 = {
 										"records": [
@@ -126,6 +130,16 @@ export class ServerComponent implements OnInit, OnChanges {
 											}
 										]
 									}
+
+									this.dtrs = {
+										"records": [
+											{
+												"key": data[i].key,
+												"value": data[i].value
+											}
+										]
+									}
+
 									this._serverService.addRecord(topicName, dataTmp1).subscribe(
 										res1 => {
 											console.log("===Add new message to topic===");
@@ -167,28 +181,19 @@ export class ServerComponent implements OnInit, OnChanges {
 							this.status = "Sending";
 							console.log("case else");
 							console.log("is pump: "+ this.isPump);
-							console.log(dataTmp1);
+							console.log(this.dtrs);
+							console.log(this.tpName);
 
-							dataTmp1 = {
-								"records": [
-									{
-										"key": data[i].key,
-										"value": data[i].value
-									}
-								]
-							}
-							
-							if (dataTmp1 != '' && dataTmp1 != undefined && this.isPump == true) {
-			            		console.log(dataTmp1.records[0].value);
-			            		dataTmp1.records[0].value.time = this.datePipe.transform(new Date(), "HHmmss");
-			            		this._serverService.addRecord(dataTmp1, topicName).subscribe(
+							if (this.dtrs != '' && this.dtrs !== undefined && this.isPump == true) {
+			            		this.dtrs.records[0].value.time = this.datePipe.transform(new Date(), "HHmmss");
+			            		this._serverService.addRecord(this.tpName, this.dtrs).subscribe(
 			            			res1 => {
 			            				console.log("===Add new message to topic===");
-			            				console.log(dataTmp1);
+			            				console.log(this.dtrs);
 			            				console.log(res1);
 			            			},
 			            			err1 => {
-			            				console.log("===Add message fail 1===");
+			            				console.log("===Add message fail 3===");
 			            			}
 								)
 							}
