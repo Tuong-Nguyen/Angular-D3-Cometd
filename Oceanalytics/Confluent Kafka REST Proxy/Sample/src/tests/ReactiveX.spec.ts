@@ -1,5 +1,6 @@
-import {Observable, Timestamp} from 'rxjs/Rx';
-import {ArrayMatcher} from './array-matcher';
+import {Observable, TimeInterval, Timestamp} from 'rxjs/Rx';
+import {ArrayMatcher} from './utils/array-matcher';
+
 
 /**
  * Created by QuanLe on 5/4/2017.
@@ -43,7 +44,7 @@ describe('ReactiveX', () => {
       );
       Observable.timer(3000).subscribe(
         item => {
-          expect(data).toBeArrayOfSize(9);
+          exports(data.length).toBe(9);
           done();
         },
         error => {
@@ -80,7 +81,7 @@ describe('ReactiveX', () => {
   });
 
   describe('#concatmap', () => {
-    fit('subscribes the next Observable after the previous Observable completes', (done) => {
+    it('subscribes the next Observable after the previous Observable completes', (done) => {
       const output: Timestamp<number>[] = [];
       Observable.range(0, 2)
         .concatMap(item => Observable.timer(100))
@@ -101,40 +102,104 @@ describe('ReactiveX', () => {
         );
     });
 
-    fit('sequentially create & subscribes Observable124s', (done) => {
-      const output: Timestamp<number>[] = [];
-      let lastItemAt: number = Date.now() - 100;
-      let lastExecutedAt: number = Date.now() - 100;
-      Observable.range(0, 5)
+    // fit('sequentially create & subscribes Obse rvable124s', (done) => {
+    //   const output: Timestamp<number>[] = [];
+    //   let lastItemAt: number = Date.now() - 100;
+    //   let lastExecutedAt: number = Date.now() - 100;
+    //   Observable.range(0, 5)
+    //     .concatMap(item => {
+    //       if (Date.now() - lastItemAt >= 100) {
+    //         lastItemAt = Date.now();
+    //         Observable.defer(() => {
+    //           lastExecutedAt = Date.now();
+    //           return Observable.of(item).delay(100);
+    //         });
+    //       } else {
+    //         return Observable.empty();
+    //       }
+    //     })
+    //     .timestamp()
+    //     .subscribe(
+    //       response => {
+    //         console.log(response);
+    //         output.push(response);
+    //       },
+    //       error => {
+    //         fail(error);
+    //         done();
+    //       },
+    //       () => {
+    //         console.log(output);
+    //         done();
+    //       }
+    //     );
+    // });
+  });
+
+  describe('work', () => {
+
+    function work(itemCount: number, firstInterval: number, secondInterval: number, expectedItemCount: number,
+                  expectedInterval: number, done) {
+      const finalItems: TimeInterval<number>[] = [];
+      let isRunning = false;
+      Observable.interval(firstInterval)
+        .take(itemCount)
         .concatMap(item => {
-          if (Date.now() - lastItemAt >= 100) {
-            lastItemAt = Date.now();
-            Observable.defer(() => {
-              lastExecutedAt = Date.now();
-              return Observable.of(item).delay(100);
-            });
-          } else {
-            return Observable.empty();
-          }
+          // if (isRunning === false) {
+          //   const startObserable = Observable.create((observable) => {
+          //     isRunning = true;
+          //     observable.complete();
+          //   });
+          //   const endObserable = Observable.create((observable) => {
+          //     isRunning = false;
+          //     observable.complete();
+          //   });
+          //   return startObserable.concatMapTo(Observable.timer(secondInterval)).concatMapTo(endObserable);
+          // } else {
+          //   return Observable.empty();
+          // }
+
+          return Observable.timer(secondInterval);
         })
-        .timestamp()
+        .timeInterval()
+        .reduce((acc, item, index) => {
+          acc.push(item);
+          return acc;
+        }, finalItems)
         .subscribe(
-          response => {
-            console.log(response);
-            output.push(response);
+          items => {
+            console.log(items);
+            expect(items.length).toBe(expectedItemCount);
+            expect(items[0].interval).toBeGreaterThanOrEqual(firstInterval + secondInterval - 1);
+            for (let i = 1; i < items.length; i++) {
+              expect(items[i].interval).toBeGreaterThanOrEqual(expectedInterval - 1);
+            }
           },
           error => {
-            fail(error);
+            fail();
             done();
           },
           () => {
-            console.log(output);
             done();
           }
         );
+    }
+
+    fit('when second interval < first interval: the items are emitted in interval of first interval', done => {
+      const firstInterval = 100;
+      const secondInterval = 10;
+      work(10, firstInterval, secondInterval, 10, firstInterval, done);
+    });
+
+    fit('when second interval > first interval: the items are emitted in interval of second interval', done => {
+      const firstInterval = 10;
+      const secondInterval = 100;
+      const itemCount = 20;
+      const expectedItemCount = 2;
+      const expectedInterval = secondInterval;
+      work(itemCount, firstInterval, secondInterval, expectedItemCount, expectedInterval, done);
     });
   });
-
 
 });
 
