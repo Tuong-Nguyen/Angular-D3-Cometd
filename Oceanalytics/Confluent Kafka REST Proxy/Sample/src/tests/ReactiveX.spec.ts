@@ -138,22 +138,22 @@ describe('ReactiveX', () => {
 
   describe('work', () => {
 
-    // function poll(interval: number, factory: () => Observable): Observable {
-    //   let lastRunAt = Date.now() - interval;
-    //   return Observable.interval(interval)
-    //     .concatMap(item => {
-    //       const elapsedInterval = Date.now() - lastRunAt;
-    //       if (elapsedInterval >= interval) {
-    //         const endObservable = Observable.create((observable) => {
-    //           lastRunAt = Date.now();
-    //           observable.complete();
-    //         });
-    //         return Observable.concat(factory(), endObservable);
-    //       } else {
-    //         return Observable.empty();
-    //       }
-    //     });
-    // }
+    function poll<T>(interval: number, factory: () => Observable<T>): Observable<T> {
+      let lastRunAt = Date.now() - interval;
+      return Observable.interval(interval)
+        .concatMap(item => {
+          const elapsedInterval = Date.now() - lastRunAt;
+          if (elapsedInterval >= interval) {
+            const endObservable = Observable.create((observable) => {
+              lastRunAt = Date.now();
+              observable.complete();
+            });
+            return Observable.concat(factory(), endObservable);
+          } else {
+            return Observable.empty();
+          }
+        });
+    }
 
     /**
      * hello
@@ -168,6 +168,11 @@ describe('ReactiveX', () => {
                   expectedInterval: number, done) {
       const finalItems: TimeInterval<number>[] = [];
       let lastRunAt = Date.now() - secondInterval;
+
+      const factory = () => {
+        return Observable.timer(secondInterval);
+      };
+
       Observable.interval(firstInterval)
         .take(itemCount)
         .concatMap(item => {
@@ -206,17 +211,26 @@ describe('ReactiveX', () => {
         );
     }
 
-    fit('when second interval < first interval: the items are emitted in interval of first interval', done => {
+    fit('when second interval = 0.1 * first interval: 10 items generates 10 items', done => {
       const firstInterval = 100;
       const secondInterval = 10;
       work(10, firstInterval, secondInterval, 10, firstInterval, done);
     });
 
-    fit('when second interval > first interval: the items are emitted in interval of second interval', done => {
+    fit('when second interval = 10 * first interval: 20 items generates 2 items', done => {
       const firstInterval = 10;
       const secondInterval = 100;
       const itemCount = 20;
       const expectedItemCount = 2;
+      const expectedInterval = secondInterval;
+      work(itemCount, firstInterval, secondInterval, expectedItemCount, expectedInterval, done);
+    });
+
+    fit('when second interval = 1.5 * first interval: 10 items generate 4 items', done => {
+      const firstInterval = 100;
+      const secondInterval = 150;
+      const itemCount = 10;
+      const expectedItemCount = 4;
       const expectedInterval = secondInterval;
       work(itemCount, firstInterval, secondInterval, expectedItemCount, expectedInterval, done);
     });
