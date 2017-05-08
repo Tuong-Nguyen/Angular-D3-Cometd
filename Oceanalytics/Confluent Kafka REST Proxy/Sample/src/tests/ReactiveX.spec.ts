@@ -138,28 +138,49 @@ describe('ReactiveX', () => {
 
   describe('work', () => {
 
+    // function poll(interval: number, factory: () => Observable): Observable {
+    //   let lastRunAt = Date.now() - interval;
+    //   return Observable.interval(interval)
+    //     .concatMap(item => {
+    //       const elapsedInterval = Date.now() - lastRunAt;
+    //       if (elapsedInterval >= interval) {
+    //         const endObservable = Observable.create((observable) => {
+    //           lastRunAt = Date.now();
+    //           observable.complete();
+    //         });
+    //         return Observable.concat(factory(), endObservable);
+    //       } else {
+    //         return Observable.empty();
+    //       }
+    //     });
+    // }
+
+    /**
+     * hello
+     * @param itemCount
+     * @param firstInterval
+     * @param secondInterval
+     * @param expectedItemCount
+     * @param expectedInterval
+     * @param done
+     */
     function work(itemCount: number, firstInterval: number, secondInterval: number, expectedItemCount: number,
                   expectedInterval: number, done) {
       const finalItems: TimeInterval<number>[] = [];
-      let isRunning = false;
+      let lastRunAt = Date.now() - secondInterval;
       Observable.interval(firstInterval)
         .take(itemCount)
         .concatMap(item => {
-          // if (isRunning === false) {
-          //   const startObserable = Observable.create((observable) => {
-          //     isRunning = true;
-          //     observable.complete();
-          //   });
-          //   const endObserable = Observable.create((observable) => {
-          //     isRunning = false;
-          //     observable.complete();
-          //   });
-          //   return startObserable.concatMapTo(Observable.timer(secondInterval)).concatMapTo(endObserable);
-          // } else {
-          //   return Observable.empty();
-          // }
-
-          return Observable.timer(secondInterval);
+          const elapsedInterval = Date.now() - lastRunAt;
+          if (elapsedInterval >= secondInterval) {
+            const endObservable = Observable.create((observable) => {
+              lastRunAt = Date.now();
+              observable.complete();
+            });
+            return Observable.concat(Observable.timer(secondInterval), endObservable);
+          } else {
+            return Observable.empty();
+          }
         })
         .timeInterval()
         .reduce((acc, item, index) => {
