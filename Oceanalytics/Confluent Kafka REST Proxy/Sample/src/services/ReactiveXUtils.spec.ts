@@ -1,7 +1,7 @@
 /**
  * Created by nctuong on 5/8/2017.
  */
-import {Observable, Timestamp} from 'rxjs/Rx';
+import {Observable, TimeInterval} from 'rxjs/Rx';
 import {poll} from './ReactiveXUtils';
 
 describe('work', () => {
