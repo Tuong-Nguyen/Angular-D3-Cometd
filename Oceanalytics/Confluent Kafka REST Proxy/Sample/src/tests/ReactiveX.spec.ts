@@ -9,7 +9,9 @@ import {ArrayMatcher} from './utils/array-matcher';
 describe('ReactiveX', () => {
   describe('#Observable', () => {
     it('throw exception if error is not handled', () => {
-      expect(() =>  {Observable.throw('error').subscribe();}).toThrow();
+      expect(() => {
+        Observable.throw('error').subscribe();
+      }).toThrow();
     });
   });
 
@@ -78,6 +80,16 @@ describe('ReactiveX', () => {
     it('after the Observable completes throw no exception', () => {
       const subscription = Observable.empty()
         .subscribe(
+        );
+      subscription.unsubscribe();
+    });
+
+    it('after the Observable error throw no exception', () => {
+      const subscription = Observable.empty()
+        .subscribe(
+          null,
+          error => {
+          }
         );
       subscription.unsubscribe();
     });
