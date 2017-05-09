@@ -56,7 +56,7 @@ describe('#poll', () => {
     const executedTime = 10;
     const testInterval = 1000;
     const expectedItemCount = 5;
-    testPoll(testInterval, interval, executedTime, expectedItemCount, interval, done);
+    testPoll(testInterval, interval, executedTime, expectedItemCount, done);
   });
 
   it('when second interval = 10 * first interval (10 ms) in 200 ms generates 2 items', done => {
@@ -64,7 +64,7 @@ describe('#poll', () => {
     const executedTime = 100;
     const testInterval = 200;
     const expectedItemCount = 1;
-    testPoll(testInterval, interval, executedTime, expectedItemCount, interval, done);
+    testPoll(testInterval, interval, executedTime, expectedItemCount, done);
   });
 
   it('when second interval = 1.5 * first interval (100 ms) in 1000 ms generate 3 items', done => {
@@ -72,6 +72,6 @@ describe('#poll', () => {
     const executedTime = 150;
     const testInterval = 1000;
     const expectedItemCount = 3;
-    testPoll(testInterval, interval, executedTime, expectedItemCount, interval, done);
+    testPoll(testInterval, interval, executedTime, expectedItemCount, done);
   });
 });
