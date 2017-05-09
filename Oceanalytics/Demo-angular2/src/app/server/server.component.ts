@@ -5,6 +5,8 @@ import { Observable } from 'rxjs/Rx';
 
 import { Consumer } from 'app/server/consumer';
 
+import { Record } from 'app/server/record';
+
 import { ServerService } from 'app/server/server.service';
 
 @Component({
@@ -38,6 +40,9 @@ export class ServerComponent implements OnInit, OnChanges {
 
   public dtrs : any;
   public tpName : string;
+  public arrTopicName : Array<{name: string}> = [];
+
+  private timer;
 
 
 
@@ -94,12 +99,11 @@ export class ServerComponent implements OnInit, OnChanges {
   fetchData(): any{
   	//Code here
  	if (this.isReady === true && this.urlInstance != '' && this.flag === true) {
- 		setInterval(()=>{
+ 		this.timer = setInterval(()=>{
  			if (!this.isPending) {
  				this.isPending =true;
  				let arrayUrl : any[];
  				this.isDisplay = true;
- 				
  				//Call service
 				this._serverService.getRecords(this.urlInstance).subscribe(
 					data => {
@@ -119,19 +123,19 @@ export class ServerComponent implements OnInit, OnChanges {
 								if (data[i].value.pump === undefined) {
 									this.status = "Listening Pump";
 									this.flag = false;
+									// this.tpName = topicName = data[i].value.subscriptionRequest.measuresStream;
 									topicName = data[i].value.subscriptionRequest.measuresStream;
-									this.tpName = data[i].value.subscriptionRequest.measuresStream;
-									//push message to topic
-									dataTmp1 = {
-										"records": [
-											{
-												"key": data[i].key,
-												"value": data[i].value
-											}
-										]
-									}
 
-									this.dtrs = {
+									console.log('topicName');
+									console.log(topicName);
+
+									
+									this.arrTopicName.push(data[i].value.subscriptionRequest.measuresStream);
+
+									console.log('arrTopicName');
+									console.log(this.arrTopicName);
+
+									this.dtrs = dataTmp1 = {
 										"records": [
 											{
 												"key": data[i].key,
@@ -143,7 +147,6 @@ export class ServerComponent implements OnInit, OnChanges {
 									this._serverService.addRecord(topicName, dataTmp1).subscribe(
 										res1 => {
 											console.log("===Add new message to topic===");
-					                    	console.log(dataTmp1);
 					                        console.log(res1);
 										},
 										err1 => {
@@ -160,6 +163,7 @@ export class ServerComponent implements OnInit, OnChanges {
 											}
 										]
 									}
+
 									this._serverService.addRecord('result', dataTmp2).subscribe(
 										res2 => {
 											console.log("===Add new message to topic 'result' ===");
@@ -179,25 +183,29 @@ export class ServerComponent implements OnInit, OnChanges {
 						}
 						else {
 							this.status = "Sending";
-							console.log("case else");
+							console.log("Case else");
 							console.log("is pump: "+ this.isPump);
+							console.log("Topic Name: " + this.tpName);
+							console.log("Arr topic: ");
+							console.log(this.arrTopicName);
+
 							console.log(this.dtrs);
-							console.log(this.tpName);
 
 							if (this.dtrs != '' && this.dtrs !== undefined && this.isPump == true) {
 			            		this.dtrs.records[0].value.time = this.datePipe.transform(new Date(), "HHmmss");
-			            		this._serverService.addRecord(this.tpName, this.dtrs).subscribe(
-			            			res1 => {
-			            				console.log("===Add new message to topic===");
-			            				console.log(this.dtrs);
-			            				console.log(res1);
-			            			},
-			            			err1 => {
-			            				console.log("===Add message fail 3===");
-			            			}
-								)
+
+								for (var i = 0; i < this.arrTopicName.length; i++) {
+									this._serverService.addRecord(this.arrTopicName[i], this.dtrs).subscribe(
+				            			res1 => {
+				            				console.log("===Add new message to topic===");
+				            				console.log(res1);
+				            			},
+				            			err1 => {
+				            				console.log("===Add message fail 3===");
+				            			}
+									)
+								}
 							}
-							
 						}
 
 					},
@@ -215,6 +223,7 @@ export class ServerComponent implements OnInit, OnChanges {
   		data => {
   			console.log("Delete ins" + data);
   			this.records = [];
+  			clearInterval(this.timer);
   			this.isReady = false;
   		},
   		err =>{
