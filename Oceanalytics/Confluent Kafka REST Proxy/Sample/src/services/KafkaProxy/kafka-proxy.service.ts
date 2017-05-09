@@ -5,6 +5,7 @@ import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {ProduceMessages} from '../kafka-rest/model/ProduceMessages';
 import {Record} from '../kafka-rest/model/Record';
 import {Observable} from 'rxjs/Rx';
+import {OffsetWithAvroSchema} from '../kafka-rest/model/OffsetWithAvroSchema';
 
 @Injectable()
 export class KafkaProxyService {
@@ -22,7 +23,7 @@ export class KafkaProxyService {
     }
   }
 
-  public sendData(topicName: string, jsonData: any): Observable<Response> {
+  public sendData(topicName: string, jsonData: any): Observable<OffsetWithAvroSchema> {
     const record: Record = {
       value: jsonData
     };

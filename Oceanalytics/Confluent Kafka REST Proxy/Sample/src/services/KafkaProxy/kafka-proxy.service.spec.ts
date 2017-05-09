@@ -8,6 +8,8 @@ import {KafkaProxyConfiguration} from './kafka-configuration';
 
 
 fdescribe('KafkaProxyService', () => {
+  let service: KafkaProxyService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpModule],
@@ -17,33 +19,29 @@ fdescribe('KafkaProxyService', () => {
         {provide: BASE_PATH, useValue: 'http://11.11.254.102:8082'}
       ]
     });
+    service = TestBed.get(KafkaProxyService);
   });
 
   describe('#constructor', () => {
     it('without Configuration set true for AutocommitEnable and latest for AutoOffsetReset', () => {
-      const service = TestBed.get(KafkaProxyService);
       expect(service.Configuration.AutoOffsetReset).toBe(AutoOffsetResetEnum.Latest);
       expect(service.Configuration.AutoCommitEnable).toBe(true);
     });
 
     it('with Configuration use the Configuration object', () => {
       const config = new KafkaProxyConfiguration();
-      const service = new KafkaProxyService(TestBed.get(Http), config);
-      expect(service.Configuration).toBe(config);
+      const serviceTest = new KafkaProxyService(TestBed.get(Http), config);
+      expect(serviceTest.Configuration).toBe(config);
     });
   });
 
   describe('#sendData', () => {
-    it('send a message return the offset of the message in the topic', (done) => {
-      const service = TestBed.get(KafkaProxyService);
-      const data = {
-        id: 10,
-        name: 'hello'
-      };
+    function sendDataTest(data: any, done) {
       service.sendData('TestTopic', data)
         .subscribe(
-          response => {
-            expect(response.offsets.length).toBe(1);
+          offsets => {
+            console.log(offsets);
+            expect(offsets.offsets.length).toBe(1);
             done();
           },
           error => {
@@ -51,6 +49,24 @@ fdescribe('KafkaProxyService', () => {
             done();
           }
         );
+    }
+
+    it('send a json object return the offset of the message in the topic', (done) => {
+      const data = {
+        id: 10,
+        name: 'hello'
+      };
+      sendDataTest(data, done);
+    }, 2000);
+
+    it('send a number return the offset of the message in the topic', (done) => {
+      const data = 10;
+      sendDataTest(data, done);
+    }, 2000);
+
+    it('send a string return the offset of the message in the topic', (done) => {
+      const data = 'test';
+      sendDataTest(data, done);
     }, 2000);
   });
 
