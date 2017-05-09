@@ -3,6 +3,7 @@ import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
+import {SelectModule} from 'angular2-select';
 
 import { route } from './route';
 import { AppComponent } from './app.component';
@@ -21,7 +22,8 @@ import { ServerService } from './server/server.service';
     BrowserModule,
     FormsModule,
     HttpModule,
-    route
+    route,
+    SelectModule
   ],
   providers: [ServerService],
   bootstrap: [AppComponent]

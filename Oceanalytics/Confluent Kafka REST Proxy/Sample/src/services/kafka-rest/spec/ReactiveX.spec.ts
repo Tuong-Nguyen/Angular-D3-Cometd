@@ -1,6 +1,5 @@
 import {async} from '@angular/core/testing';
 import {Observable} from 'rxjs/Rx';
-import * as HttpTestErrorHandlers from './HttpTestErrorHandlers';
 /**
  * Created by nctuong on 5/4/2017.
  */
@@ -31,7 +30,10 @@ describe('ReactiveX', () => {
             expect(response).toBe('handledError');
             done();
           },
-        HttpTestErrorHandlers.failOnError
+        error => {
+          fail(error);
+          done();
+        }
         );
     });
 
@@ -42,7 +44,10 @@ describe('ReactiveX', () => {
             expect(response).toBe('item');
             done();
           },
-          HttpTestErrorHandlers.failOnError
+          error => {
+            fail(error);
+            done();
+          }
         );
     }));
 
@@ -55,7 +60,7 @@ describe('ReactiveX', () => {
             done();
           },
           error => {
-            fail();
+            fail(error);
             done();
           }
         );

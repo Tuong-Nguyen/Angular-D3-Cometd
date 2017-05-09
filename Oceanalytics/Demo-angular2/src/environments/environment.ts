@@ -4,5 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  server: 'http://11.11.254.102:8082',
+  generalErr: 'Internal error'
 };

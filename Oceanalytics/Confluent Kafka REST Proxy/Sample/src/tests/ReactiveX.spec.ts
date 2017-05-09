@@ -1,5 +1,6 @@
 import {Observable, Timestamp} from 'rxjs/Rx';
-import {ArrayMatcher} from './array-matcher';
+import {ArrayMatcher} from './utils/array-matcher';
+
 
 /**
  * Created by QuanLe on 5/4/2017.
@@ -43,7 +44,7 @@ describe('ReactiveX', () => {
       );
       Observable.timer(3000).subscribe(
         item => {
-          expect(data).toBeArrayOfSize(9);
+          exports(data.length).toBe(9);
           done();
         },
         error => {
@@ -80,7 +81,7 @@ describe('ReactiveX', () => {
   });
 
   describe('#concatmap', () => {
-    fit('subscribes the next Observable after the previous Observable completes', (done) => {
+    it('subscribes the next Observable after the previous Observable completes', (done) => {
       const output: Timestamp<number>[] = [];
       Observable.range(0, 2)
         .concatMap(item => Observable.timer(100))
@@ -100,41 +101,5 @@ describe('ReactiveX', () => {
           }
         );
     });
-
-    fit('sequentially create & subscribes Observable124s', (done) => {
-      const output: Timestamp<number>[] = [];
-      let lastItemAt: number = Date.now() - 100;
-      let lastExecutedAt: number = Date.now() - 100;
-      Observable.range(0, 5)
-        .concatMap(item => {
-          if (Date.now() - lastItemAt >= 100) {
-            lastItemAt = Date.now();
-            Observable.defer(() => {
-              lastExecutedAt = Date.now();
-              return Observable.of(item).delay(100);
-            });
-          } else {
-            return Observable.empty();
-          }
-        })
-        .timestamp()
-        .subscribe(
-          response => {
-            console.log(response);
-            output.push(response);
-          },
-          error => {
-            fail(error);
-            done();
-          },
-          () => {
-            console.log(output);
-            done();
-          }
-        );
-    });
   });
-
-
 });
-
