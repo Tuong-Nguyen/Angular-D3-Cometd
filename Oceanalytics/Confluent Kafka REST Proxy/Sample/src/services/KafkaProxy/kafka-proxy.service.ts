@@ -8,6 +8,7 @@ import {Observable} from 'rxjs/Rx';
 import {OffsetWithAvroSchema} from '../kafka-rest/model/OffsetWithAvroSchema';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 import {RecordInfo} from '../kafka-rest/model/RecordInfo';
+import {ConsumerRequest} from '../kafka-rest/model/ConsumerRequest';
 
 @Injectable()
 export class KafkaProxyService {
@@ -40,6 +41,27 @@ export class KafkaProxyService {
   }
 
   public readData(topicName: string): Observable<Array<RecordInfo>> {
+    const consumerRequest = this.getConsumerRequest();
+
+    const groupName = consumerRequest.name;
+    return this.consumerApi.createInstanceToGroup(groupName, consumerRequest)
+      .map(response => response.instance_id)
+      .catch((error: Response) => {
+        if (error.status === 409) {
+          return Observable.of(consumerRequest.name);
+        } else {
+          Observable.throw(error.status);
+        }
+      })
+      .flatMap((name) => this.consumerApi.subscribesTopics(groupName, name, {topics: [topicName]}))
+      .flatMap(item => this.consumerApi.fetchData(groupName, consumerRequest.name));
+  }
+
+  /**
+   * Build the ConsumerRequest
+   * @returns ConsumerRequest
+   */
+  private getConsumerRequest(): ConsumerRequest {
     const autoCommitEnable = this.Configuration.AutoCommitEnable ? 'true' : 'false';
     let autoOffsetReset: string;
     switch (this.Configuration.AutoOffsetReset) {
@@ -56,18 +78,6 @@ export class KafkaProxyService {
       'auto.offset.reset': autoOffsetReset,
       'auto.commit.enable': autoCommitEnable
     };
-
-    const groupName = consumerRequest.name;
-    return this.consumerApi.createInstanceToGroup(groupName, consumerRequest)
-      .map(response => response.instance_id)
-      .catch((error: Response) => {
-        if (error.status === 409) {
-          return Observable.of(consumerRequest.name);
-        } else {
-          Observable.throw(error.status);
-        }
-      })
-      .flatMap((name) => this.consumerApi.subscribesTopics(groupName, name, {topics: [topicName]}))
-      .flatMap(item => this.consumerApi.fetchData(groupName, consumerRequest.name));
+    return consumerRequest;
   }
 }
