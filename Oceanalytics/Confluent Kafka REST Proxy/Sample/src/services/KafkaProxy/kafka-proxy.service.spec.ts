@@ -5,9 +5,10 @@ import {TopicApi} from '../kafka-rest/api/TopicApi';
 import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {BASE_PATH} from '../kafka-rest/variables';
 import {KafkaProxyConfiguration} from './kafka-configuration';
+import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 
 
-fdescribe('KafkaProxyService', () => {
+describe('KafkaProxyService', () => {
   let service: KafkaProxyService;
 
   beforeEach(() => {
@@ -16,6 +17,7 @@ fdescribe('KafkaProxyService', () => {
       providers: [
         KafkaProxyService,
         TopicApi,
+        ConsumerApi,
         {provide: BASE_PATH, useValue: 'http://11.11.254.102:8082'}
       ]
     });
@@ -30,7 +32,7 @@ fdescribe('KafkaProxyService', () => {
 
     it('with Configuration use the Configuration object', () => {
       const config = new KafkaProxyConfiguration();
-      const serviceTest = new KafkaProxyService(TestBed.get(Http), config);
+      const serviceTest = new KafkaProxyService(TestBed.get(TopicApi), TestBed.get(ConsumerApi), config);
       expect(serviceTest.Configuration).toBe(config);
     });
   });
@@ -68,6 +70,23 @@ fdescribe('KafkaProxyService', () => {
       const data = 'test';
       sendDataTest(data, done);
     }, 2000);
+  });
+
+  fdescribe('#readData', () => {
+    it('data', (done) => {
+      service.readData('TestTopic')
+        .subscribe(
+          result => {
+            console.log(result);
+            expect(result.length).toBeGreaterThanOrEqual(0);
+            done();
+          },
+          error => {
+            fail(error);
+            done();
+          }
+        );
+    }, 50000);
   });
 
 });
