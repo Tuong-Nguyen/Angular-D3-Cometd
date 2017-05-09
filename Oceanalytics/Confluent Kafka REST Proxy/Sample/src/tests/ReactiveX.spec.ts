@@ -44,7 +44,7 @@ describe('ReactiveX', () => {
       );
       Observable.timer(3000).subscribe(
         item => {
-          exports(data.length).toBe(9);
+          expect(data.length).toBe(9);
           done();
         },
         error => {
