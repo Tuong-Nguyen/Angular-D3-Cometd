@@ -2,7 +2,6 @@ import {async, TestBed} from '@angular/core/testing';
 import {HttpModule} from '@angular/http';
 import {ConsumerApi} from '../api/ConsumerApi';
 import {Observable} from 'rxjs/Rx';
-import * as HttpTestErrorHandlers from './HttpTestErrorHandlers';
 import * as SystemInfo from './SystemInfo';
 
 /**
@@ -73,8 +72,10 @@ describe('ConsumerApi', () => {
             expect(response).toBeDefined();
             done();
           },
-          HttpTestErrorHandlers.failOnError
-        );
+          error => {
+            fail();
+            done();
+          });
     }, 10000);
   });
 
