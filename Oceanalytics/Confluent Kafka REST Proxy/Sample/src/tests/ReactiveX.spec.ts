@@ -7,6 +7,12 @@ import {ArrayMatcher} from './utils/array-matcher';
  */
 
 describe('ReactiveX', () => {
+  describe('#Observable', () => {
+    it('throw exception if error is not handled', () => {
+      expect(() =>  {Observable.throw('error').subscribe();}).toThrow();
+    });
+  });
+
   describe('#map', () => {
     it('only handle items in response', (done) => {
       Observable.throw('error').map(item => 'mapper').subscribe(
@@ -68,6 +74,13 @@ describe('ReactiveX', () => {
         }
       );
     }, 4000);
+
+    it('after the Observable completes throw no exception', () => {
+      const subscription = Observable.empty()
+        .subscribe(
+        );
+      subscription.unsubscribe();
+    });
   });
 
   describe('#interval', () => {
