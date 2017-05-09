@@ -52,7 +52,7 @@ describe('work', () => {
       );
   }
 
-  fit('when second interval = 0.1 * first interval (100ms) in 1000 ms generates 10 items', done => {
+  it('when second interval = 0.1 * first interval (100ms) in 1000 ms generates 10 items', done => {
     const interval = 100;
     const executedTime = 10;
     const testInterval = 1000;
@@ -60,7 +60,7 @@ describe('work', () => {
     work(testInterval, interval, executedTime, expectedItemCount, interval, done);
   });
 
-  fit('when second interval = 10 * first interval (10 ms) in 200 ms generates 2 items', done => {
+  it('when second interval = 10 * first interval (10 ms) in 200 ms generates 2 items', done => {
     const interval = 10;
     const executedTime = 100;
     const testInterval = 200;
@@ -68,7 +68,7 @@ describe('work', () => {
     work(testInterval, interval, executedTime, expectedItemCount, interval, done);
   });
 
-  fit('when second interval = 1.5 * first interval (100 ms) in 1000 ms generate 3 items', done => {
+  it('when second interval = 1.5 * first interval (100 ms) in 1000 ms generate 3 items', done => {
     const interval = 100;
     const executedTime = 150;
     const testInterval = 1000;
