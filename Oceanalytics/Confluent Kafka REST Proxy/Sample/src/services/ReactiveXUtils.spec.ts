@@ -4,7 +4,7 @@
 import {Observable, TimeInterval} from 'rxjs/Rx';
 import {poll} from './ReactiveXUtils';
 
-describe('work', () => {
+describe('#poll', () => {
 
   /**
    * hello
@@ -15,8 +15,7 @@ describe('work', () => {
    * @param expectedInterval
    * @param done
    */
-  function work(testInterval: number, pollingInterval: number, executedTime: number, expectedItemCount: number,
-                expectedInterval: number, done) {
+  function testPoll(testInterval: number, pollingInterval: number, executedTime: number, expectedItemCount: number, done) {
     const finalItems: TimeInterval<number>[] = [];
 
     const factory = () => {
@@ -57,7 +56,7 @@ describe('work', () => {
     const executedTime = 10;
     const testInterval = 1000;
     const expectedItemCount = 5;
-    work(testInterval, interval, executedTime, expectedItemCount, interval, done);
+    testPoll(testInterval, interval, executedTime, expectedItemCount, interval, done);
   });
 
   it('when second interval = 10 * first interval (10 ms) in 200 ms generates 2 items', done => {
@@ -65,7 +64,7 @@ describe('work', () => {
     const executedTime = 100;
     const testInterval = 200;
     const expectedItemCount = 1;
-    work(testInterval, interval, executedTime, expectedItemCount, interval, done);
+    testPoll(testInterval, interval, executedTime, expectedItemCount, interval, done);
   });
 
   it('when second interval = 1.5 * first interval (100 ms) in 1000 ms generate 3 items', done => {
@@ -73,6 +72,6 @@ describe('work', () => {
     const executedTime = 150;
     const testInterval = 1000;
     const expectedItemCount = 3;
-    work(testInterval, interval, executedTime, expectedItemCount, interval, done);
+    testPoll(testInterval, interval, executedTime, expectedItemCount, interval, done);
   });
 });
