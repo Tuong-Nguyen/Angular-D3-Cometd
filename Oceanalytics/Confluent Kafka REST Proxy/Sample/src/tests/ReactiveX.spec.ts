@@ -8,7 +8,22 @@ import {ArrayMatcher} from './utils/array-matcher';
 
 describe('ReactiveX', () => {
   describe('#map', () => {
-    it('test', (done) => {
+    it('only handle items in response', (done) => {
+      Observable.throw('error').map(item => 'mapper').subscribe(
+        item => {
+          fail();
+          done();
+        },
+        error => {
+          expect(error).toBe('error');
+          done();
+        }
+      );
+    });
+  });
+
+  describe('#flatMap', () => {
+    it('map each item into an Observable then emits items from the Observables', (done) => {
       const values = [1, 2, 3];
       Observable.from(values)
         .flatMap(value => Observable.range(0, value))
@@ -56,7 +71,7 @@ describe('ReactiveX', () => {
   });
 
   describe('#interval', () => {
-    it('emit numbers from 0 every interval', (done) => {
+    it('emit a number starting from 0 every interval', (done) => {
       const list: number[] = [];
       const subscription = Observable.interval(10)
         .reduce((acc, item, index) => {
@@ -97,6 +112,52 @@ describe('ReactiveX', () => {
           () => {
             const eslapsedTime = output[1].timestamp - output[0].timestamp;
             expect(eslapsedTime).toBeGreaterThanOrEqual(100);
+            done();
+          }
+        );
+    });
+  });
+
+  describe('#catch', () => {
+    it('convert error into items for response', (done) => {
+      Observable.throw('error').catch(error => {
+        return Observable.of('handledError');
+      }).subscribe(
+        response => {
+          expect(response).toBe('handledError');
+          done();
+        },
+        error => {
+          fail(error);
+          done();
+        }
+      );
+    });
+
+    it('forward items to subscriber', ((done) => {
+      Observable.of('item').catch(error => Observable.of('error'))
+        .subscribe(
+          response => {
+            expect(response).toBe('item');
+            done();
+          },
+          error => {
+            fail(error);
+            done();
+          }
+        );
+    }));
+
+    it('forward items to subscriber and transform error before forward to subscriber', (done) => {
+      Observable.of('item').concat(Observable.throw('test'))
+        .catch(error => Observable.of(''))
+        .subscribe(
+          (item) => {
+            expect(['item', '']).toContain(item);
+            done();
+          },
+          error => {
+            fail(error);
             done();
           }
         );
