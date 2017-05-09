@@ -6,6 +6,7 @@ import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {BASE_PATH} from '../kafka-rest/variables';
 import {KafkaProxyConfiguration} from './kafka-configuration';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
+import {ArrayMatcher} from '../../tests/utils/array-matcher';
 
 
 describe('KafkaProxyService', () => {
@@ -72,7 +73,7 @@ describe('KafkaProxyService', () => {
     }, 2000);
   });
 
-  fdescribe('#readData', () => {
+  describe('#readData', () => {
     it('data', (done) => {
       service.readData('TestTopic')
         .subscribe(
@@ -87,6 +88,19 @@ describe('KafkaProxyService', () => {
           }
         );
     }, 50000);
+  });
+
+  fdescribe('#subscribe', () => {
+    it('new topic will add the topic into the list', () => {
+      service.subscribe('test');
+      expect(ArrayMatcher.isSame(service.SubscribedTopics, ['test'])).toBeTruthy();
+    });
+
+    it('topic which was subcribed do not add the topic', () => {
+      service.subscribe('test');
+      service.subscribe('test');
+      expect(ArrayMatcher.isSame(service.SubscribedTopics, ['test'])).toBeTruthy();
+    });
   });
 
 });

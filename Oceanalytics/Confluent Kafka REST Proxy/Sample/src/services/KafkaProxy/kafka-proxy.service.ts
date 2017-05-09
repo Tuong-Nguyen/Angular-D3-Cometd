@@ -14,11 +14,13 @@ import {ConsumerRequest} from '../kafka-rest/model/ConsumerRequest';
 export class KafkaProxyService {
   private topicApi: TopicApi;
   private consumerApi: ConsumerApi;
+  public readonly SubscribedTopics: string[];
   public readonly Configuration: KafkaProxyConfiguration;
 
   constructor(topicApi: TopicApi, consumerApi: ConsumerApi, @Optional() configuration: KafkaProxyConfiguration) {
     this.topicApi = topicApi;
     this.consumerApi = consumerApi;
+    this.SubscribedTopics = [];
 
     if (configuration) {
       this.Configuration = configuration;
@@ -38,6 +40,14 @@ export class KafkaProxyService {
     };
 
     return this.topicApi.produceMessageToTopic(topicName, records);
+  }
+
+  public subscribe(topicName: string) {
+    if (this.SubscribedTopics.indexOf(topicName) < 0) {
+      this.SubscribedTopics.push(topicName);
+
+      // Todo: subscribe if already subscribing
+    }
   }
 
   public readData(topicName: string): Observable<Array<RecordInfo>> {
