@@ -16,6 +16,7 @@ export class KafkaProxyService {
   private topicApi: TopicApi;
   private consumerApi: ConsumerApi;
   public instanceId: string;
+  private groupName: string;
   public readonly SubscribedTopics: string[];
   public readonly Configuration: KafkaProxyConfiguration;
 
@@ -24,6 +25,7 @@ export class KafkaProxyService {
     this.consumerApi = consumerApi;
     this.SubscribedTopics = [];
     this.instanceId = '';
+    this.groupName = 'KafkaProxy_' + Date.now();
 
     if (configuration) {
       this.Configuration = configuration;
@@ -72,9 +74,13 @@ export class KafkaProxyService {
       .flatMap(item => this.consumerApi.fetchData(groupName, consumerRequest.name));
   }
 
+  /**
+   * Create a consumer instance - reuse if already exists.
+   * @returns {Observable<R|T>}
+   */
   public createConsumerInstance(): Observable<string> {
     const consumerRequest = this.getConsumerRequest();
-    return this.consumerApi.createInstanceToGroup('KafkaProxy', consumerRequest)
+    return this.consumerApi.createInstanceToGroup(this.groupName, consumerRequest)
       .map(response => {
         this.instanceId = response.instance_id;
         return response.instance_id;
@@ -84,6 +90,22 @@ export class KafkaProxyService {
           return Observable.of(this.instanceId);
         } else {
           Observable.throw(error.status);
+        }
+      });
+  }
+
+  /**
+   * subscribeTopics
+   * @returns {Observable<R|T>}
+   */
+  public subscribeTopics(): Observable<{}> {
+    return this.consumerApi.subscribesTopics(this.groupName, this.instanceId, this.SubscribedTopics)
+      .catch((error: Response) => {
+        if (error.status === 404) {
+          return this.createConsumerInstance().concat(this.consumerApi.subscribesTopics(this.groupName,
+            this.instanceId, this.SubscribedTopics));
+        } else {
+          return Observable.throw(error);
         }
       });
   }

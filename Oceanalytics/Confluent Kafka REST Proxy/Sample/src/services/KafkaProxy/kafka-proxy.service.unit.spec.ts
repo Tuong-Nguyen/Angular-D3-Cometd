@@ -25,14 +25,6 @@ fdescribe('KafkaProxyService - UnitTest', () => {
   });
 
   describe('#fetch', () => {
-    // it('simple', () => {
-    //   spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from({instance_id: 'id', base_uri: 'base_uri'}));
-    //   service.subscribe('test');
-    //   service.fetch();
-    //
-    //   expect(service.instanceId).toBe('id');
-    // });
-
     it('#createInstance', () => {
       spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
         instance_id: 'id',
@@ -56,6 +48,21 @@ fdescribe('KafkaProxyService - UnitTest', () => {
         .subscribe();
 
       expect((mockConsumerApi.createInstanceToGroup as any).calls.argsFor(1)[1].name).toBe('id');
+      expect(service.instanceId).toBe('id');
+    });
+
+    it('#subscribeTopics', () => {
+      const mockResponse = new Response({}, {status: 404});
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.throw(mockResponse));
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
+        instance_id: 'id',
+        base_uri: 'base_uri'
+      }]));
+      spyOn(service, 'createConsumerInstance').and.callThrough();
+      service.subscribeTopics()
+        .subscribe();
+
+      expect((service.createConsumerInstance as any).calls.any());
       expect(service.instanceId).toBe('id');
     });
   });
