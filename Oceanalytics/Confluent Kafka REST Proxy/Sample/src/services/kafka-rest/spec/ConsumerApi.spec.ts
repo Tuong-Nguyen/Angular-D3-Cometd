@@ -46,7 +46,7 @@ describe('ConsumerApi', () => {
   });
 
   describe('#fetchData', () => {
-    fit('invalid consumer return status code 404', (done) => {
+    it('invalid consumer return status code 404', (done) => {
       const service = TestBed.get(ConsumerApi);
       service.fetchData('invalidGroup', 'invalidInstance')
         .subscribe(
@@ -96,7 +96,7 @@ describe('ConsumerApi', () => {
   });
 
   describe('#subscribeTopic', () => {
-    fit('invalid consumer instance return 404', (done) => {
+    it('invalid consumer instance return 404', (done) => {
       const service = TestBed.get(ConsumerApi);
       service.subscribesTopics('invalidGroup', 'invalidId', {topics: [topicName]})
         .subscribe(
