@@ -213,5 +213,18 @@ describe('ReactiveX', () => {
           }
         );
     });
+
+    it('wait until the source Observable completes', (done) => {
+      const start = Date.now();
+      Observable.timer(200)
+        .ignoreElements()
+        .subscribe(
+          null, null,
+          () => {
+            expect(Date.now() - start).toBeGreaterThanOrEqual(200);
+            done();
+          }
+        );
+    });
   });
 });
