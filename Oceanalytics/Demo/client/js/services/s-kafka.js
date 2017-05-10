@@ -7,7 +7,7 @@
                     "Content-Type": "application/vnd.kafka.v2+json"
                 }
             };
-        var basaeUlr = "http://localhost:8082";
+        var basaeUlr = "http://11.11.254.102:8082";
         
         var addRecord = function (data, topic) {
             var config = {
