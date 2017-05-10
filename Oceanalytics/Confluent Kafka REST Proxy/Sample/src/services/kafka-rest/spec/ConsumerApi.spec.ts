@@ -95,6 +95,22 @@ describe('ConsumerApi', () => {
     }, 10000);
   });
 
+  describe('#subscribeTopic', () => {
+    fit('invalid consumer instance return 404', (done) => {
+      const service = TestBed.get(ConsumerApi);
+      service.subscribesTopics('invalidGroup', 'invalidId', {topics: [topicName]})
+        .subscribe(
+          result => {
+            fail();
+            done();
+          },
+          error => {
+            expect(error.status).toBe(404);
+            done();
+          });
+    });
+  });
+
   describe('#destroyConsumer', () => {
 
     it('can delete the consumer instance', (done) => {
