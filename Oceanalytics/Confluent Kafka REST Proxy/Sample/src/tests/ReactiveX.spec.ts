@@ -99,17 +99,15 @@ describe('ReactiveX', () => {
     it('emit a number starting from 0 every interval', (done) => {
       const list: number[] = [];
       const subscription = Observable.interval(10)
+        .take(10)
         .reduce((acc, item, index) => {
           acc.push(item);
           return acc;
         }, list)
-        .subscribe();
-
-      Observable.timer(100)
         .subscribe(
           item => {
             subscription.unsubscribe();
-            const expected: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            const expected: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
             const result = ArrayMatcher.isSame<number>(list, expected);
             if (result.result === false) {
               fail(result.error);

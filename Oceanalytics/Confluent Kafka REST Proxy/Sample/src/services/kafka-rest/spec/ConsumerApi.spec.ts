@@ -45,6 +45,22 @@ describe('ConsumerApi', () => {
     });
   });
 
+  describe('#fetchData', () => {
+    fit('invalid consumer return status code 404', (done) => {
+      const service = TestBed.get(ConsumerApi);
+      service.fetchData('invalidGroup', 'invalidInstance')
+        .subscribe(
+          result => {
+            fail(result);
+            done();
+          },
+          error => {
+            expect(error.status).toBe(404);
+            done();
+          });
+    });
+  });
+
   describe('#getMessage', () => {
     it('can get message', (done) => {
       const service = TestBed.get(ConsumerApi);
@@ -77,6 +93,22 @@ describe('ConsumerApi', () => {
             done();
           });
     }, 10000);
+  });
+
+  describe('#subscribeTopic', () => {
+    fit('invalid consumer instance return 404', (done) => {
+      const service = TestBed.get(ConsumerApi);
+      service.subscribesTopics('invalidGroup', 'invalidId', {topics: [topicName]})
+        .subscribe(
+          result => {
+            fail();
+            done();
+          },
+          error => {
+            expect(error.status).toBe(404);
+            done();
+          });
+    });
   });
 
   describe('#destroyConsumer', () => {
