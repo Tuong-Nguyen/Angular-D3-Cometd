@@ -7,7 +7,7 @@ import {ConsumerResponse} from '../kafka-rest/model/ConsumerResponse';
  * Created by nctuong on 5/10/2017.
  */
 
-fdescribe('KafkaProxyService - UnitTest', () => {
+describe('KafkaProxyService - UnitTest', () => {
   let service: KafkaProxyService;
   let mockTopicApi: TopicApi;
   let mockConsumerApi: ConsumerApi;
@@ -51,18 +51,25 @@ fdescribe('KafkaProxyService - UnitTest', () => {
       expect(service.instanceId).toBe('id');
     });
 
-    it('#subscribeTopics', () => {
+    fit('#subscribeTopics will create the consumer instance automatically if it does not exist', () => {
       const mockResponse = new Response({}, {status: 404});
-      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.throw(mockResponse));
+      // error on first call and success on the second
+      spyOn(mockConsumerApi, 'subscribesTopics').and.callFake(() => {
+        if ((mockConsumerApi.subscribesTopics as any).calls.count() === 1) {
+          return Observable.throw(mockResponse);
+        } else {
+          return Observable.from([{}]);
+        }
+      });
       spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
         instance_id: 'id',
         base_uri: 'base_uri'
       }]));
-      spyOn(service, 'createConsumerInstance').and.callThrough();
+
       service.subscribeTopics()
         .subscribe();
 
-      expect((service.createConsumerInstance as any).calls.any());
+      expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
       expect(service.instanceId).toBe('id');
     });
   });

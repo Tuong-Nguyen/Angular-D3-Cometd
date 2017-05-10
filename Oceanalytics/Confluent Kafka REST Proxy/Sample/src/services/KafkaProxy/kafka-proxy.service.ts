@@ -102,7 +102,7 @@ export class KafkaProxyService {
     return this.consumerApi.subscribesTopics(this.groupName, this.instanceId, this.SubscribedTopics)
       .catch((error: Response) => {
         if (error.status === 404) {
-          return this.createConsumerInstance().concat(this.consumerApi.subscribesTopics(this.groupName,
+          return this.createConsumerInstance().ignoreElements().concat(this.consumerApi.subscribesTopics(this.groupName,
             this.instanceId, this.SubscribedTopics));
         } else {
           return Observable.throw(error);
