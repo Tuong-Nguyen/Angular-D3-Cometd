@@ -24,7 +24,7 @@ describe('KafkaProxyService - UnitTest', () => {
     });
   });
 
-  describe('#fetch', () => {
+  fdescribe('#fetch', () => {
     it('#createInstance', () => {
       spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
         instance_id: 'id',
@@ -51,7 +51,7 @@ describe('KafkaProxyService - UnitTest', () => {
       expect(service.instanceId).toBe('id');
     });
 
-    fit('#subscribeTopics will create the consumer instance automatically if it does not exist', () => {
+    it('#subscribeTopics will create the consumer instance automatically if it does not exist', () => {
       const mockResponse = new Response({}, {status: 404});
       // error on first call and success on the second
       spyOn(mockConsumerApi, 'subscribesTopics').and.callFake(() => {
@@ -71,6 +71,22 @@ describe('KafkaProxyService - UnitTest', () => {
 
       expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
       expect(service.instanceId).toBe('id');
+    });
+
+    it('#subscribeTopics throws error if it is not non-existing consumer instance error', () => {
+      const mockResponse = new Response({}, {status: 500});
+      // error on first call and success on the second
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.throw(mockResponse));
+
+      service.subscribeTopics()
+        .subscribe(
+          item => {
+            fail();
+          },
+          error => {
+            expect(error.status).toBe(500);
+          }
+        );
     });
   });
 });
