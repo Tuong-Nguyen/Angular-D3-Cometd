@@ -186,4 +186,32 @@ describe('ReactiveX', () => {
         );
     });
   });
+
+  describe('#ignoreElement', () => {
+    it('forward completes', () => {
+      Observable.range(0, 2)
+        .ignoreElements()
+        .subscribe(
+          item => {
+            fail();
+          },
+          error => {
+            fail();
+          }
+        );
+    });
+
+    it('forward error', () => {
+      Observable.throw('error')
+        .ignoreElements()
+        .subscribe(
+          item => {
+            fail();
+          },
+          error => {
+            expect(error).toBe('error');
+          }
+        );
+    });
+  });
 });
