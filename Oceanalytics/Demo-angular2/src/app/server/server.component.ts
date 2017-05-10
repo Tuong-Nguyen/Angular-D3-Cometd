@@ -100,6 +100,7 @@ export class ServerComponent implements OnInit, OnChanges {
   fetchData(): any {
     // Code here
     if (this.isReady === true && this.urlInstance != '' && this.flag === true) {
+    	this.records = [];
       this.timer = setInterval(() => {
         if (!this.isPending) {
           this.isPending = true;
@@ -167,7 +168,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     }
                     console.log(dataTmp2);
-                    this._serverService.addRecord('result', dataTmp2).subscribe(
+                    this._serverService.addRecord(environment.result, dataTmp2).subscribe(
                       res2 => {
                         console.log('===Add new message to topic result ===')
                         ;
@@ -193,7 +194,7 @@ export class ServerComponent implements OnInit, OnChanges {
                 console.log('Arr label: ');
                 console.log(this.arrLabelName);
 
-
+                console.log(this.dtrs);
                 if (this.dtrs != '' && this.dtrs !== undefined && this.isPump == true) {
                   console.log(this.dtrs);
                   var dttime = this.datePipe.transform(new Date(), 'HHmmss');
@@ -201,6 +202,7 @@ export class ServerComponent implements OnInit, OnChanges {
                   for (var i = 0; i < this.arrTopicName.length; i++) {
                     this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
                     this.dtrs.records[0].value.time = dttime;
+                    console.log('============> push messge to topic: ',this.arrTopicName[i]);
                     this._serverService.addRecord(this.arrTopicName[i], this.dtrs).subscribe(
                       res1 => {
                         console.log('===Add new message to topic===');

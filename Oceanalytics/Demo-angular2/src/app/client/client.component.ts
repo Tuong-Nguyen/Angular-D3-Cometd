@@ -20,9 +20,6 @@ export class ClientComponent implements OnInit {
   public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
   public messages = {
-    'Realtimesubscriptionrequest': [],
-    'Realtimesubscriptionresponse': [],
-    'Realtimemeasurespumpuprequest': [],
     'SoDagentmeasuresproducer': [],
     'SoDagentbyaccountmeasuresproducer': [],
     'SoDroutingservicemeasuresproducer': [],
@@ -32,6 +29,7 @@ export class ClientComponent implements OnInit {
     'MWagentbyroutingservicemeasuresproducer': [],
     'servermeasurespumpuprequest': []
   };
+  public env = environment;
   public input = {
     'records': []
   };
@@ -48,15 +46,6 @@ export class ClientComponent implements OnInit {
   };
 
   public options = [{
-    value: 'Realtimesubscriptionrequest',
-    label: 'Realtimesubscriptionrequest'
-  }, {
-    value: 'Realtimesubscriptionresponse',
-    label: 'Realtimesubscriptionresponse'
-  }, {
-    value: 'Realtimemeasurespumpuprequest',
-    label: 'Realtimemeasurespumpuprequest'
-  }, {
     value: 'SoDagentmeasuresproducer',
     label: 'SoDagentmeasuresproducer'
   }, {
@@ -78,7 +67,9 @@ export class ClientComponent implements OnInit {
     value: 'MWagentbyroutingservicemeasuresproducer',
     label: 'MWagentbyroutingservicemeasuresproducer'
   }, {
-    value: 'servermeasurespumpuprequest', label: 'servermeasurespumpuprequest'}];
+    value: 'servermeasurespumpuprequest',
+    label: 'servermeasurespumpuprequest'}
+  ];
 
   public logSingleString;
   public logMultipleString;
@@ -130,6 +121,7 @@ export class ClientComponent implements OnInit {
         console.log('=====Subscription Success=====');
         console.log(data);
         this.isReady = true;
+        console.log('====> befor delete', this.listTopics);
       },
       err => {
         console.log('=====Subscription Fail=====');
@@ -158,12 +150,13 @@ export class ClientComponent implements OnInit {
           data => {
             console.log('listening server .....', data);
             for (let i = 0; i < data.length; i++) {
-              if (data[i].key === this.instanceName && data[i].topic !== 'result') {
+              if (data[i].key === this.instanceName && data[i].topic !== environment.result) {
+                console.log('==========> push topic name ', data[i].topic);
                 this.messages[data[i].topic].push(data[i]);
               } else {
                 if (data[i].key === this.instanceName) {
                   this.status = 'Push to Pump topic';
-                  this._clientService.addRecord('pump', this.pump).subscribe(
+                  this._clientService.addRecord(environment.pump, this.pump).subscribe(
                     dataSub => {
                       console.log('Subscribe successfully', dataSub);
                       this.status = 'Listening topic ' + data[i].key;
@@ -183,7 +176,7 @@ export class ClientComponent implements OnInit {
           }
         );
       }
-    }, 2000);
+    }, 5000);
   }
 
   onSingleOpened() {
@@ -232,12 +225,34 @@ export class ClientComponent implements OnInit {
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
+    this.listTopics.topics= [environment.result];
     for ( let i = 0; i < this.input.records.length; i++){
       if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
           newRecords.push(this.input.records[i]);
-      }
+          this.listTopics.topics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
+          //REMOVE IN LISTTOPIC
+          }
       this.input.records = newRecords;
     }
+    console.log('===> After delete ', this.listTopics);
+
+
+    //SUBSCRIBE TOPIC AGAIN
+    // Call Service
+    this._clientService.subscribeTopic(this.urlInstance, this.listTopics).subscribe(
+      data => {
+        console.log('=====Subscription Success=====');
+        console.log(data);
+        this.messages[item.value] = [];
+        // this.isReady = true;
+      },
+      err => {
+        console.log('=====Subscription Fail=====');
+      }
+    );
+
+
+
     console.log('===> Selected item', this.input);
   }
 

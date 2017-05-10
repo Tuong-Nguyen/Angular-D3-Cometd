@@ -19,8 +19,10 @@ export class ServerService {
       'Content-Type': 'application/vnd.kafka.json.v2+json',
       'Accept': 'application/vnd.kafka.v2+json'
     });
+    console.log(headers);
+    headers.append('Access-Control-Allow-Origin','*');
     let options = new RequestOptions({headers: headers});
-
+    console.log(options);
     let baseUrl = environment.server;
     let url = baseUrl + '/consumers/' + groupName;
 
