@@ -5,6 +5,9 @@
 
 export const environment = {
   production: false,
-  server: 'http://11.11.254.102:8082',
-  generalErr: 'Internal error'
+  server: 'http://192.168.104.18:8082',
+  generalErr: 'Internal error',
+  result: 'result',
+  rsr: 'RSR',
+  pump: 'pump'
 };

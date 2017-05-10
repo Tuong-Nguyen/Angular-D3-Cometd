@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ClientService } from './client.service';
-import { DatePipe } from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {ClientService} from './client.service';
+import {DatePipe} from '@angular/common';
 import {SelectModule} from 'angular2-select';
-import {forEach} from "@angular/router/src/utils/collection";
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-client',
@@ -15,14 +15,25 @@ export class ClientComponent implements OnInit {
   public newInstance;
   public urlInstance;
   public status = 'Create Instance';
-  public datePipe= new DatePipe('en-US');
+  public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
   public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
-  public messages = [];
+  public messages = {
+    'Realtimesubscriptionrequest': [],
+    'Realtimesubscriptionresponse': [],
+    'Realtimemeasurespumpuprequest': [],
+    'SoDagentmeasuresproducer': [],
+    'SoDagentbyaccountmeasuresproducer': [],
+    'SoDroutingservicemeasuresproducer': [],
+    'MWagentmeasuresproducer': [],
+    'MWagentbyaccountmeasuresproducer': [],
+    'MWroutingservicemeasuresproducer': [],
+    'MWagentbyroutingservicemeasuresproducer': [],
+    'servermeasurespumpuprequest': []
+  };
   public input = {
-    'records': [
-    ]
+    'records': []
   };
 
   public pump = {
@@ -36,7 +47,38 @@ export class ClientComponent implements OnInit {
     ]
   };
 
-  public options = [{value: 'AgentPerformanceRealTimeMeasures', label: 'Agent Performance real-time measures'}, {value: 'AgentByAccountRealTimeMeasures', label: 'Agent by Account real-time measures'}, {value: 'AgentByRoutingServiceRealRimeMeasures', label: 'Agent By Routing Service real-time measures'}, 'RoutingServiceRealTimeMeasures', 'AgentIntervalMovingWindowRealTimeMeasures', 'AgentByAccountIntervalMovingWindowRealTimeMeasures', 'AgentByRoutingServiceMovingWindowRealTimeMeasures', 'RoutingServiceMovingWindowRealTimeMeasures'];
+  public options = [{
+    value: 'Realtimesubscriptionrequest',
+    label: 'Realtimesubscriptionrequest'
+  }, {
+    value: 'Realtimesubscriptionresponse',
+    label: 'Realtimesubscriptionresponse'
+  }, {
+    value: 'Realtimemeasurespumpuprequest',
+    label: 'Realtimemeasurespumpuprequest'
+  }, {
+    value: 'SoDagentmeasuresproducer',
+    label: 'SoDagentmeasuresproducer'
+  }, {
+    value: 'SoDagentbyaccountmeasuresproducer',
+    label: 'SoDagentbyaccountmeasuresproducer'
+  }, {
+    value: 'SoDagentbyroutingservicemeasuresproducer',
+    label: 'SoDagentbyroutingservicemeasuresproducer'
+  }, {
+    value: 'MWagentmeasuresproducer',
+    label: 'MWagentmeasuresproducer'
+  }, {
+    value: 'MWagentbyaccountmeasuresproducer',
+    label: 'MWagentbyaccountmeasuresproducer'
+  }, {
+    value: 'MWroutingservicemeasuresproducer',
+    label: 'MWroutingservicemeasuresproducer'
+  }, {
+    value: 'MWagentbyroutingservicemeasuresproducer',
+    label: 'MWagentbyroutingservicemeasuresproducer'
+  }, {
+    value: 'servermeasurespumpuprequest', label: 'servermeasurespumpuprequest'}];
 
   public logSingleString;
   public logMultipleString;
@@ -44,7 +86,9 @@ export class ClientComponent implements OnInit {
   public listTopics = {
     'topics': []
   };
-  constructor(private _clientService: ClientService) { }
+
+  constructor(private _clientService: ClientService) {
+  }
 
   ngOnInit() {
     this.createInstance();
@@ -55,7 +99,7 @@ export class ClientComponent implements OnInit {
     const instance = {
       'name': this.instanceName,
       'format': 'json',
-      'auto.offset.reset': 'latest', // earliest
+      'auto.offset.reset': 'latest', // earliest or latest
       'auto.commit.enable': 'false'
     };
 
@@ -71,20 +115,21 @@ export class ClientComponent implements OnInit {
         console.log('====Create Instance Fail======');
         console.log(err);
       },
-      () => this.subscribeTopic('result')
+      () => this.subscribeTopic(environment.result)
     );
   }
 
   subscribeTopic(topic): any {
-    this.listTopics.topics.push(topic)
+    this.listTopics.topics.push(topic);
+    console.log('===========> Subscribe topic: ', this.listTopics);
     // Change status
     this.status = 'Subscribe';
     // Call Service
     this._clientService.subscribeTopic(this.urlInstance, this.listTopics).subscribe(
       data => {
         console.log('=====Subscription Success=====');
+        console.log(data);
         this.isReady = true;
-        this.status = 'Listening';
       },
       err => {
         console.log('=====Subscription Fail=====');
@@ -107,33 +152,37 @@ export class ClientComponent implements OnInit {
 
   listen(): any {
     setInterval(() => {
-      this._clientService.getRecord(this.urlInstance).subscribe(
-        data => {
-          console.log('listen server', data);
-          for (let i = 0; i < data.length; i++) {
-            if ( data[i].key === this.instanceName && data[i].topic !== 'result') {
-              this.messages.push(data[i]);
-            } else {
-              if (data[i].key === this.instanceName) {
-                this.status = 'Push to Pump topic';
-                this._clientService.addRecord('pump', this.pump).subscribe(
-                  dataSub => {
-                    console.log('Subscribe successfully', dataSub);
-                    this.status = 'Listening topic ' + data[i].key;
-                    this.subscribeTopic(data[i].value);
-                  },
-                  err => {
-                    console.log('Subscribe failed', err);
-                  }
-                );
+      if (this.isReady === true) {
+        console.log(this.urlInstance);
+        this._clientService.getRecord(this.urlInstance).subscribe(
+          data => {
+            console.log('listening server .....', data);
+            for (let i = 0; i < data.length; i++) {
+              if (data[i].key === this.instanceName && data[i].topic !== 'result') {
+                this.messages[data[i].topic].push(data[i]);
+              } else {
+                if (data[i].key === this.instanceName) {
+                  this.status = 'Push to Pump topic';
+                  this._clientService.addRecord('pump', this.pump).subscribe(
+                    dataSub => {
+                      console.log('Subscribe successfully', dataSub);
+                      this.status = 'Listening topic ' + data[i].key;
+                      this.subscribeTopic(data[i].value);
+                    },
+                    err => {
+                      console.log('Subscribe failed', err);
+                    }
+                  );
+                }
               }
-            };
+              ;
+            }
+          },
+          err => {
+            console.log('listen server failed');
           }
-        },
-        err => {
-          console.log('listen server failed');
-        }
-      );
+        );
+      }
     }, 2000);
   }
 
@@ -147,12 +196,12 @@ export class ClientComponent implements OnInit {
 
   onSingleSelected(item) {
     console.log('selected single item', item.label);
-    this.logSingle('- selected (value: ' + item.value  + ', label:' +
+    this.logSingle('- selected (value: ' + item.value + ', label:' +
       item.label + ')');
   }
 
   onSingleDeselected(item) {
-    this.logSingle('- deselected (value: ' + item.value  + ', label:' +
+    this.logSingle('- deselected (value: ' + item.value + ', label:' +
       item.label + ')');
   }
 
@@ -175,16 +224,21 @@ export class ClientComponent implements OnInit {
           'user': this.instanceName
         }
       }
-    }
+    };
     this.input.records.push(record);
-    console.log('selected item', this.input);
-    this.logMultiple('- selected (value: ' + item.value  + ', label:' +
-      item.label + ')');
+    console.log('=====> selected item', this.input);
   }
 
   onMultipleDeselected(item) {
-    this.logMultiple('- deselected (value: ' + item.value  + ', label:' +
-      item.label + ')');
+    console.log('====> Delete item', item);
+    const newRecords = [];
+    for ( let i = 0; i < this.input.records.length; i++){
+      if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
+          newRecords.push(this.input.records[i]);
+      }
+      this.input.records = newRecords;
+    }
+    console.log('===> Selected item', this.input);
   }
 
   private logSingle(msg: string) {
