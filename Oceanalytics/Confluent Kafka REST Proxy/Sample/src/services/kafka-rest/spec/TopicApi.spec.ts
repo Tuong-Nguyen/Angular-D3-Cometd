@@ -6,7 +6,6 @@ import {HttpModule} from '@angular/http';
 import {async, TestBed} from '@angular/core/testing';
 import {ProduceMessages} from './../model/ProduceMessages';
 import {Record} from './../model/Record';
-import * as HttpTestErrorHandlers from './HttpTestErrorHandlers';
 import * as SystemInfo from './SystemInfo';
 
 
@@ -51,7 +50,10 @@ describe('TopicApi', () => {
           expect(response).toContain('__consumer_offsets');
           done();
         },
-        HttpTestErrorHandlers.failOnError);
+        error => {
+          fail();
+          done();
+        });
     });
   });
 });
