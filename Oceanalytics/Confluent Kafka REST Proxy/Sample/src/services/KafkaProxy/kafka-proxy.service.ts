@@ -10,10 +10,12 @@ import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 import {RecordInfo} from '../kafka-rest/model/RecordInfo';
 import {ConsumerRequest} from '../kafka-rest/model/ConsumerRequest';
 
+
 @Injectable()
 export class KafkaProxyService {
   private topicApi: TopicApi;
   private consumerApi: ConsumerApi;
+  public instanceId: string;
   public readonly SubscribedTopics: string[];
   public readonly Configuration: KafkaProxyConfiguration;
 
@@ -21,6 +23,7 @@ export class KafkaProxyService {
     this.topicApi = topicApi;
     this.consumerApi = consumerApi;
     this.SubscribedTopics = [];
+    this.instanceId = '';
 
     if (configuration) {
       this.Configuration = configuration;
@@ -55,7 +58,9 @@ export class KafkaProxyService {
 
     const groupName = consumerRequest.name;
     return this.consumerApi.createInstanceToGroup(groupName, consumerRequest)
-      .map(response => response.instance_id)
+      .map(response => {
+        return response.instance_id;
+      })
       .catch((error: Response) => {
         if (error.status === 409) {
           return Observable.of(consumerRequest.name);
@@ -65,6 +70,26 @@ export class KafkaProxyService {
       })
       .flatMap((name) => this.consumerApi.subscribesTopics(groupName, name, {topics: [topicName]}))
       .flatMap(item => this.consumerApi.fetchData(groupName, consumerRequest.name));
+  }
+
+  public createConsumerInstance(): Observable<string> {
+    const consumerRequest = this.getConsumerRequest();
+    return this.consumerApi.createInstanceToGroup('KafkaProxy', consumerRequest)
+      .map(response => {
+        this.instanceId = response.instance_id;
+        return response.instance_id;
+      })
+      .catch((error: Response) => {
+        if (error.status === 409) {
+          return Observable.of(this.instanceId);
+        } else {
+          Observable.throw(error.status);
+        }
+      });
+  }
+
+  public fetch(): Observable<Array<RecordInfo>> {
+    return null;
   }
 
   /**
@@ -83,7 +108,7 @@ export class KafkaProxyService {
     }
 
     const consumerRequest = {
-      name: 'ConsumerTest',
+      name: this.instanceId,
       format: 'json',
       'auto.offset.reset': autoOffsetReset,
       'auto.commit.enable': autoCommitEnable
