@@ -52,8 +52,8 @@ export class ClientComponent implements OnInit {
     value: 'SoDagentbyaccountmeasuresproducer',
     label: 'SoDagentbyaccountmeasuresproducer'
   }, {
-    value: 'SoDagentbyroutingservicemeasuresproducer',
-    label: 'SoDagentbyroutingservicemeasuresproducer'
+    value: 'SoDroutingservicemeasuresproducer',
+    label: 'SoDroutingservicemeasuresproducer'
   }, {
     value: 'MWagentmeasuresproducer',
     label: 'MWagentmeasuresproducer'
@@ -90,7 +90,7 @@ export class ClientComponent implements OnInit {
     const instance = {
       'name': this.instanceName,
       'format': 'json',
-      'auto.offset.reset': 'latest', // earliest or latest
+      'auto.offset.reset': 'earliest', // earliest or latest
       'auto.commit.enable': 'false'
     };
 
@@ -143,11 +143,14 @@ export class ClientComponent implements OnInit {
   }
 
   listen(): any {
+    let flag = true;
     setInterval(() => {
-      if (this.isReady === true) {
+      if (this.isReady === true && flag) {
+        flag = false;
         console.log(this.urlInstance);
         this._clientService.getRecord(this.urlInstance).subscribe(
           data => {
+            flag = true;
             console.log('listening server .....', data);
             for (let i = 0; i < data.length; i++) {
               if (data[i].key === this.instanceName && data[i].topic !== environment.result) {
@@ -237,7 +240,7 @@ export class ClientComponent implements OnInit {
     console.log('===> After delete ', this.listTopics);
 
 
-    //SUBSCRIBE TOPIC AGAIN
+    // SUBSCRIBE TOPIC AGAIN
     // Call Service
     this._clientService.subscribeTopic(this.urlInstance, this.listTopics).subscribe(
       data => {

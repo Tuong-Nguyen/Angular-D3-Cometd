@@ -53,7 +53,7 @@ export class ServerComponent implements OnInit, OnChanges {
     let data = {
       'name': this.instanceName,
       'format': 'json',
-      'auto.offset.reset': 'latest', // earliest
+      'auto.offset.reset': 'latest', // earliest latest
       'auto.commit.enable': 'false'
     };
     // Call Service
@@ -100,15 +100,18 @@ export class ServerComponent implements OnInit, OnChanges {
   fetchData(): any {
     // Code here
     if (this.isReady === true && this.urlInstance != '' && this.flag === true) {
-    	this.records = [];
+      this.records = [];
+      let flag = true;
       this.timer = setInterval(() => {
-        if (!this.isPending) {
+        if (!this.isPending && flag) {
+          flag = false;
           this.isPending = true;
           let arrayUrl: any[];
           this.isDisplay = true;
           // Call service
           this._serverService.getRecords(this.urlInstance).subscribe(
             data => {
+              flag = true;
               console.log('===Get records success===');
               console.log(data);
               let topicName = '';
@@ -202,7 +205,7 @@ export class ServerComponent implements OnInit, OnChanges {
                   for (var i = 0; i < this.arrTopicName.length; i++) {
                     this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
                     this.dtrs.records[0].value.time = dttime;
-                    console.log('============> push messge to topic: ',this.arrTopicName[i]);
+                    console.log('============> push messge to topic: ', this.arrTopicName[i]);
                     this._serverService.addRecord(this.arrTopicName[i], this.dtrs).subscribe(
                       res1 => {
                         console.log('===Add new message to topic===');
