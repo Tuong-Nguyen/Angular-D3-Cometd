@@ -10,6 +10,7 @@ import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 import {RecordInfo} from '../kafka-rest/model/RecordInfo';
 import {ConsumerRequest} from '../kafka-rest/model/ConsumerRequest';
 import {poll} from '../ReactiveXUtils';
+import {TopicSubscriptionRequest} from '../kafka-rest/model/TopicSubscriptionRequest';
 
 
 @Injectable()
@@ -101,11 +102,12 @@ export class KafkaProxyService {
    * @returns {Observable<R|T>}
    */
   public subscribeTopics(): Observable<{}> {
-    return this.consumerApi.subscribesTopics(this.groupName, this.instanceId, this.SubscribedTopics)
+    const topicSubscriptionRequest: TopicSubscriptionRequest = {topics: this.SubscribedTopics};
+
+    return this.consumerApi.subscribesTopics(this.groupName, this.instanceId, topicSubscriptionRequest)
       .catch((error: Response) => {
         if (error.status === 404) {
-          return this.createConsumerInstance().ignoreElements().concat(this.consumerApi.subscribesTopics(this.groupName,
-            this.instanceId, this.SubscribedTopics));
+          return this.createConsumerInstance().ignoreElements().concat(this.subscribeTopics());
         } else {
           return Observable.throw(error);
         }
@@ -117,12 +119,12 @@ export class KafkaProxyService {
    * @returns {Observable<R|T>}
    */
   public fetch(): Observable<Array<RecordInfo>> {
-    return this.consumerApi.fetchData(this.groupName, this.instanceId)
+    return this.consumerApi.fetchData(this.groupName, this.instanceId, this.Configuration.PollingInterval)
       .catch((error: Response) => {
         if (error.status === 404) {
           return this.createConsumerInstance().ignoreElements()
-            .concat(this.consumerApi.subscribesTopics(this.groupName, this.instanceId, this.SubscribedTopics)).ignoreElements()
-            .concat(this.consumerApi.fetchData(this.groupName, this.instanceId));
+            .concat(this.subscribeTopics()).ignoreElements()
+            .concat(this.fetch());
         } else {
           return Observable.throw(error);
         }
@@ -154,12 +156,18 @@ export class KafkaProxyService {
         autoOffsetReset = 'latest';
     }
 
-    const consumerRequest = {
-      name: this.instanceId,
+    let consumerRequest: ConsumerRequest;
+
+    consumerRequest = {
       format: 'json',
       'auto.offset.reset': autoOffsetReset,
       'auto.commit.enable': autoCommitEnable
     };
+
+    if (this.instanceId) {
+      consumerRequest.name = this.instanceId;
+    }
+
     return consumerRequest;
   }
 }
