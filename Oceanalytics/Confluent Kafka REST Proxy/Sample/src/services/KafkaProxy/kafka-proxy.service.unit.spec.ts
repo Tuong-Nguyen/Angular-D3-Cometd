@@ -3,8 +3,8 @@ import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 import {TopicApi} from '../kafka-rest/api/TopicApi';
 import {Observable} from 'rxjs/Rx';
 import {ConsumerResponse} from '../kafka-rest/model/ConsumerResponse';
-import {AutoOffsetResetEnum} from "./auto-offset-reset-enum.enum";
-import {KafkaProxyConfiguration} from "./kafka-configuration";
+import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
+import {KafkaProxyConfiguration} from './kafka-configuration';
 /**
  * Created by nctuong on 5/10/2017.
  */
@@ -163,6 +163,48 @@ fdescribe('KafkaProxyService - UnitTest', () => {
 
       expect(mockConsumerApi.createInstanceToGroup).not.toHaveBeenCalled();
       expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('#poll', () => {
+    it('call consumerApi fetchData every interval', (done) => {
+      service = new KafkaProxyService(mockTopicApi, mockConsumerApi, {
+        PollingInterval: 10,
+        AutoCommitEnable: true,
+        AutoOffsetReset: AutoOffsetResetEnum.Latest
+      });
+
+      let index = 0;
+      const returnedItems = [];
+
+      spyOn(mockConsumerApi, 'fetchData').and.callFake(() => {
+        index = index + 1;
+        return Observable.from([[{value: index}]]);
+      });
+
+      service.poll()
+        .take(10)
+        .timestamp()
+        .reduce((acc, item, index) => {
+          acc.push({value: item.value[0].value, timestamp: item.timestamp});
+          return acc;
+        }, returnedItems)
+        .subscribe(
+          items => {
+            expect(returnedItems.length).toBe(10);
+            for (let i = 0; i < returnedItems.length; i++) {
+              expect(returnedItems[i].value).toBe(i + 1);
+              if (i > 0) {
+                expect(returnedItems[i].timestamp - returnedItems[i - 1].timestamp).toBeGreaterThanOrEqual(10);
+              }
+            }
+            done();
+          },
+          error => {
+            fail();
+            done();
+          }
+        );
     });
   });
 });

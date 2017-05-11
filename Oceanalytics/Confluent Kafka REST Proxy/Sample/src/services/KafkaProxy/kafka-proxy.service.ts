@@ -9,6 +9,7 @@ import {OffsetWithAvroSchema} from '../kafka-rest/model/OffsetWithAvroSchema';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 import {RecordInfo} from '../kafka-rest/model/RecordInfo';
 import {ConsumerRequest} from '../kafka-rest/model/ConsumerRequest';
+import {poll} from '../ReactiveXUtils';
 
 
 @Injectable()
@@ -131,6 +132,16 @@ export class KafkaProxyService {
         } else {
           return Observable.throw(error);
         }});
+  }
+
+  /**
+   * Polling data in an interval
+   * @returns {Observable<Array<RecordInfo>>}
+   */
+  public poll(): Observable<Array<RecordInfo>> {
+    return poll(this.Configuration.PollingInterval, () => {
+      return this.fetch();
+    });
   }
 
   /**
