@@ -55,11 +55,24 @@ export class KafkaProxyService {
     return this.topicApi.produceMessageToTopic(topicName, records);
   }
 
-  public subscribe(topicName: string) {
+  public addTopic(topicName: string) {
     if (this.SubscribedTopics.indexOf(topicName) < 0) {
       this.SubscribedTopics.push(topicName);
 
-      // Todo: subscribe if already subscribing
+      if (this.instanceId !== '') {
+        this.subscribeTopics().subscribe();
+      }
+    }
+  }
+
+  public removeTopic(topicName: string) {
+    const index = this.SubscribedTopics.indexOf(topicName);
+    if (index > -1) {
+      this.SubscribedTopics.splice(index, 1);
+
+      if (this.instanceId !== '') {
+        this.subscribeTopics().subscribe();
+      }
     }
   }
 
@@ -128,10 +141,11 @@ export class KafkaProxyService {
         if (error.status === 404) {
           return this.createConsumerInstance().ignoreElements()
             .concat(this.consumerApi.subscribesTopics(this.groupName, this.instanceId, this.SubscribedTopics)).ignoreElements()
-              .concat(this.consumerApi.fetchData(this.groupName, this.instanceId));
+            .concat(this.consumerApi.fetchData(this.groupName, this.instanceId));
         } else {
           return Observable.throw(error);
-        }});
+        }
+      });
   }
 
   /**

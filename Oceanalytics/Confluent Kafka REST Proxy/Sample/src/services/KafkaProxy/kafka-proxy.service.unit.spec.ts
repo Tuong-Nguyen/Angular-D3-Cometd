@@ -20,9 +20,64 @@ fdescribe('KafkaProxyService - UnitTest', () => {
     service = new KafkaProxyService(mockTopicApi, mockConsumerApi, null);
   });
 
-  describe('#subscribe', () => {
-    it('same id', () => {
+  describe('#addTopic', () => {
+    it('when Consumer Instance is not created yet, do not call Consumer Api subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'subscribesTopics');
+      service.addTopic('test');
+      expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
+    });
 
+    it('when Consumer Instance is already created, call Consumer Api subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+      service.createConsumerInstance()
+        .subscribe();
+      service.addTopic('test');
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalled();
+    });
+
+    it('when Consumer Instance is already created and topic was added, do not call Consumer Api subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+      service.createConsumerInstance()
+        .subscribe();
+      service.addTopic('test');
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalled();
+
+      service.addTopic('test');
+
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('#removeTopic', () => {
+    it('when Consumer Instance is not created yet, do not call Consumer Api subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'subscribesTopics');
+      service.addTopic('test');
+
+      service.removeTopic('test');
+      expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
+    });
+
+    it('when Consumer Instance is already created, call Consumer Api subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+      service.createConsumerInstance()
+        .subscribe();
+      service.addTopic('test');
+
+      service.removeTopic('test');
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(2);
+    });
+
+    it('when Consumer Instance is already created and topic does not exist, do not call Consumer Api subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+      service.createConsumerInstance()
+        .subscribe();
+      service.removeTopic('test');
+
+      expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
     });
   });
 
