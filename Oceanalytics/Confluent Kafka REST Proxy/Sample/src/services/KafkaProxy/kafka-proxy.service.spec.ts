@@ -6,8 +6,6 @@ import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {BASE_PATH} from '../kafka-rest/variables';
 import {KafkaProxyConfiguration} from './kafka-configuration';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
-import {ArrayMatcher} from '../../tests/utils/array-matcher';
-
 
 describe('KafkaProxyService', () => {
   let service: KafkaProxyService;
@@ -73,34 +71,28 @@ describe('KafkaProxyService', () => {
     }, 2000);
   });
 
-  describe('#readData', () => {
-    it('data', (done) => {
-      service.readData('TestTopic')
+  fdescribe('#poll', () => {
+    it('can read data', (done) => {
+      service.addTopic('TestTopic');
+      service.addTopic('TestTopic1');
+      const subscription = service.poll()
+        .take(5)
         .subscribe(
-          result => {
-            console.log(result);
-            expect(result.length).toBeGreaterThanOrEqual(0);
-            done();
+          data => {
+            console.log(data);
+            service.sendData('TestTopic', 10)
+              .subscribe();
+            service.sendData('TestTopic1', 11)
+              .subscribe();
           },
           error => {
             fail(error);
             done();
+          },
+          () => {
+            done();
           }
         );
-    }, 50000);
+    }, 60000);
   });
-
-  fdescribe('#addTopic', () => {
-    it('new topic will add the topic into the list', () => {
-      service.addTopic('test');
-      expect(ArrayMatcher.isSame(service.SubscribedTopics, ['test'])).toBeTruthy();
-    });
-
-    it('topic which was subcribed do not add the topic', () => {
-      service.addTopic('test');
-      service.addTopic('test');
-      expect(ArrayMatcher.isSame(service.SubscribedTopics, ['test'])).toBeTruthy();
-    });
-  });
-
 });
