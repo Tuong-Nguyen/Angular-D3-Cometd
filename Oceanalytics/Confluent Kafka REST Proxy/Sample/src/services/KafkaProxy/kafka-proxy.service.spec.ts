@@ -89,18 +89,4 @@ describe('KafkaProxyService', () => {
         );
     }, 50000);
   });
-
-  fdescribe('#addTopic', () => {
-    it('new topic will add the topic into the list', () => {
-      service.addTopic('test');
-      expect(ArrayMatcher.isSame(service.SubscribedTopics, ['test'])).toBeTruthy();
-    });
-
-    it('topic which was subcribed do not add the topic', () => {
-      service.addTopic('test');
-      service.addTopic('test');
-      expect(ArrayMatcher.isSame(service.SubscribedTopics, ['test'])).toBeTruthy();
-    });
-  });
-
 });
