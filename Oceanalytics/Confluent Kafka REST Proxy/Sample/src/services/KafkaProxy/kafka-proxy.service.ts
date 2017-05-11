@@ -76,25 +76,6 @@ export class KafkaProxyService {
     }
   }
 
-  public readData(topicName: string): Observable<Array<RecordInfo>> {
-    const consumerRequest = this.getConsumerRequest();
-
-    const groupName = consumerRequest.name;
-    return this.consumerApi.createInstanceToGroup(groupName, consumerRequest)
-      .map(response => {
-        return response.instance_id;
-      })
-      .catch((error: Response) => {
-        if (error.status === 409) {
-          return Observable.of(consumerRequest.name);
-        } else {
-          Observable.throw(error.status);
-        }
-      })
-      .flatMap((name) => this.consumerApi.subscribesTopics(groupName, name, {topics: [topicName]}))
-      .flatMap(item => this.consumerApi.fetchData(groupName, consumerRequest.name));
-  }
-
   /**
    * Create a consumer instance - reuse if already exists.
    * @returns {Observable<R|T>}
@@ -182,3 +163,4 @@ export class KafkaProxyService {
     return consumerRequest;
   }
 }
+
