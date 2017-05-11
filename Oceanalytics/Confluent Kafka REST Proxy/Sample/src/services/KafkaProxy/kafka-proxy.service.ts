@@ -31,8 +31,15 @@ export class KafkaProxyService {
       this.Configuration = configuration;
     } else {
       this.Configuration = new KafkaProxyConfiguration();
+    }
+    if (!this.Configuration.AutoOffsetReset) {
       this.Configuration.AutoOffsetReset = AutoOffsetResetEnum.Latest;
+    }
+    if (!this.Configuration.AutoCommitEnable) {
       this.Configuration.AutoCommitEnable = true;
+    }
+    if (!this.Configuration.PollingInterval) {
+      this.Configuration.PollingInterval = 1000;
     }
   }
 

@@ -3,11 +3,13 @@ import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
 import {TopicApi} from '../kafka-rest/api/TopicApi';
 import {Observable} from 'rxjs/Rx';
 import {ConsumerResponse} from '../kafka-rest/model/ConsumerResponse';
+import {AutoOffsetResetEnum} from "./auto-offset-reset-enum.enum";
+import {KafkaProxyConfiguration} from "./kafka-configuration";
 /**
  * Created by nctuong on 5/10/2017.
  */
 
-describe('KafkaProxyService - UnitTest', () => {
+fdescribe('KafkaProxyService - UnitTest', () => {
   let service: KafkaProxyService;
   let mockTopicApi: TopicApi;
   let mockConsumerApi: ConsumerApi;
@@ -24,7 +26,26 @@ describe('KafkaProxyService - UnitTest', () => {
     });
   });
 
-  fdescribe('#fetch', () => {
+  describe('#constructor', () => {
+    it('with null Configuration use default configuration: PollingInterval = 1000 - AutoOffsetReset = Latest - AutoCommitEnable = true',
+      () => {
+        service = new KafkaProxyService(mockTopicApi, mockConsumerApi, null);
+        expect(service.Configuration.PollingInterval).toBe(1000);
+        expect(service.Configuration.AutoOffsetReset).toBe(AutoOffsetResetEnum.Latest);
+        expect(service.Configuration.AutoCommitEnable).toBe(true);
+      });
+
+    it('Configuration does not define properties, use PollingInterval = 1000 - AutoOffsetReset = Latest - AutoCommitEnable = true',
+      () => {
+        const configuration = new KafkaProxyConfiguration();
+        service = new KafkaProxyService(mockTopicApi, mockConsumerApi, null);
+        expect(service.Configuration.PollingInterval).toBe(1000);
+        expect(service.Configuration.AutoOffsetReset).toBe(AutoOffsetResetEnum.Latest);
+        expect(service.Configuration.AutoCommitEnable).toBe(true);
+      });
+  });
+
+  describe('#fetch', () => {
     describe('#createInstance', () => {
       it('instance id in response is used after that', () => {
         spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
@@ -145,4 +166,6 @@ describe('KafkaProxyService - UnitTest', () => {
     });
   });
 });
+
+
 
