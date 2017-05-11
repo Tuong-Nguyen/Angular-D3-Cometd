@@ -110,8 +110,20 @@ export class KafkaProxyService {
       });
   }
 
+  /**
+   * Fetch data
+   * @returns {Observable<R|T>}
+   */
   public fetch(): Observable<Array<RecordInfo>> {
-    return null;
+    return this.consumerApi.fetchData(this.groupName, this.instanceId)
+      .catch((error: Response) => {
+        if (error.status === 404) {
+          return this.createConsumerInstance().ignoreElements()
+            .concat(this.consumerApi.subscribesTopics(this.groupName, this.instanceId, this.SubscribedTopics)).ignoreElements()
+              .concat(this.consumerApi.fetchData(this.groupName, this.instanceId));
+        } else {
+          return Observable.throw(error);
+        }});
   }
 
   /**
