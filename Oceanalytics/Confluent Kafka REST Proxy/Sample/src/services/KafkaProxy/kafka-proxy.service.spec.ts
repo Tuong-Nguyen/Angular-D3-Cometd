@@ -87,6 +87,7 @@ describe('KafkaProxyService', () => {
           },
           error => {
             fail(error);
+            done();
           },
           () => {
             done();
