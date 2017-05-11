@@ -25,31 +25,34 @@ describe('KafkaProxyService - UnitTest', () => {
   });
 
   fdescribe('#fetch', () => {
-    it('#createInstance', () => {
-      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
-        instance_id: 'id',
-        base_uri: 'base_uri'
-      }]));
-      service.createConsumerInstance()
-        .subscribe();
+    describe('#createInstance', () => {
+      it('instance id in response is used after that', () => {
+        spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
+          instance_id: 'id',
+          base_uri: 'base_uri'
+        }]));
+        service.createConsumerInstance()
+          .subscribe();
 
-      expect(service.instanceId).toBe('id');
+        expect(service.instanceId).toBe('id');
+      });
+
+      it('called the second time with ID from the first result', () => {
+        spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
+          instance_id: 'id',
+          base_uri: 'base_uri'
+        }]));
+        service.createConsumerInstance()
+          .subscribe();
+
+        service.createConsumerInstance()
+          .subscribe();
+
+        expect((mockConsumerApi.createInstanceToGroup as any).calls.argsFor(1)[1].name).toBe('id');
+        expect(service.instanceId).toBe('id');
+      });
     });
 
-    it('#createInstance called the second time with ID from the first result', () => {
-      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
-        instance_id: 'id',
-        base_uri: 'base_uri'
-      }]));
-      service.createConsumerInstance()
-        .subscribe();
-
-      service.createConsumerInstance()
-        .subscribe();
-
-      expect((mockConsumerApi.createInstanceToGroup as any).calls.argsFor(1)[1].name).toBe('id');
-      expect(service.instanceId).toBe('id');
-    });
 
     describe('#subscribeTopics', () => {
       it('will create the consumer instance automatically if it does not exist', () => {
