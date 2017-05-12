@@ -119,16 +119,22 @@ export class KafkaProxyService {
    * @returns {Observable<R|T>}
    */
   public fetch(): Observable<Array<RecordInfo>> {
-    return this.consumerApi.fetchData(this.groupName, this.instanceId, this.Configuration.PollingInterval)
-      .catch((error: Response) => {
-        if (error.status === 404) {
-          return this.createConsumerInstance().ignoreElements()
-            .concat(this.callSubscribeTopics()).ignoreElements()
-            .concat(this.callFetch());
-        } else {
-          return Observable.throw(error);
-        }
-      });
+    if (this.instanceId) {
+      return this.consumerApi.fetchData(this.groupName, this.instanceId, this.Configuration.PollingInterval)
+        .catch((error: Response) => {
+          if (error.status === 404) {
+            return this.createConsumerInstance().ignoreElements()
+              .concat(this.callSubscribeTopics()).ignoreElements()
+              .concat(this.callFetch());
+          } else {
+            return Observable.throw(error);
+          }
+        });
+    } else {
+      return this.createConsumerInstance().ignoreElements()
+        .concat(this.callSubscribeTopics()).ignoreElements()
+        .concat(this.callFetch());
+    }
   }
 
   private callSubscribeTopics(): Observable<{}> {
@@ -145,9 +151,7 @@ export class KafkaProxyService {
    */
   public poll(): Observable<Array<RecordInfo>> {
     return poll(this.Configuration.PollingInterval, () => {
-      return this.createConsumerInstance().ignoreElements()
-        .concat(this.callSubscribeTopics()).ignoreElements()
-        .concat(this.fetch());
+      return this.fetch();
     });
   }
 

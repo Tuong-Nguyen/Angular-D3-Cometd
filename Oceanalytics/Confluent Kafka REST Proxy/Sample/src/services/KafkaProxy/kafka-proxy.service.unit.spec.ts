@@ -167,6 +167,8 @@ describe('KafkaProxyService - UnitTest', () => {
     });
 
     it('get data from consumerApi', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
       spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.from([[{topic: 'test', value: '123'}]]));
 
       service.fetch()
@@ -178,27 +180,7 @@ describe('KafkaProxyService - UnitTest', () => {
         );
     });
 
-    // fit('when consumer instance is not created, create it first then subscribesTopics', () => {
-    //   spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([[{instance_id: 'test'}]]));
-    //   spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
-    //   spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.of([]));
-    //
-    //   service.fetch()
-    //     .subscribe(
-    //       item => {
-    //       },
-    //       error => {
-    //       }
-    //     );
-    //
-    //   expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
-    //   expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledWith(jasmine.any(Object), 'test');
-    //   expect(mockConsumerApi.fetchData).toHaveBeenCalledWith(jasmine.any(Object), 'test');
-    //   expect(mockConsumerApi.fetchData).toHaveBeenCalledTimes(1);
-    // });
-
-
-    fit('when consumer instance is invalid, re-create the consumer instance and subscribesTopics', () => {
+    it('when consumer instance is invalid, re-create the consumer instance and subscribesTopics', () => {
       const mockResponse = new Response(null, {status: 404});
       spyOn(mockConsumerApi, 'fetchData').and.returnValues(Observable.throw(mockResponse), Observable.of([]));
       spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
@@ -209,15 +191,14 @@ describe('KafkaProxyService - UnitTest', () => {
 
       expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Object));
-      expect((mockConsumerApi.fetchData as any).calls.first().args[1]).toEqual('');
       expect((mockConsumerApi.fetchData as any).calls.mostRecent().args[1]).toEqual('test');
     });
 
     it('rethrow error when the error is not invalid consumer instance', () => {
       const mockResponse = new Response(null, {status: 500});
       spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.throw(mockResponse));
-      spyOn(mockConsumerApi, 'createInstanceToGroup');
-      spyOn(mockConsumerApi, 'subscribesTopics');
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
 
       service.fetch()
         .subscribe(
@@ -229,8 +210,27 @@ describe('KafkaProxyService - UnitTest', () => {
           }
         );
 
-      expect(mockConsumerApi.createInstanceToGroup).not.toHaveBeenCalled();
-      expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
+      expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalledTimes(1);
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(1);
+    });
+
+    it('when consumer instance is not created, create it first then subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+      spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.of([]));
+
+      service.fetch()
+        .subscribe(
+          item => {
+          },
+          error => {
+          }
+        );
+
+      expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalledTimes(1);
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Object));
+      expect(mockConsumerApi.fetchData).toHaveBeenCalledTimes(1);
+      expect(mockConsumerApi.fetchData).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Number));
     });
   });
 
