@@ -133,13 +133,7 @@ describe('KafkaProxyService - UnitTest', () => {
       it('will create the consumer instance automatically if it does not exist', () => {
         const mockResponse = new Response({}, {status: 404});
         // error on first call and success on the second
-        spyOn(mockConsumerApi, 'subscribesTopics').and.callFake(() => {
-          if ((mockConsumerApi.subscribesTopics as any).calls.count() === 1) {
-            return Observable.throw(mockResponse);
-          } else {
-            return Observable.from([{}]);
-          }
-        });
+        spyOn(mockConsumerApi, 'subscribesTopics').and.returnValues(Observable.throw(mockResponse), Observable.from([{}]));
         spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
           instance_id: 'id',
           base_uri: 'base_uri'
@@ -150,6 +144,9 @@ describe('KafkaProxyService - UnitTest', () => {
 
         expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
         expect(service.instanceId).toBe('id');
+        expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(2);
+        expect((mockConsumerApi.subscribesTopics as any).calls.first().args[1]).toBe('');
+        expect((mockConsumerApi.subscribesTopics as any).calls.mostRecent().args[1]).toBe('id');
       });
 
       it('throws error if it is not non-existing consumer instance error', () => {
