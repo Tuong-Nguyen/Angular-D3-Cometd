@@ -123,7 +123,7 @@ export class KafkaProxyService {
       .catch((error: Response) => {
         if (error.status === 404) {
           return this.createConsumerInstance().ignoreElements()
-            .concat(this.subscribeTopics()).ignoreElements()
+            .concat(this.callSubscribeTopics()).ignoreElements()
             .concat(this.fetch());
         } else {
           return Observable.throw(error);
@@ -131,13 +131,19 @@ export class KafkaProxyService {
       });
   }
 
+  private callSubscribeTopics(): Observable<{}> {
+    return Observable.of(1).flatMap( item => this.subscribeTopics());
+    };
+
   /**
    * Polling data in an interval
    * @returns {Observable<Array<RecordInfo>>}
    */
   public poll(): Observable<Array<RecordInfo>> {
     return poll(this.Configuration.PollingInterval, () => {
-      return this.fetch();
+      return this.createConsumerInstance().ignoreElements()
+        .concat(this.callSubscribeTopics()).ignoreElements()
+        .concat(this.fetch());
     });
   }
 
