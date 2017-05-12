@@ -212,6 +212,8 @@ describe('KafkaProxyService - UnitTest', () => {
 
       expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Object));
+      expect((mockConsumerApi.fetchData as any).calls.first().args[1]).toEqual('');
+      expect((mockConsumerApi.fetchData as any).calls.mostRecent().args[1]).toEqual('test');
     });
 
     it('rethrow error when the error is not invalid consumer instance', () => {

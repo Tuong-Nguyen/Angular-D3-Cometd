@@ -124,7 +124,7 @@ export class KafkaProxyService {
         if (error.status === 404) {
           return this.createConsumerInstance().ignoreElements()
             .concat(this.callSubscribeTopics()).ignoreElements()
-            .concat(this.fetch());
+            .concat(this.callFetch());
         } else {
           return Observable.throw(error);
         }
@@ -132,8 +132,12 @@ export class KafkaProxyService {
   }
 
   private callSubscribeTopics(): Observable<{}> {
-    return Observable.of(1).flatMap( item => this.subscribeTopics());
-    };
+    return Observable.of(1).flatMap(item => this.subscribeTopics());
+  };
+
+  private callFetch(): Observable<Array<RecordInfo>> {
+    return Observable.of(1).flatMap(item => this.fetch());
+  }
 
   /**
    * Polling data in an interval
