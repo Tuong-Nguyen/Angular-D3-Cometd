@@ -6,6 +6,7 @@ import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {BASE_PATH} from '../kafka-rest/variables';
 import {KafkaProxyConfiguration} from './kafka-configuration';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
+import {environment} from '../../environments/environment';
 
 describe('KafkaProxyService', () => {
   let service: KafkaProxyService;
@@ -17,7 +18,7 @@ describe('KafkaProxyService', () => {
         KafkaProxyService,
         TopicApi,
         ConsumerApi,
-        {provide: BASE_PATH, useValue: 'http://11.11.254.102:8082'}
+        {provide: BASE_PATH, useValue: environment.kafka_rest_proxy}
       ]
     });
     service = TestBed.get(KafkaProxyService);
