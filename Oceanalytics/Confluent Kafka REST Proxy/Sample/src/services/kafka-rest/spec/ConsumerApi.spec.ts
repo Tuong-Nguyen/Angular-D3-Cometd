@@ -3,12 +3,13 @@ import {HttpModule} from '@angular/http';
 import {ConsumerApi} from '../api/ConsumerApi';
 import {Observable} from 'rxjs/Rx';
 import * as SystemInfo from './SystemInfo';
+import {BASE_PATH} from '../variables';
 
 /**
  * Created by nctuong on 5/4/2017.
  */
 
-describe('ConsumerApi', () => {
+fdescribe('ConsumerApi', () => {
 
   const groupName = 'GroupTest';
   const instanceId = 'ConsumerTest';
@@ -17,7 +18,8 @@ describe('ConsumerApi', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpModule],
-      providers: [ConsumerApi]
+      providers: [ConsumerApi,
+        {provide: BASE_PATH, useValue: SystemInfo.kafka_rest_server}]
     }).compileComponents();
   }));
 
