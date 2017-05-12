@@ -10,7 +10,7 @@ import * as SystemInfo from './SystemInfo';
 import {BASE_PATH} from '../variables';
 
 
-fdescribe('TopicApi', () => {
+describe('TopicApi', () => {
   const topicName = SystemInfo.topicName;
 
   beforeEach(async(() => {
@@ -23,7 +23,7 @@ fdescribe('TopicApi', () => {
     }).compileComponents();
   }));
 
-  fdescribe('#produceMessageToTopic', () => {
+  describe('#produceMessageToTopic', () => {
 
     it('send a message return the offset of the message in the topic', (done) => {
       const service = TestBed.get(TopicApi);

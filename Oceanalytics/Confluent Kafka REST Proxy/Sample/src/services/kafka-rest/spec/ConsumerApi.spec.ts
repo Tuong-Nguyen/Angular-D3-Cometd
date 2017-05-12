@@ -9,7 +9,7 @@ import {BASE_PATH} from '../variables';
  * Created by nctuong on 5/4/2017.
  */
 
-fdescribe('ConsumerApi', () => {
+describe('ConsumerApi', () => {
 
   const groupName = 'GroupTest';
   const instanceId = 'ConsumerTest';
