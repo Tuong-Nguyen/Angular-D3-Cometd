@@ -9,7 +9,7 @@ import {KafkaProxyConfiguration} from './kafka-configuration';
  * Created by nctuong on 5/10/2017.
  */
 
-fdescribe('KafkaProxyService - UnitTest', () => {
+describe('KafkaProxyService - UnitTest', () => {
   let service: KafkaProxyService;
   let mockTopicApi: TopicApi;
   let mockConsumerApi: ConsumerApi;

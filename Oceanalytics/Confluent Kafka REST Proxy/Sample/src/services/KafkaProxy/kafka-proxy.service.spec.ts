@@ -71,7 +71,7 @@ describe('KafkaProxyService', () => {
     }, 2000);
   });
 
-  fdescribe('#poll', () => {
+  describe('#poll', () => {
     it('can read data', (done) => {
       service.addTopic('TestTopic');
       service.addTopic('TestTopic1');
