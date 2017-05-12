@@ -4,5 +4,6 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  kafka_rest_proxy: 'http://192.168.227.132:8082'
 };
