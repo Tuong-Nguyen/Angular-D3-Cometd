@@ -7,19 +7,23 @@ import {async, TestBed} from '@angular/core/testing';
 import {ProduceMessages} from './../model/ProduceMessages';
 import {Record} from './../model/Record';
 import * as SystemInfo from './SystemInfo';
+import {BASE_PATH} from '../variables';
 
 
-describe('TopicApi', () => {
+fdescribe('TopicApi', () => {
   const topicName = SystemInfo.topicName;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpModule],
-      providers: [TopicApi]
+      providers: [
+        TopicApi,
+        {provide: BASE_PATH, useValue: SystemInfo.kafka_rest_server}
+      ]
     }).compileComponents();
   }));
 
-  describe('#produceMessageToTopic', () => {
+  fdescribe('#produceMessageToTopic', () => {
 
     it('send a message return the offset of the message in the topic', (done) => {
       const service = TestBed.get(TopicApi);
@@ -38,6 +42,7 @@ describe('TopicApi', () => {
             done();
           },
           error => {
+            fail();
             done();
           });
     }, 5000);
