@@ -76,7 +76,7 @@ describe('KafkaProxyService', () => {
     it('can read data', (done) => {
       service.addTopic('TestTopic');
       service.addTopic('TestTopic1');
-      const subscription = service.poll()
+      service.poll()
         .take(5)
         .subscribe(
           data => {
@@ -87,6 +87,7 @@ describe('KafkaProxyService', () => {
               .subscribe();
           },
           error => {
+            console.log('#poll something to do' + error);
             fail(error);
             done();
           },
@@ -95,5 +96,29 @@ describe('KafkaProxyService', () => {
           }
         );
     }, 60000);
+
+    it('can unscribe data', (done) => {
+      service.addTopic('TestTopic');
+      service.addTopic('TestTopic1');
+      const subscription = service.poll()
+        .subscribe(
+          data => {
+            console.log(data);
+            service.sendData('TestTopic', 10)
+              .subscribe();
+            service.sendData('TestTopic1', 11)
+              .subscribe();
+          },
+          error => {
+            console.log('#poll something to do' + error);
+            fail(error);
+            done();
+          }
+        );
+      subscription.unsubscribe();
+      done();
+    }, 60000);
   });
 });
+
+

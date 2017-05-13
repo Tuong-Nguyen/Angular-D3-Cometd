@@ -236,6 +236,9 @@ describe('KafkaProxyService - UnitTest', () => {
 
   describe('#poll', () => {
     it('call consumerApi fetchData every interval', (done) => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+
       service = new KafkaProxyService(mockTopicApi, mockConsumerApi, {
         PollingInterval: 10,
         AutoCommitEnable: true,
@@ -269,7 +272,7 @@ describe('KafkaProxyService - UnitTest', () => {
             done();
           },
           error => {
-            fail();
+            fail(error);
             done();
           }
         );
