@@ -40,7 +40,6 @@ describe('#poll', () => {
       .subscribe(
         item => {
           subscription.unsubscribe();
-          console.log(finalItems);
           expect(finalItems.length).toBe(expectedItemCount);
 
           for (let i = 0; i < finalItems.length; i++) {

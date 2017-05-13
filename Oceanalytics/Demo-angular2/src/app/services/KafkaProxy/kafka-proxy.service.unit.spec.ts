@@ -9,7 +9,7 @@ import {KafkaProxyConfiguration} from './kafka-configuration';
  * Created by nctuong on 5/10/2017.
  */
 
-fdescribe('KafkaProxyService - UnitTest', () => {
+describe('KafkaProxyService - UnitTest', () => {
   let service: KafkaProxyService;
   let mockTopicApi: TopicApi;
   let mockConsumerApi: ConsumerApi;
@@ -133,13 +133,7 @@ fdescribe('KafkaProxyService - UnitTest', () => {
       it('will create the consumer instance automatically if it does not exist', () => {
         const mockResponse = new Response({}, {status: 404});
         // error on first call and success on the second
-        spyOn(mockConsumerApi, 'subscribesTopics').and.callFake(() => {
-          if ((mockConsumerApi.subscribesTopics as any).calls.count() === 1) {
-            return Observable.throw(mockResponse);
-          } else {
-            return Observable.from([{}]);
-          }
-        });
+        spyOn(mockConsumerApi, 'subscribesTopics').and.returnValues(Observable.throw(mockResponse), Observable.from([{}]));
         spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{
           instance_id: 'id',
           base_uri: 'base_uri'
@@ -150,6 +144,9 @@ fdescribe('KafkaProxyService - UnitTest', () => {
 
         expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
         expect(service.instanceId).toBe('id');
+        expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(2);
+        expect((mockConsumerApi.subscribesTopics as any).calls.first().args[1]).toBe('');
+        expect((mockConsumerApi.subscribesTopics as any).calls.mostRecent().args[1]).toBe('id');
       });
 
       it('throws error if it is not non-existing consumer instance error', () => {
@@ -170,6 +167,8 @@ fdescribe('KafkaProxyService - UnitTest', () => {
     });
 
     it('get data from consumerApi', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
       spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.from([[{topic: 'test', value: '123'}]]));
 
       service.fetch()
@@ -183,28 +182,23 @@ fdescribe('KafkaProxyService - UnitTest', () => {
 
     it('when consumer instance is invalid, re-create the consumer instance and subscribesTopics', () => {
       const mockResponse = new Response(null, {status: 404});
-      spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.throw(mockResponse));
-      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([[{instance_id: 'test'}]]));
+      spyOn(mockConsumerApi, 'fetchData').and.returnValues(Observable.throw(mockResponse), Observable.of([]));
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
       spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
 
       service.fetch()
-        .subscribe(
-          item => {
-            fail();
-          },
-          error => {
-          }
-        );
+        .subscribe();
 
       expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalled();
-      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalled();
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Object));
+      expect((mockConsumerApi.fetchData as any).calls.mostRecent().args[1]).toEqual('test');
     });
 
     it('rethrow error when the error is not invalid consumer instance', () => {
       const mockResponse = new Response(null, {status: 500});
       spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.throw(mockResponse));
-      spyOn(mockConsumerApi, 'createInstanceToGroup');
-      spyOn(mockConsumerApi, 'subscribesTopics');
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
 
       service.fetch()
         .subscribe(
@@ -216,13 +210,35 @@ fdescribe('KafkaProxyService - UnitTest', () => {
           }
         );
 
-      expect(mockConsumerApi.createInstanceToGroup).not.toHaveBeenCalled();
-      expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
+      expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalledTimes(1);
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(1);
+    });
+
+    it('when consumer instance is not created, create it first then subscribesTopics', () => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+      spyOn(mockConsumerApi, 'fetchData').and.returnValue(Observable.of([]));
+
+      service.fetch()
+        .subscribe(
+          item => {
+          },
+          error => {
+          }
+        );
+
+      expect(mockConsumerApi.createInstanceToGroup).toHaveBeenCalledTimes(1);
+      expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Object));
+      expect(mockConsumerApi.fetchData).toHaveBeenCalledTimes(1);
+      expect(mockConsumerApi.fetchData).toHaveBeenCalledWith(jasmine.any(String), 'test', jasmine.any(Number));
     });
   });
 
   describe('#poll', () => {
     it('call consumerApi fetchData every interval', (done) => {
+      spyOn(mockConsumerApi, 'createInstanceToGroup').and.returnValue(Observable.from([{instance_id: 'test'}]));
+      spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
+
       service = new KafkaProxyService(mockTopicApi, mockConsumerApi, {
         PollingInterval: 10,
         AutoCommitEnable: true,
@@ -256,7 +272,7 @@ fdescribe('KafkaProxyService - UnitTest', () => {
             done();
           },
           error => {
-            fail();
+            fail(error);
             done();
           }
         );

@@ -6,6 +6,7 @@ import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {BASE_PATH} from '../kafka-rest/variables';
 import {KafkaProxyConfiguration} from './kafka-configuration';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
+import {environment} from '../../environments/environment';
 
 describe('KafkaProxyService', () => {
   let service: KafkaProxyService;
@@ -17,7 +18,7 @@ describe('KafkaProxyService', () => {
         KafkaProxyService,
         TopicApi,
         ConsumerApi,
-        {provide: BASE_PATH, useValue: 'http://11.11.254.102:8082'}
+        {provide: BASE_PATH, useValue: environment.kafka_rest_proxy}
       ]
     });
     service = TestBed.get(KafkaProxyService);
@@ -71,11 +72,11 @@ describe('KafkaProxyService', () => {
     }, 2000);
   });
 
-  fdescribe('#poll', () => {
+  describe('#poll', () => {
     it('can read data', (done) => {
       service.addTopic('TestTopic');
       service.addTopic('TestTopic1');
-      const subscription = service.poll()
+      service.poll()
         .take(5)
         .subscribe(
           data => {
@@ -86,6 +87,7 @@ describe('KafkaProxyService', () => {
               .subscribe();
           },
           error => {
+            console.log('#poll something to do' + error);
             fail(error);
             done();
           },
@@ -94,5 +96,29 @@ describe('KafkaProxyService', () => {
           }
         );
     }, 60000);
+
+    it('can unscribe data', (done) => {
+      service.addTopic('TestTopic');
+      service.addTopic('TestTopic1');
+      const subscription = service.poll()
+        .subscribe(
+          data => {
+            console.log(data);
+            service.sendData('TestTopic', 10)
+              .subscribe();
+            service.sendData('TestTopic1', 11)
+              .subscribe();
+          },
+          error => {
+            console.log('#poll something to do' + error);
+            fail(error);
+            done();
+          }
+        );
+      subscription.unsubscribe();
+      done();
+    }, 60000);
   });
 });
+
+

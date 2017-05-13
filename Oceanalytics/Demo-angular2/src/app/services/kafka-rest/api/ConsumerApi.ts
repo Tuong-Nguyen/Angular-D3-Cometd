@@ -508,7 +508,6 @@ export class ConsumerApi {
       'application/vnd.kafka.json.v2+json'
     ];
 
-    headers.set('Content-Type', consumes);
     headers.set('Accept', produces);
 
     let requestOptions: RequestOptionsArgs = new RequestOptions({
