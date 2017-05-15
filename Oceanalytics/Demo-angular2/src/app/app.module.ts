@@ -11,6 +11,12 @@ import { ClientComponent } from './client/client.component';
 import { ServerComponent } from './server/server.component';
 
 import { ServerService } from './server/server.service';
+import { KafkaProxyService } from 'app/services/KafkaProxy/kafka-proxy.service';
+import { ConsumerApi } from 'app/services/kafka-rest/api/ConsumerApi';
+import { TopicApi } from 'app/services/kafka-rest/api/TopicApi';
+
+import { BASE_PATH } from 'app/services/kafka-rest/variables';
+import { environment } from 'environments/environment';
 
 @NgModule({
   declarations: [
@@ -25,7 +31,13 @@ import { ServerService } from './server/server.service';
     route,
     SelectModule
   ],
-  providers: [ServerService],
+  providers: [
+    ServerService,
+    KafkaProxyService,
+    ConsumerApi,
+    TopicApi, 
+    {provide: BASE_PATH, useValue: environment.kafka_rest_proxy}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

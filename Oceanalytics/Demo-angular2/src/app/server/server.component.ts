@@ -10,6 +10,8 @@ import {Record} from 'app/server/record';
 import {ServerService} from 'app/server/server.service';
 import {environment} from '../../environments/environment';
 
+import { KafkaProxyService } from '../services/KafkaProxy/kafka-proxy.service';
+
 @Component({
   selector: 'app-server',
   templateUrl: './server.component.html',
@@ -20,7 +22,7 @@ export class ServerComponent implements OnInit, OnChanges {
 
   newInstance: Consumer;
 
-  constructor(private _serverService: ServerService) {
+  constructor(private _serverService: ServerService, private _kafkaProxyService: KafkaProxyService) {
   }
 
   public datePipe = new DatePipe('en-US');
@@ -243,11 +245,36 @@ export class ServerComponent implements OnInit, OnChanges {
     );
   }
 
+    //New Code here
+  fData(): any {
+    //Pull data
+    this._kafkaProxyService.addTopic(environment.rsr);
+    this._kafkaProxyService.addTopic(environment.pump);
+    this._kafkaProxyService.poll().subscribe(
+     data => {
+        console.log("Poll Success");
+        console.log(data);
+        // this._kafkaProxyService.sendData().subscribe(
+        //    data => {
+        //     console.log('=====Send Data Success=====');
+        //     this.isReady = true;
+        //     this.status = 'Listening';
+        //   },
+        //   error => {
+        //     console.log('=====Subscription Fail=====');
+        //   }
+        // );
+
+      },
+      error => {
+        console.log('=====Poll Fail=====');
+      }
+    );
+  }
 
   ngOnInit(): void {
     this.createInstance();
-
-
+    // this.fData();
   }
 
   ngOnChanges() {

@@ -9,5 +9,6 @@ export const environment = {
   generalErr: 'Internal error',
   result: 'Realtimesubscriptionresponse',
   rsr: 'Realtimesubscriptionrequest',
-  pump: 'Realtimemeasurespumpuprequest'
+  pump: 'Realtimemeasurespumpuprequest',
+  kafka_rest_proxy: 'http://192.168.104.18:8082'
 };

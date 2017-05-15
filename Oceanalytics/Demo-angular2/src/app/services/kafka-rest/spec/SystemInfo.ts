@@ -1,4 +1,5 @@
-import {environment} from '../../../environments/environment';
+// import {environment} from '../../../environments/environment';
+import {environment} from 'environments/environment';
 /**
  * Created by nctuong on 5/5/2017.
  */
