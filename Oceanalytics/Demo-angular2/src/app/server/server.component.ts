@@ -1,4 +1,4 @@
-import {Component, OnInit, OnChanges, Pipe, PipeTransform} from '@angular/core';
+import {Component, OnInit, OnChanges} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Consumer} from 'app/server/consumer';
 import {ServerService} from 'app/server/server.service';
@@ -116,23 +116,19 @@ export class ServerComponent implements OnInit, OnChanges {
               if (data.length > 0) {
                 this.records = this.records.concat(data);
                 console.log(data);
-                // this.arrTopicName = [];
-                // this.arrLabelName = [];
+
                 for (let i = 0; i < data.length; i++) {
-                  if (data[i].value.pump === undefined) {
+                  if (data[i].value.pump === undefined) { // Receive message in Realtimesubscriptionrequest topic
                     this.status = 'Listening Pump';
                     this.flag = false;
-                    // this.tpName = topicName = data[i].value.subscriptionRequest.measuresStream;
+
                     topicName = data[i].value.subscriptionRequest.measuresStream;
 
                     console.log('topicName');
                     console.log(topicName);
 
-
                     this.arrTopicName.push(data[i].value.subscriptionRequest.measuresStream);
                     this.arrLabelName.push(data[i].value.kafkaTopicName);
-                    // console.log('arrTopicName');
-                    // console.log(this.arrTopicName);
 
                     this.dtrs = dataTmp1 = {
                       'records': [
@@ -163,10 +159,11 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
                     console.log(dataTmp2);
+
+                    // Send result message to Realtimesubscriptionresponse
                     this._serverService.addRecord(environment.result, dataTmp2).subscribe(
                       res2 => {
-                        console.log('===Add new message to topic result ===')
-                        ;
+                        console.log('===Add new message to topic result ===');
                         console.log(res2);
                       },
                       err2 => {
@@ -179,7 +176,7 @@ export class ServerComponent implements OnInit, OnChanges {
                     this.isPump = true;
                   }
                 }
-              } else {
+              } else { // Send realtime data
                 this.status = 'Sending';
                 console.log('Case else');
                 console.log('is pump: ' + this.isPump);
