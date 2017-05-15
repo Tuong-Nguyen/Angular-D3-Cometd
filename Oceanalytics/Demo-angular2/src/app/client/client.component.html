@@ -1,224 +1,111 @@
 <!-- Main content -->
 <section class="content">
-    <!-- Default box -->
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">Client Progress</h3>
+  <!-- Default box -->
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Client Progress</h3>
 
-      </div>
-      <div class="box-body">
-        <form role="form">
-          <!-- select -->
-          <div class="form-group">
-            <label>Measure topics</label>
-            <ng-select
-              [options]="options"
-              [multiple]="true"
-              placeholder="Select multiple"
-              (opened)="onMultipleOpened()"
-              (closed)="onMultipleClosed()"
-              (selected)="onMultipleSelected($event)"
-              (deselected)="onMultipleDeselected($event)">
-            </ng-select>
-          </div>
-          <button type="submit" class="btn btn-primary" [disabled]="input.records.length == 0" (click)="addRecord(env.rsr, input)">Submit</button>
-
-        </form>
-        <div class="box" style="margin-top: 30px;">
-          <div class="box-header">
-            <h3 class="box-title">Received Messages</h3>
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body no-padding">
-
-
-
-            <div class="row">
-              <div class="col-md-12">
-                <!-- Custom Tabs -->
-                <div class="nav-tabs-custom">
-                  <ul class="nav nav-tabs">
-                    <li class="active" [hidden]="!messages.SoDagentmeasuresproducer.length"><a href="#tab_1" data-toggle="tab">SoDagentmeasuresproducer</a></li>
-                    <li><a href="#tab_2" data-toggle="tab" [hidden]="messages.SoDagentbyaccountmeasuresproducer.length == 0">SoDagentbyaccountmeasuresproducer</a></li>
-                    <li><a href="#tab_3" data-toggle="tab" [hidden]="messages.SoDroutingservicemeasuresproducer.length == 0">SoDroutingservicemeasuresproducer</a></li>
-                    <li><a href="#tab_4" data-toggle="tab" [hidden]="messages.servermeasurespumpuprequest.length == 0">servermeasurespumpuprequest</a></li>
-                    <li><a href="#tab_5" data-toggle="tab" [hidden]="messages.MWagentmeasuresproducer.length == 0">MWagentmeasuresproducer</a></li>
-                    <li><a href="#tab_6" data-toggle="tab" [hidden]="messages.MWagentbyaccountmeasuresproducer.length == 0">MWagentbyaccountmeasuresproducer</a></li>
-                    <li><a href="#tab_7" data-toggle="tab" [hidden]="messages.MWroutingservicemeasuresproducer.length == 0">MWroutingservicemeasuresproducer</a></li>
-                    <li><a href="#tab_8" data-toggle="tab" [hidden]="messages.MWagentbyroutingservicemeasuresproducer.length == 0">MWagentbyroutingservicemeasuresproducer</a></li>
-                  </ul>
-                  <div class="tab-content">
-                    <div class="tab-pane active" id="tab_1">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.SoDagentmeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_2">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.SoDagentbyaccountmeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_3">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.SoDroutingservicemeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="tab-pane" id="tab_4">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.servermeasurespumpuprequest">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="tab-pane" id="tab_5">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.MWagentmeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="tab-pane" id="tab_6">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.MWagentbyaccountmeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="tab-pane" id="tab_7">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.MWroutingservicemeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="tab-pane" id="tab_8">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Task</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages.MWagentbyroutingservicemeasuresproducer">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
-                    </div>                  
-                    <!-- /.tab-pane -->
-                  </div>
-                  <!-- /.tab-content -->
-                </div>
-                <!-- nav-tabs-custom -->
-              </div>
-              <!-- /.col -->
-            </div>
-          </div>
-          <!-- /.box-body -->
-
-
+    </div>
+    <div class="box-body">
+      <form role="form">
+        <!-- select -->
+        <div class="form-group">
+          <label>Measure topics</label>
+          <ng-select
+            [options]="options"
+            [multiple]="true"
+            placeholder="Select multiple"
+            (opened)="onMultipleOpened()"
+            (closed)="onMultipleClosed()"
+            (selected)="onMultipleSelected($event)"
+            (deselected)="onMultipleDeselected($event)">
+          </ng-select>
         </div>
+        <button type="submit" class="btn btn-primary" [disabled]="input.records.length == 0"
+                (click)="addRecord(env.rsr, input)">Submit
+        </button>
+
+      </form>
+      <div class="box" style="margin-top: 30px;">
+        <div class="box-header">
+          <h3 class="box-title">Received Messages</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body no-padding">
+
+
+          <div class="row">
+            <div class="col-md-12">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active" [hidden]="!messages.SoDagentmeasuresproducer.length">
+                    <a href="#tab_1" data-toggle="tab">SoDagentmeasuresproducer</a>
+                  </li>
+                  <li><a href="#tab_2" data-toggle="tab"
+                         [hidden]="messages.SoDagentbyaccountmeasuresproducer.length == 0">SoDagentbyaccountmeasuresproducer</a>
+                  </li>
+                  <li><a href="#tab_3" data-toggle="tab"
+                         [hidden]="messages.SoDroutingservicemeasuresproducer.length == 0">SoDroutingservicemeasuresproducer</a>
+                  </li>
+                  <li><a href="#tab_4" data-toggle="tab"
+                         [hidden]="messages.servermeasurespumpuprequest.length == 0">servermeasurespumpuprequest</a>
+                  </li>
+                  <li><a href="#tab_5" data-toggle="tab"
+                         [hidden]="messages.MWagentmeasuresproducer.length == 0">MWagentmeasuresproducer</a>
+                  </li>
+                  <li><a href="#tab_6" data-toggle="tab"
+                         [hidden]="messages.MWagentbyaccountmeasuresproducer.length == 0">MWagentbyaccountmeasuresproducer</a>
+                  </li>
+                  <li><a href="#tab_7" data-toggle="tab"
+                         [hidden]="messages.MWroutingservicemeasuresproducer.length == 0">MWroutingservicemeasuresproducer</a>
+                  </li>
+                  <li><a href="#tab_8" data-toggle="tab"
+                         [hidden]="messages.MWagentbyroutingservicemeasuresproducer.length == 0">MWagentbyroutingservicemeasuresproducer</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                    <app-tabular-table
+                    [data]="messages.SoDagentmeasuresproducer"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_2">
+                    <app-tabular-table [data]="messages.SoDagentbyaccountmeasuresproducer"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_3">
+                    <app-tabular-table [data]="messages.SoDroutingservicemeasuresproducer"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_4">
+                    <app-tabular-table [data]="messages.servermeasurespumpuprequest"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_5">
+                    <app-tabular-table [data]="messages.MWagentmeasuresproducer"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_6">
+                    <app-tabular-table [data]="messages.MWagentbyaccountmeasuresproducer"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_7">
+                    <app-tabular-table [data]="messages.MWroutingservicemeasuresproducer"></app-tabular-table>
+                  </div>
+                  <div class="tab-pane" id="tab_8">
+                    <app-tabular-table [data]="messages.MWagentbyroutingservicemeasuresproducer"></app-tabular-table>
+                  </div>
+                </div>
+                <!-- /.tab-content -->
+              </div>
+              <!-- nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+          </div>
+        </div>
+        <!-- /.box-body -->
+
+
       </div>
     </div>
-    <!-- /.box -->
+  </div>
+  <!-- /.box -->
 
-  </section>
+</section>
 <!-- /.content -->
 

@@ -7,7 +7,6 @@ import {Component, Input} from '@angular/core';
 })
 export class TabularTableComponent {
 
-  @Input() public id: string;
   @Input() public data: Array<any>;
 
   constructor() { }
