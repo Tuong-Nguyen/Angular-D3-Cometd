@@ -153,11 +153,11 @@ export class ClientComponent implements OnInit {
             flag = true;
             console.log('listening server .....', data);
             for (let i = 0; i < data.length; i++) {
-              if (data[i].key === this.instanceName && data[i].topic !== environment.result) {
+              if (data[i].key === this.instanceName && data[i].topic !== environment.result) { // Realtime data
                 console.log('==========> push topic name ', data[i].topic);
                 this.messages[data[i].topic].push(data[i]);
               } else {
-                if (data[i].key === this.instanceName) {
+                if (data[i].key === this.instanceName) { // Realtimesubscriptionresponse data: Pump data
                   this.status = 'Push to Pump topic';
                   this._clientService.addRecord(environment.pump, this.pump).subscribe(
                     dataSub => {
@@ -170,8 +170,7 @@ export class ClientComponent implements OnInit {
                     }
                   );
                 }
-              }
-              ;
+              };
             }
           },
           err => {
@@ -192,13 +191,11 @@ export class ClientComponent implements OnInit {
 
   onSingleSelected(item) {
     console.log('selected single item', item.label);
-    this.logSingle('- selected (value: ' + item.value + ', label:' +
-      item.label + ')');
+    this.logSingle('- selected (value: ' + item.value + ', label:' + item.label + ')');
   }
 
   onSingleDeselected(item) {
-    this.logSingle('- deselected (value: ' + item.value + ', label:' +
-      item.label + ')');
+    this.logSingle('- deselected (value: ' + item.value + ', label:' + item.label + ')');
   }
 
   onMultipleOpened() {
@@ -228,12 +225,12 @@ export class ClientComponent implements OnInit {
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
-    this.listTopics.topics= [environment.result];
-    for ( let i = 0; i < this.input.records.length; i++){
+    this.listTopics.topics = [environment.result];
+    for ( let i = 0; i < this.input.records.length; i++) {
       if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
           newRecords.push(this.input.records[i]);
           this.listTopics.topics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
-          //REMOVE IN LISTTOPIC
+          // REMOVE IN LISTTOPIC
           }
       this.input.records = newRecords;
     }
