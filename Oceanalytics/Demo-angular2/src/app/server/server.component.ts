@@ -4,6 +4,8 @@ import {Consumer} from 'app/server/consumer';
 import {ServerService} from 'app/server/server.service';
 import {environment} from '../../environments/environment';
 
+import { KafkaProxyService } from '../services/KafkaProxy/kafka-proxy.service';
+
 @Component({
   selector: 'app-server',
   templateUrl: './server.component.html',
@@ -13,6 +15,9 @@ import {environment} from '../../environments/environment';
 export class ServerComponent implements OnInit, OnChanges {
 
   newInstance: Consumer;
+
+  constructor(private _serverService: ServerService, private _kafkaProxyService: KafkaProxyService) {
+  }
 
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
@@ -38,8 +43,6 @@ export class ServerComponent implements OnInit, OnChanges {
   public arrLabelName = [];
   private timer;
 
-  constructor(private _serverService: ServerService) {
-  }
 
   createInstance(): any {
     this.isDisplay = false;
@@ -99,6 +102,7 @@ export class ServerComponent implements OnInit, OnChanges {
         if (!this.isPending && flag) {
           flag = false;
           this.isPending = true;
+          let arrayUrl: any[];
           this.isDisplay = true;
           // Call service
           this._serverService.getRecords(this.urlInstance).subscribe(
@@ -231,6 +235,32 @@ export class ServerComponent implements OnInit, OnChanges {
     );
   }
 
+    //New Code here
+  fData(): any {
+    //Pull data
+    this._kafkaProxyService.addTopic(environment.rsr);
+    this._kafkaProxyService.addTopic(environment.pump);
+    this._kafkaProxyService.poll().subscribe(
+     data => {
+        console.log("Poll Success");
+        console.log(data);
+        // this._kafkaProxyService.sendData().subscribe(
+        //    data => {
+        //     console.log('=====Send Data Success=====');
+        //     this.isReady = true;
+        //     this.status = 'Listening';
+        //   },
+        //   error => {
+        //     console.log('=====Subscription Fail=====');
+        //   }
+        // );
+
+      },
+      error => {
+        console.log('=====Poll Fail=====');
+      }
+    );
+  }
 
   ngOnInit(): void {
     this.createInstance();

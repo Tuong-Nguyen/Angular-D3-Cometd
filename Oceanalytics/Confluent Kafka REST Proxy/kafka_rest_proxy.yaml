@@ -666,7 +666,7 @@ definitions:
         type: string
         description: The message key, formatted according to the embedded format
       value:
-        type: string
+        type: object
         description: The message value, formatted according to the embedded format
       partition:
         type: integer
