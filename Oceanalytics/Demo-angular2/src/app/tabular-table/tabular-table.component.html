@@ -1,0 +1,19 @@
+<div class="tab-pane active" id="tab_1">
+  <table class="table table-condensed">
+    <tr>
+      <th style="width: 10px">#</th>
+      <th>Instance Name</th>
+      <th>Task</th>
+      <th>Measure topics</th>
+      <th style="width: 40px">code</th>
+    </tr>
+    <tr *ngFor="let item of data">
+      <td [innerHtml]="$index"></td>
+      <td [innerHtml]="item.key"></td>
+      <td [innerHtml]="item.value.kafkaTopicName">
+      <td [innerHtml]="item.topic">
+      </td>
+      <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
+    </tr>
+  </table>
+</div>

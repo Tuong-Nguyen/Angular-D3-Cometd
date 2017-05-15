@@ -11,12 +11,14 @@ import { ClientComponent } from './client/client.component';
 import { ServerComponent } from './server/server.component';
 
 import { ServerService } from './server/server.service';
+import { TabularTableComponent } from './tabular-table/tabular-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ClientComponent,
-    ServerComponent
+    ServerComponent,
+    TabularTableComponent
   ],
   imports: [
     BrowserModule,
