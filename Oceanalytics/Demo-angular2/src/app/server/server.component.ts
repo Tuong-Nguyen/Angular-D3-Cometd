@@ -1,12 +1,6 @@
 import {Component, OnInit, OnChanges, Pipe, PipeTransform} from '@angular/core';
 import {DatePipe} from '@angular/common';
-
-import {Observable} from 'rxjs/Rx';
-
 import {Consumer} from 'app/server/consumer';
-
-import {Record} from 'app/server/record';
-
 import {ServerService} from 'app/server/server.service';
 import {environment} from '../../environments/environment';
 
@@ -19,9 +13,6 @@ import {environment} from '../../environments/environment';
 export class ServerComponent implements OnInit, OnChanges {
 
   newInstance: Consumer;
-
-  constructor(private _serverService: ServerService) {
-  }
 
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
@@ -47,10 +38,12 @@ export class ServerComponent implements OnInit, OnChanges {
   public arrLabelName = [];
   private timer;
 
+  constructor(private _serverService: ServerService) {
+  }
 
   createInstance(): any {
     this.isDisplay = false;
-    let data = {
+    const data = {
       'name': this.instanceName,
       'format': 'json',
       'auto.offset.reset': 'latest', // earliest latest
@@ -58,13 +51,13 @@ export class ServerComponent implements OnInit, OnChanges {
     };
     // Call Service
     this._serverService.createInstance(this.groupName, data).subscribe(
-      data => {
-        this.newInstance = data;
+      response => {
+        this.newInstance = response;
         console.log('====Create Instance Success======');
-        console.log(data);
+        console.log(response);
 
         // Change urlInstance
-        this.urlInstance = data.base_uri;
+        this.urlInstance = response.base_uri;
       },
       err => {
         console.log('====Create Instance Fail======');
@@ -80,7 +73,7 @@ export class ServerComponent implements OnInit, OnChanges {
         environment.rsr,
         environment.pump
       ]
-    }
+    };
     // Change status
     this.status = 'Subscribe';
     // Call Service
@@ -99,14 +92,13 @@ export class ServerComponent implements OnInit, OnChanges {
 
   fetchData(): any {
     // Code here
-    if (this.isReady === true && this.urlInstance != '' && this.flag === true) {
+    if (this.isReady === true && this.urlInstance !== '' && this.flag === true) {
       this.records = [];
       let flag = true;
       this.timer = setInterval(() => {
         if (!this.isPending && flag) {
           flag = false;
           this.isPending = true;
-          let arrayUrl: any[];
           this.isDisplay = true;
           // Call service
           this._serverService.getRecords(this.urlInstance).subscribe(
@@ -149,7 +141,7 @@ export class ServerComponent implements OnInit, OnChanges {
                           'value': data[i].value
                         }
                       ]
-                    }
+                    };
 
                     this._serverService.addRecord(topicName, dataTmp1).subscribe(
                       res1 => {
@@ -159,7 +151,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       err1 => {
                         console.log('===Add message fail 1===');
                       }
-                    )
+                    );
 
                     // push data to result topic
                     dataTmp2 = {
@@ -169,7 +161,7 @@ export class ServerComponent implements OnInit, OnChanges {
                           'value': topicName
                         }
                       ]
-                    }
+                    };
                     console.log(dataTmp2);
                     this._serverService.addRecord(environment.result, dataTmp2).subscribe(
                       res2 => {
@@ -180,10 +172,9 @@ export class ServerComponent implements OnInit, OnChanges {
                       err2 => {
                         console.log('===Add message fail 2===');
                       }
-                    )
+                    );
 
-                  }
-                  else {
+                  } else {
                     this.status = 'Ready';
                     this.isPump = true;
                   }
@@ -198,11 +189,11 @@ export class ServerComponent implements OnInit, OnChanges {
                 console.log(this.arrLabelName);
 
                 console.log(this.dtrs);
-                if (this.dtrs != '' && this.dtrs !== undefined && this.isPump == true) {
+                if (this.dtrs !== '' && this.dtrs !== undefined && this.isPump === true) {
                   console.log(this.dtrs);
-                  var dttime = this.datePipe.transform(new Date(), 'HHmmss');
+                  const dttime = this.datePipe.transform(new Date(), 'HHmmss');
 
-                  for (var i = 0; i < this.arrTopicName.length; i++) {
+                  for (let i = 0; i < this.arrTopicName.length; i++) {
                     this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
                     this.dtrs.records[0].value.time = dttime;
                     console.log('============> push messge to topic: ', this.arrTopicName[i]);
@@ -214,7 +205,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       err1 => {
                         console.log('===Add message fail 3===');
                       }
-                    )
+                    );
                   }
                 }
               }
@@ -223,7 +214,7 @@ export class ServerComponent implements OnInit, OnChanges {
             err => {
               console.log('===Get records fail===');
             }
-          )
+          );
         }
       }, 2000);
     }
@@ -246,12 +237,8 @@ export class ServerComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.createInstance();
-
-
   }
 
   ngOnChanges() {
-
   }
-
 }
