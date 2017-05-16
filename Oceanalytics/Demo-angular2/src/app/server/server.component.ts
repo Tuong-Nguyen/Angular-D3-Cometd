@@ -31,9 +31,7 @@ export class ServerComponent implements OnInit, OnChanges {
   public isPump: Boolean = false;
   public isPending: Boolean = false;
 
-
   public dtrs: any;
-  public tpName: string;
   public arrTopicName = [];
   public arrLabelName = [];
   private timer;
@@ -112,9 +110,6 @@ export class ServerComponent implements OnInit, OnChanges {
               flag = true;
               console.log('===Get records success===');
               console.log(data);
-              let topicName = '';
-              let dataTmp1: any;
-              let dataTmp2: any;
 
               this.isPending = false;
               this.isDisplay = true;
@@ -124,19 +119,18 @@ export class ServerComponent implements OnInit, OnChanges {
                 console.log(data);
 
                 for (let i = 0; i < data.length; i++) {
-                  if (data[i].value.pump === undefined) {
+                  if (data[i].value.pump === undefined) { // Realtimesubscriptionrequest request
                     this.status = 'Listening Pump';
                     this.flag = false;
 
-                    topicName = data[i].value.subscriptionRequest.measuresStream;
+                    const topicName = data[i].value.subscriptionRequest.measuresStream;
 
-                    console.log('topicName');
-                    console.log(topicName);
+                    console.log('topicName: ', topicName);
 
                     this.arrTopicName.push(data[i].value.subscriptionRequest.measuresStream);
                     this.arrLabelName.push(data[i].value.kafkaTopicName);
 
-                    this.dtrs = dataTmp1 = {
+                    this.dtrs = {
                       'records': [
                         {
                           'key': data[i].key,
@@ -145,45 +139,26 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
 
-                    this.sendMessage(topicName, dataTmp1);
+                    this.sendMessage(topicName, this.dtrs);
 
                     // push data to result topic
-                    dataTmp2 = {
-                      'records': [
+                    const subscribeResponse = {
+                      records: [
                         {
-                          'key': data[i].key,
-                          'value': topicName
+                          key: data[i].key,
+                          value: topicName
                         }
                       ]
                     };
-                    console.log(dataTmp2);
-                    this.sendMessage(environment.result, dataTmp2);
+                    console.log(subscribeResponse);
+                    this.sendMessage(environment.result, subscribeResponse);
                   } else {
                     this.status = 'Ready';
                     this.isPump = true;
                   }
                 }
               } else {
-                this.status = 'Sending';
-                console.log('Case else');
-                console.log('is pump: ' + this.isPump);
-                console.log('Arr topic: ');
-                console.log(this.arrTopicName);
-                console.log('Arr label: ');
-                console.log(this.arrLabelName);
-
-                console.log(this.dtrs);
-                if (this.dtrs !== '' && this.dtrs !== undefined && this.isPump === true) {
-                  console.log(this.dtrs);
-                  const dttime = this.datePipe.transform(new Date(), 'HHmmss');
-
-                  for (let i = 0; i < this.arrTopicName.length; i++) {
-                    this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
-                    this.dtrs.records[0].value.time = dttime;
-                    console.log('============> push messge to topic: ', this.arrTopicName[i]);
-                    this.sendMessage(this.arrTopicName[i], this.dtrs);
-                  }
-                }
+                this.sendRealtimeData();
               }
             },
             err => {
@@ -192,6 +167,30 @@ export class ServerComponent implements OnInit, OnChanges {
           );
         }
       }, 2000);
+    }
+  }
+
+  /**
+   * Send realtime data
+   */
+  private sendRealtimeData() {
+    this.status = 'Sending';
+
+    console.log('Is pump: ', this.isPump);
+    console.log('Arr topic: ', this.arrTopicName);
+    console.log('Arr label: ', this.arrLabelName);
+
+    console.log(this.dtrs);
+    if (this.dtrs !== '' && this.dtrs !== undefined && this.isPump === true) {
+      console.log(this.dtrs);
+      const dateTime = this.datePipe.transform(new Date(), 'HHmmss');
+
+      for (let i = 0; i < this.arrTopicName.length; i++) {
+        this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
+        this.dtrs.records[0].value.time = dateTime;
+        console.log('============> push messge to topic: ', this.arrTopicName[i]);
+        this.sendMessage(this.arrTopicName[i], this.dtrs);
+      }
     }
   }
 
