@@ -26,7 +26,7 @@ export interface RecordInfo {
     /**
      * The message value, formatted according to the embedded format
      */
-    value?: string;
+    value?: any;
 
     /**
      * Partition to store the message in

@@ -50,6 +50,9 @@ export class ServerComponent implements OnInit, OnChanges {
   private timer;
 
 
+  public dtObject : any;
+
+
   createInstance(): any {
     this.isDisplay = false;
     let data = {
@@ -251,20 +254,94 @@ export class ServerComponent implements OnInit, OnChanges {
     this._kafkaProxyService.addTopic(environment.rsr);
     this._kafkaProxyService.addTopic(environment.pump);
     this._kafkaProxyService.poll().subscribe(
-     data => {
+      data => {
         console.log("Poll Success");
         console.log(data);
-        // this._kafkaProxyService.sendData().subscribe(
-        //    data => {
-        //     console.log('=====Send Data Success=====');
-        //     this.isReady = true;
-        //     this.status = 'Listening';
-        //   },
-        //   error => {
-        //     console.log('=====Subscription Fail=====');
-        //   }
-        // );
 
+        let topicName = '';
+        let dataTmp1: any;
+        let dataTmp2: any;
+
+        if (data.length > 0){
+          console.log("Data Poll");
+          // this.records = this.records.concat(data);
+          // this.arrTopicName = [];
+          // this.arrLabelName = [];
+          // const recordItems = (data[0].value.records as any);
+          for (let i = 0; i < data.length; i++) {
+            // data[i] = JSON.parse(data[i]);
+            const item = (data[i].value as any);
+            console.log(item);
+            if (item.value.pump === undefined) {
+              console.log('=====item: ', item);
+
+              this.tpName = topicName = item.value.subscriptionRequest.measuresStream;
+              topicName = item.value.subscriptionRequest.measuresStream;
+              
+              console.log('Topic Name: ', topicName);
+
+              this.arrTopicName.push(item.value.subscriptionRequest.measuresStream);
+              this.arrLabelName.push(item.value.kafkaTopicName);
+              // console.log('arrTopicName');
+              // console.log(this.arrTopicName);
+
+              this.dtObject = dataTmp1 = {
+                'records': [
+                  {
+                    'key': item.key,
+                    'value': item
+                  }
+                ]
+              }
+
+              //Send data to Topic
+              this._kafkaProxyService.sendData(topicName, dataTmp1.records).subscribe(
+                data => {
+                  console.log("=====>Send Data "+topicName+" Success");
+                },
+                error => {
+                  console.log("=====>Send Data Fail");
+                }
+              );
+
+              //Push data to result topic
+              dataTmp2 = {
+                'records': [
+                  {
+                    'key': item.key,
+                    'value': topicName
+                  }
+                ]
+              }
+              this._kafkaProxyService.sendData(environment.result, dataTmp2.records).subscribe(
+                data => {
+                  console.log("=====>Send Data "+ environment.result +" Success");
+                },
+                error => {
+                  console.log("=====>Send Data Fail");
+                }
+              );
+            }
+            else {
+              this.isPump = true;
+            }
+          }
+        }else{
+          console.log("Case ELSE in Poll Success")
+          console.log('Arr topic: ', this.arrTopicName);
+          console.log('Data Object: ', this.dtObject);
+          console.log("PUMP: ", this.isPump);
+
+          if (this.dtObject != '' && this.dtObject !== undefined && this.isPump == true) {
+            var dttime = this.datePipe.transform(new Date(), 'HHmmss');
+            for (var i = 0; i < this.arrTopicName.length; i++) {
+              this.dtObject.records[0].value.kafkaTopicName = this.arrLabelName[i];
+              this.dtObject.records[0].value.time = dttime;
+              console.log('============> push messge to topic: ', this.arrTopicName[i]);
+              this._kafkaProxyService.sendData(this.arrTopicName[i], this.dtObject.records).subscribe();
+            }
+          }
+        }
       },
       error => {
         console.log('=====Poll Fail=====');
@@ -273,8 +350,8 @@ export class ServerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.createInstance();
-    // this.fData();
+    // this.createInstance();
+    this.fData();
   }
 
   ngOnChanges() {

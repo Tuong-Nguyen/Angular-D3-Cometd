@@ -21,7 +21,7 @@
               (deselected)="onMultipleDeselected($event)">
             </ng-select>
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="input.records.length == 0" (click)="addRecord(env.rsr, input)">Submit</button>
+          <button type="submit" class="btn btn-primary" [disabled]="input.records.length == 0" (click)="sendData(env.rsr, input)">Submit</button>
 
         </form>
         <div class="box" style="margin-top: 30px;">
@@ -38,14 +38,14 @@
                 <!-- Custom Tabs -->
                 <div class="nav-tabs-custom">
                   <ul class="nav nav-tabs">
-                    <li class="active" [hidden]="!messages.SoDagentmeasuresproducer.length"><a href="#tab_1" data-toggle="tab">SoDagentmeasuresproducer</a></li>
-                    <li><a href="#tab_2" data-toggle="tab" [hidden]="messages.SoDagentbyaccountmeasuresproducer.length == 0">SoDagentbyaccountmeasuresproducer</a></li>
-                    <li><a href="#tab_3" data-toggle="tab" [hidden]="messages.SoDroutingservicemeasuresproducer.length == 0">SoDroutingservicemeasuresproducer</a></li>
-                    <li><a href="#tab_4" data-toggle="tab" [hidden]="messages.servermeasurespumpuprequest.length == 0">servermeasurespumpuprequest</a></li>
-                    <li><a href="#tab_5" data-toggle="tab" [hidden]="messages.MWagentmeasuresproducer.length == 0">MWagentmeasuresproducer</a></li>
-                    <li><a href="#tab_6" data-toggle="tab" [hidden]="messages.MWagentbyaccountmeasuresproducer.length == 0">MWagentbyaccountmeasuresproducer</a></li>
-                    <li><a href="#tab_7" data-toggle="tab" [hidden]="messages.MWroutingservicemeasuresproducer.length == 0">MWroutingservicemeasuresproducer</a></li>
-                    <li><a href="#tab_8" data-toggle="tab" [hidden]="messages.MWagentbyroutingservicemeasuresproducer.length == 0">MWagentbyroutingservicemeasuresproducer</a></li>
+                    <li class="active" [hidden]="!messages.SoDagentmeasuresproducer1.length"><a href="#tab_1" data-toggle="tab">SoDagentmeasuresproducer</a></li>
+                    <li><a href="#tab_2" data-toggle="tab" [hidden]="messages.SoDagentbyaccountmeasuresproducer1.length == 0">SoDagentbyaccountmeasuresproducer</a></li>
+                    <li><a href="#tab_3" data-toggle="tab" [hidden]="messages.SoDroutingservicemeasuresproducer1.length == 0">SoDroutingservicemeasuresproducer</a></li>
+                    <li><a href="#tab_4" data-toggle="tab" [hidden]="messages.servermeasurespumpuprequest1.length == 0">servermeasurespumpuprequest</a></li>
+                    <li><a href="#tab_5" data-toggle="tab" [hidden]="messages.MWagentmeasuresproducer1.length == 0">MWagentmeasuresproducer</a></li>
+                    <li><a href="#tab_6" data-toggle="tab" [hidden]="messages.MWagentbyaccountmeasuresproducer1.length == 0">MWagentbyaccountmeasuresproducer</a></li>
+                    <li><a href="#tab_7" data-toggle="tab" [hidden]="messages.MWroutingservicemeasuresproducer1.length == 0">MWroutingservicemeasuresproducer</a></li>
+                    <li><a href="#tab_8" data-toggle="tab" [hidden]="messages.MWagentbyroutingservicemeasuresproducer1.length == 0">MWagentbyroutingservicemeasuresproducer</a></li>
                   </ul>
                   <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -57,7 +57,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.SoDagentmeasuresproducer">
+                        <tr *ngFor="let item of messages.SoDagentmeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -77,7 +77,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.SoDagentbyaccountmeasuresproducer">
+                        <tr *ngFor="let item of messages.SoDagentbyaccountmeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -97,7 +97,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.SoDroutingservicemeasuresproducer">
+                        <tr *ngFor="let item of messages.SoDroutingservicemeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -116,7 +116,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.servermeasurespumpuprequest">
+                        <tr *ngFor="let item of messages.servermeasurespumpuprequest1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -135,7 +135,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWagentmeasuresproducer">
+                        <tr *ngFor="let item of messages.MWagentmeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -154,7 +154,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWagentbyaccountmeasuresproducer">
+                        <tr *ngFor="let item of messages.MWagentbyaccountmeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -173,7 +173,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWroutingservicemeasuresproducer">
+                        <tr *ngFor="let item of messages.MWroutingservicemeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">
@@ -192,7 +192,7 @@
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWagentbyroutingservicemeasuresproducer">
+                        <tr *ngFor="let item of messages.MWagentbyroutingservicemeasuresproducer1">
                           <td [innerHtml]="$index"></td>
                           <td [innerHtml]="item.key"></td>
                           <td [innerHtml]="item.value.kafkaTopicName">

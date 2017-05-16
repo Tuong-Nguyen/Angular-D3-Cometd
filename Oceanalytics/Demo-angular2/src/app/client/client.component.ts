@@ -3,6 +3,7 @@ import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
 import {SelectModule} from 'angular2-select';
 import {environment} from '../../environments/environment';
+import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
 
 @Component({
   selector: 'app-client',
@@ -20,14 +21,14 @@ export class ClientComponent implements OnInit {
   public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
   public messages = {
-    'SoDagentmeasuresproducer': [],
-    'SoDagentbyaccountmeasuresproducer': [],
-    'SoDroutingservicemeasuresproducer': [],
-    'MWagentmeasuresproducer': [],
-    'MWagentbyaccountmeasuresproducer': [],
-    'MWroutingservicemeasuresproducer': [],
-    'MWagentbyroutingservicemeasuresproducer': [],
-    'servermeasurespumpuprequest': []
+    'SoDagentmeasuresproducer1': [],
+    'SoDagentbyaccountmeasuresproducer1': [],
+    'SoDroutingservicemeasuresproducer1': [],
+    'MWagentmeasuresproducer1': [],
+    'MWagentbyaccountmeasuresproducer1': [],
+    'MWroutingservicemeasuresproducer1': [],
+    'MWagentbyroutingservicemeasuresproducer1': [],
+    'servermeasurespumpuprequest1': []
   };
   public env = environment;
   public input = {
@@ -46,29 +47,29 @@ export class ClientComponent implements OnInit {
   };
 
   public options = [{
-    value: 'SoDagentmeasuresproducer',
-    label: 'SoDagentmeasuresproducer'
+    value: 'SoDagentmeasuresproducer1',
+    label: 'SoDagentmeasuresproducer1'
   }, {
-    value: 'SoDagentbyaccountmeasuresproducer',
-    label: 'SoDagentbyaccountmeasuresproducer'
+    value: 'SoDagentbyaccountmeasuresproducer1',
+    label: 'SoDagentbyaccountmeasuresproducer1'
   }, {
-    value: 'SoDroutingservicemeasuresproducer',
-    label: 'SoDroutingservicemeasuresproducer'
+    value: 'SoDroutingservicemeasuresproducer1',
+    label: 'SoDroutingservicemeasuresproducer1'
   }, {
-    value: 'MWagentmeasuresproducer',
-    label: 'MWagentmeasuresproducer'
+    value: 'MWagentmeasuresproducer1',
+    label: 'MWagentmeasuresproducer1'
   }, {
-    value: 'MWagentbyaccountmeasuresproducer',
-    label: 'MWagentbyaccountmeasuresproducer'
+    value: 'MWagentbyaccountmeasuresproducer1',
+    label: 'MWagentbyaccountmeasuresproducer1'
   }, {
-    value: 'MWroutingservicemeasuresproducer',
-    label: 'MWroutingservicemeasuresproducer'
+    value: 'MWroutingservicemeasuresproducer1',
+    label: 'MWroutingservicemeasuresproducer1'
   }, {
-    value: 'MWagentbyroutingservicemeasuresproducer',
-    label: 'MWagentbyroutingservicemeasuresproducer'
+    value: 'MWagentbyroutingservicemeasuresproducer1',
+    label: 'MWagentbyroutingservicemeasuresproducer1'
   }, {
-    value: 'servermeasurespumpuprequest',
-    label: 'servermeasurespumpuprequest'}
+    value: 'servermeasurespumpuprequest1',
+    label: 'servermeasurespumpuprequest1'}
   ];
 
   public logSingleString;
@@ -78,13 +79,72 @@ export class ClientComponent implements OnInit {
     'topics': []
   };
 
-  constructor(private _clientService: ClientService) {
+  constructor(private _clientService: ClientService, private _kafkaProxyService: KafkaProxyService) {
   }
 
   ngOnInit() {
-    this.createInstance();
+    // this.createInstance();
+    this.fData();
   }
 
+  //=============================== New Code ==================================================
+  fData(): any {
+    this._kafkaProxyService.addTopic(environment.result);
+    this._kafkaProxyService.poll().subscribe(
+      data => {
+        console.log("==========Client Poll Success========");
+        console.log(data);
+        if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+            const item = (data[i].value);
+            console.log("==============Item: ", item);
+            console.log("=====>Key: ", item.key + " =====>Instance: ", this.instanceName);
+            console.log("=====>Topic: ", data[i].topic + "=====>Topic Result: ", environment.result);
+
+            if (item[0].key === this.instanceName && data[i].topic !== environment.result) {
+              console.log('==========> push topic name ', data[i].topic);
+              this.messages[data[i].topic].push(data[i].value[0]);
+
+            } else {
+              if (item[0].key === this.instanceName) {
+                console.log("=====> Send PUMP");
+                this._kafkaProxyService.sendData(environment.pump, this.pump.records[0]).subscribe(
+                  dataSub => {
+                    console.log('Subscribe successfully', dataSub);
+                    this._kafkaProxyService.removeTopic(environment.result);
+                    this._kafkaProxyService.addTopic(item[0].value);
+                  },
+                  err => {
+                    console.log('Subscribe failed', err);
+                  }
+                );
+              }
+            };
+          }
+        }
+      },
+      error => {
+        console.log("==========Client Poll Fail ==========");
+      }
+    );
+  }
+
+  //Send data
+  sendData(topic, message): any {
+    console.log(message);
+    for (var i = 0; i < message.records.length; i++) {
+        this._kafkaProxyService.sendData(topic, message.records[i]).subscribe(
+        data => {
+          console.log('====== Push data into RSR topic ====', data);
+        },
+        error => {
+          console.log('===== Push data into RSR topic unsuccessfully =====', error);
+        }
+      );
+    }
+  }
+
+  //=============================== Old Code===================================================
   createInstance(): any {
     this.isReady = false;
     const instance = {
