@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
-import {SelectModule} from 'angular2-select';
-import {environment} from '../../environments/environment';
+import {environment as env} from '../../environments/environment';
 
 @Component({
   selector: 'app-client',
@@ -19,9 +18,9 @@ export class ClientComponent implements OnInit {
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
   public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
+  public env = env;
   public pumpTopic: string;
   public messages = {};
-  public env = environment;
   public input = {
     'records': []
   };
@@ -39,29 +38,29 @@ export class ClientComponent implements OnInit {
   };
 
   public options = [{
-    value: environment.AGENTMEASURES,
-    label: environment.AGENTMEASURES
+    value: env.AGENTMEASURES,
+    label: env.AGENTMEASURES
   }, {
-    value: environment.AGENTBYACCOUNTMEASURES,
-    label: environment.AGENTBYACCOUNTMEASURES
+    value: env.AGENTBYACCOUNTMEASURES,
+    label: env.AGENTBYACCOUNTMEASURES
   }, {
-    value: environment.ROUTINGSERVICEMEASURES,
-    label: environment.ROUTINGSERVICEMEASURES
+    value: env.ROUTINGSERVICEMEASURES,
+    label: env.ROUTINGSERVICEMEASURES
   }, {
-    value: environment.AGENTBYROUTINGSERVICEMEASURES,
-    label: environment.AGENTBYROUTINGSERVICEMEASURES
+    value: env.AGENTBYROUTINGSERVICEMEASURES,
+    label: env.AGENTBYROUTINGSERVICEMEASURES
   }, {
-    value: environment.AGENTMEASURESMOVINGWINDOW,
-    label: environment.AGENTMEASURESMOVINGWINDOW
+    value: env.AGENTMEASURESMOVINGWINDOW,
+    label: env.AGENTMEASURESMOVINGWINDOW
   }, {
-    value: environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW,
-    label: environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW
+    value: env.AGENTBYACCOUNTMEASURSMOVINGWINDOW,
+    label: env.AGENTBYACCOUNTMEASURSMOVINGWINDOW
   }, {
-    value: environment.ROUTINGSERVICEMEASURESMOVINGWINDOW,
-    label: environment.ROUTINGSERVICEMEASURESMOVINGWINDOW
+    value: env.ROUTINGSERVICEMEASURESMOVINGWINDOW,
+    label: env.ROUTINGSERVICEMEASURESMOVINGWINDOW
   }, {
-    value: environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW,
-    label: environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW}
+    value: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW,
+    label: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW}
   ];
 
   public logSingleString;
@@ -75,14 +74,14 @@ export class ClientComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.messages[environment.AGENTMEASURES] = [];
-    this.messages[environment.AGENTBYACCOUNTMEASURES] = [];
-    this.messages[environment.ROUTINGSERVICEMEASURES] = [];
-    this.messages[environment.AGENTBYROUTINGSERVICEMEASURES] = [];
-    this.messages[environment.AGENTMEASURESMOVINGWINDOW] = []
-    this.messages[environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
-    this.messages[environment.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
-    this.messages[environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.messages[env.AGENTMEASURES] = [];
+    this.messages[env.AGENTBYACCOUNTMEASURES] = [];
+    this.messages[env.ROUTINGSERVICEMEASURES] = [];
+    this.messages[env.AGENTBYROUTINGSERVICEMEASURES] = [];
+    this.messages[env.AGENTMEASURESMOVINGWINDOW] = [];
+    this.messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
+    this.messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.createInstance();
   }
 
@@ -107,7 +106,7 @@ export class ClientComponent implements OnInit {
         console.log('====Create Instance Fail======');
         console.log(err);
       },
-      () => this.subscribeTopic(environment.result)
+      () => this.subscribeTopic(env.result)
     );
   }
 
@@ -152,13 +151,13 @@ export class ClientComponent implements OnInit {
             flag = true;
             console.log('listening server .....', data);
             for (let i = 0; i < data.length; i++) {
-              if (data[i].topic !== environment.result) {
+              if (data[i].topic !== env.result) {
                 console.log('==========> push topic name ', data[i].topic);
                 this.messages[data[i].topic].push(data[i]);
               } else {
                 if (data[i].value.subscriptionRequestId === this.instanceName) {
                   this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
-                  this._clientService.addRecord(environment.pump, this.pump).subscribe(
+                  this._clientService.addRecord(env.pump, this.pump).subscribe(
                     dataSub => {
                       console.log('Subscribe successfully', dataSub);
                       this.subscribeTopic(data[i].value.measuresStream);
@@ -168,8 +167,7 @@ export class ClientComponent implements OnInit {
                     }
                   );
                 }
-              }
-              ;
+              };
             }
           },
           err => {
@@ -229,7 +227,7 @@ export class ClientComponent implements OnInit {
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
-    this.listTopics.topics = [environment.result];
+    this.listTopics.topics = [env.result];
     for ( let i = 0; i < this.input.records.length; i++){
       if ( this.input.records[i].value.measuresStream !== item.value) {
           newRecords.push(this.input.records[i]);
