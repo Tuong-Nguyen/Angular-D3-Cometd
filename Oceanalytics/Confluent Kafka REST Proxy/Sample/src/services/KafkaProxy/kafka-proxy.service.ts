@@ -56,6 +56,18 @@ export class KafkaProxyService {
     return this.topicApi.produceMessageToTopic(topicName, records);
   }
 
+  public sendArrayData(topicName: string, jsonData: Array<any>): Observable<OffsetWithAvroSchema> {
+    const arrayRecord = jsonData.map(item => {
+      return {value: item};
+    });
+
+    const records: ProduceMessages = {
+      records: arrayRecord
+    };
+
+    return this.topicApi.produceMessageToTopic(topicName, records);
+  }
+
   public addTopic(topicName: string) {
     if (this.SubscribedTopics.indexOf(topicName) < 0) {
       this.SubscribedTopics.push(topicName);

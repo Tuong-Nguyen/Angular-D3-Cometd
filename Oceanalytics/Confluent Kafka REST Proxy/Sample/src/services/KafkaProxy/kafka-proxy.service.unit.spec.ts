@@ -20,6 +20,22 @@ describe('KafkaProxyService - UnitTest', () => {
     service = new KafkaProxyService(mockTopicApi, mockConsumerApi, null);
   });
 
+  describe('#sendData', () => {
+    it('', () => {
+      spyOn(mockTopicApi, 'produceMessageToTopic');
+      service.sendData('testTopic', 'abc');
+      expect(mockTopicApi.produceMessageToTopic).toHaveBeenCalledWith('testTopic', {records: [{value: 'abc'}]});
+    });
+  });
+
+  describe('#sendArrayData', () => {
+    it('', () => {
+      spyOn(mockTopicApi, 'produceMessageToTopic');
+      service.sendArrayData('testTopic', ['abc', 'xyz']);
+      expect(mockTopicApi.produceMessageToTopic).toHaveBeenCalledWith('testTopic', {records: [{value: 'abc'}, {value: 'xyz'}]});
+    });
+  });
+
   describe('#addTopic', () => {
     it('when Consumer Instance is not created yet, do not call Consumer Api subscribesTopics', () => {
       spyOn(mockConsumerApi, 'subscribesTopics');
