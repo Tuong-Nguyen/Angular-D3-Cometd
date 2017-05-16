@@ -145,7 +145,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
 
-                    this.sendData(topicName, dataTmp1);
+                    this.sendMessage(topicName, dataTmp1);
 
                     // push data to result topic
                     dataTmp2 = {
@@ -157,7 +157,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
                     console.log(dataTmp2);
-                    this.sendData(environment.result, dataTmp2);
+                    this.sendMessage(environment.result, dataTmp2);
                   } else {
                     this.status = 'Ready';
                     this.isPump = true;
@@ -181,7 +181,7 @@ export class ServerComponent implements OnInit, OnChanges {
                     this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
                     this.dtrs.records[0].value.time = dttime;
                     console.log('============> push messge to topic: ', this.arrTopicName[i]);
-                    this.sendData(this.arrTopicName[i], this.dtrs);
+                    this.sendMessage(this.arrTopicName[i], this.dtrs);
                   }
                 }
               }
@@ -200,7 +200,7 @@ export class ServerComponent implements OnInit, OnChanges {
    * @param topic
    * @param data
    */
-  private sendData(topic: string, data: any) {
+  private sendMessage(topic: string, data: any) {
     this._serverService.addRecord(topic, data).subscribe(
       messageInfo => {
         console.log('===Add new message to topic ===', topic);
