@@ -49,159 +49,31 @@
                   </ul>
                   <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.AGENTMEASURES]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['contactsWaiting', 'active', 'heldContacts', 'contactsAtAgent', 'alerting']" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
 
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.AGENTBYACCOUNTMEASURES]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['activeWorkCount', 'lastStateReasonTimestamp']" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_3">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.ROUTINGSERVICEMEASURES]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['contactsWaiting', 'active','heldContacts','contactsAtAgent','alerting']" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_4">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.AGENTBYROUTINGSERVICEMEASURES]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_5">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.AGENTMEASURESMOVINGWINDOW]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_6">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_7">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_8">
-                      <table class="table table-condensed">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th>Instance Name</th>
-                          <th>Message</th>
-                          <th>Measure topics</th>
-                          <th style="width: 40px">code</th>
-                        </tr>
-                        <tr *ngFor="let item of messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]">
-                          <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.value.measuresStream"></td>
-                          <td>{{convertString(item.value)}}</td>
-                          <td [innerHtml]="item.topic">
-                          </td>
-                          <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
-                        </tr>
-                      </table>
+                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <!-- /.tab-pane -->
                   </div>
