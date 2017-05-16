@@ -41,7 +41,10 @@ export class ServerComponent implements OnInit, OnChanges {
   constructor(private _serverService: ServerService) {
   }
 
-  createInstance(): any {
+  /**
+   * Create consumer instance then subscribe topics
+   */
+  private createInstance(): any {
     this.isDisplay = false;
     const data = {
       'name': this.instanceName,
@@ -67,7 +70,10 @@ export class ServerComponent implements OnInit, OnChanges {
     );
   }
 
-  subscribeTopic(): any {
+  /**
+   * Subscribe RSR and Pump topics
+   */
+  private subscribeTopic(): any {
     const listTopics = {
       'topics': [
         environment.rsr,
@@ -90,7 +96,7 @@ export class ServerComponent implements OnInit, OnChanges {
     );
   }
 
-  fetchData(): any {
+  private fetchData(): any {
     // Code here
     if (this.isReady === true && this.urlInstance !== '' && this.flag === true) {
       this.records = [];
@@ -116,8 +122,7 @@ export class ServerComponent implements OnInit, OnChanges {
               if (data.length > 0) {
                 this.records = this.records.concat(data);
                 console.log(data);
-                // this.arrTopicName = [];
-                // this.arrLabelName = [];
+
                 for (let i = 0; i < data.length; i++) {
                   if (data[i].value.pump === undefined) {
                     this.status = 'Listening Pump';
@@ -140,15 +145,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
 
-                    this._serverService.addRecord(topicName, dataTmp1).subscribe(
-                      res1 => {
-                        console.log('===Add new message to topic===');
-                        console.log(res1);
-                      },
-                      err1 => {
-                        console.log('===Add message fail 1===');
-                      }
-                    );
+                    this.sendData(topicName, dataTmp1);
 
                     // push data to result topic
                     dataTmp2 = {
@@ -160,17 +157,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
                     console.log(dataTmp2);
-                    this._serverService.addRecord(environment.result, dataTmp2).subscribe(
-                      res2 => {
-                        console.log('===Add new message to topic result ===')
-                        ;
-                        console.log(res2);
-                      },
-                      err2 => {
-                        console.log('===Add message fail 2===');
-                      }
-                    );
-
+                    this.sendData(environment.result, dataTmp2);
                   } else {
                     this.status = 'Ready';
                     this.isPump = true;
@@ -194,15 +181,7 @@ export class ServerComponent implements OnInit, OnChanges {
                     this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
                     this.dtrs.records[0].value.time = dttime;
                     console.log('============> push messge to topic: ', this.arrTopicName[i]);
-                    this._serverService.addRecord(this.arrTopicName[i], this.dtrs).subscribe(
-                      res1 => {
-                        console.log('===Add new message to topic===');
-                        console.log(res1);
-                      },
-                      err1 => {
-                        console.log('===Add message fail 3===');
-                      }
-                    );
+                    this.sendData(this.arrTopicName[i], this.dtrs);
                   }
                 }
               }
@@ -216,7 +195,27 @@ export class ServerComponent implements OnInit, OnChanges {
     }
   }
 
-  deleteInstance(): any {
+  /**
+   * Send data to a topic
+   * @param topic
+   * @param data
+   */
+  private sendData(topic: string, data: any) {
+    this._serverService.addRecord(topic, data).subscribe(
+      messageInfo => {
+        console.log('===Add new message to topic ===', topic);
+        console.log(messageInfo);
+      },
+      error => {
+        console.log('=== Add message fail ===', topic, data);
+      }
+    );
+  }
+
+  /**
+   * Stop fetching data and delete consumer instance
+   */
+  private deleteInstance(): any {
     this._serverService.deleteInstance(this.urlInstance).subscribe(
       data => {
         console.log('Delete ins' + data);
@@ -229,7 +228,6 @@ export class ServerComponent implements OnInit, OnChanges {
       }
     );
   }
-
 
   ngOnInit(): void {
     this.createInstance();
