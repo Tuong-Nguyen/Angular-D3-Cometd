@@ -10,25 +10,17 @@ import {environment} from '../../environments/environment';
   styleUrls: ['./client.component.css'],
   providers: [ClientService]
 })
+
 export class ClientComponent implements OnInit {
   public isReady = false;
   public newInstance;
   public urlInstance;
-  public status = 'Create Instance';
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
   public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
-  public messages = {
-    'SoDagentmeasuresproducer': [],
-    'SoDagentbyaccountmeasuresproducer': [],
-    'SoDroutingservicemeasuresproducer': [],
-    'MWagentmeasuresproducer': [],
-    'MWagentbyaccountmeasuresproducer': [],
-    'MWroutingservicemeasuresproducer': [],
-    'MWagentbyroutingservicemeasuresproducer': [],
-    'servermeasurespumpuprequest': []
-  };
+  public pumpTopic: string;
+  public messages = {};
   public env = environment;
   public input = {
     'records': []
@@ -37,38 +29,39 @@ export class ClientComponent implements OnInit {
   public pump = {
     'records': [
       {
-        'key': this.instanceName,
         'value': {
-          'pump': this.instanceName
+          'userName': 'SupervisorOne',
+          'password': 's3cr3t',
+          'measuresStreams': []
         }
       }
     ]
   };
 
   public options = [{
-    value: 'SoDagentmeasuresproducer',
-    label: 'SoDagentmeasuresproducer'
+    value: environment.AGENTMEASURES,
+    label: environment.AGENTMEASURES
   }, {
-    value: 'SoDagentbyaccountmeasuresproducer',
-    label: 'SoDagentbyaccountmeasuresproducer'
+    value: environment.AGENTBYACCOUNTMEASURES,
+    label: environment.AGENTBYACCOUNTMEASURES
   }, {
-    value: 'SoDroutingservicemeasuresproducer',
-    label: 'SoDroutingservicemeasuresproducer'
+    value: environment.ROUTINGSERVICEMEASURES,
+    label: environment.ROUTINGSERVICEMEASURES
   }, {
-    value: 'MWagentmeasuresproducer',
-    label: 'MWagentmeasuresproducer'
+    value: environment.AGENTBYROUTINGSERVICEMEASURES,
+    label: environment.AGENTBYROUTINGSERVICEMEASURES
   }, {
-    value: 'MWagentbyaccountmeasuresproducer',
-    label: 'MWagentbyaccountmeasuresproducer'
+    value: environment.AGENTMEASURESMOVINGWINDOW,
+    label: environment.AGENTMEASURESMOVINGWINDOW
   }, {
-    value: 'MWroutingservicemeasuresproducer',
-    label: 'MWroutingservicemeasuresproducer'
+    value: environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW,
+    label: environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW
   }, {
-    value: 'MWagentbyroutingservicemeasuresproducer',
-    label: 'MWagentbyroutingservicemeasuresproducer'
+    value: environment.ROUTINGSERVICEMEASURESMOVINGWINDOW,
+    label: environment.ROUTINGSERVICEMEASURESMOVINGWINDOW
   }, {
-    value: 'servermeasurespumpuprequest',
-    label: 'servermeasurespumpuprequest'}
+    value: environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW,
+    label: environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW}
   ];
 
   public logSingleString;
@@ -82,6 +75,14 @@ export class ClientComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.messages[environment.AGENTMEASURES] = [];
+    this.messages[environment.AGENTBYACCOUNTMEASURES] = [];
+    this.messages[environment.ROUTINGSERVICEMEASURES] = [];
+    this.messages[environment.AGENTBYROUTINGSERVICEMEASURES] = [];
+    this.messages[environment.AGENTMEASURESMOVINGWINDOW] = []
+    this.messages[environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
+    this.messages[environment.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.messages[environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.createInstance();
   }
 
@@ -113,8 +114,6 @@ export class ClientComponent implements OnInit {
   subscribeTopic(topic): any {
     this.listTopics.topics.push(topic);
     console.log('===========> Subscribe topic: ', this.listTopics);
-    // Change status
-    this.status = 'Subscribe';
     // Call Service
     this._clientService.subscribeTopic(this.urlInstance, this.listTopics).subscribe(
       data => {
@@ -153,17 +152,16 @@ export class ClientComponent implements OnInit {
             flag = true;
             console.log('listening server .....', data);
             for (let i = 0; i < data.length; i++) {
-              if (data[i].key === this.instanceName && data[i].topic !== environment.result) {
+              if (data[i].topic !== environment.result) {
                 console.log('==========> push topic name ', data[i].topic);
                 this.messages[data[i].topic].push(data[i]);
               } else {
-                if (data[i].key === this.instanceName) {
-                  this.status = 'Push to Pump topic';
+                if (data[i].value.subscriptionRequestId === this.instanceName) {
+                  this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
                   this._clientService.addRecord(environment.pump, this.pump).subscribe(
                     dataSub => {
                       console.log('Subscribe successfully', dataSub);
-                      this.status = 'Listening topic ' + data[i].key;
-                      this.subscribeTopic(data[i].value);
+                      this.subscribeTopic(data[i].value.measuresStream);
                     },
                     err => {
                       console.log('Subscribe failed', err);
@@ -182,6 +180,9 @@ export class ClientComponent implements OnInit {
     }, 5000);
   }
 
+  convertString(json): any {
+    return JSON.stringify(json);
+  }
   onSingleOpened() {
     this.logSingle('- opened');
   }
@@ -210,17 +211,17 @@ export class ClientComponent implements OnInit {
   }
 
   onMultipleSelected(item) {
+
     const record = {
-      'key': this.instanceName,
       'value': {
-        'kafkaTopicName': item.label,
-        'subscriptionRequest': {
-          'measuresStream': item.value,
-          'password': 'secret',
-          'user': this.instanceName
-        }
+        'userName': '',
+        'subscriptionRequestId':  this.instanceName,
+        'password': 's3cr3t',
+        'request': 'SUBSCRIBE',
+        'measuresStream': item.value
       }
     };
+
     this.input.records.push(record);
     console.log('=====> selected item', this.input);
   }
@@ -228,12 +229,11 @@ export class ClientComponent implements OnInit {
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
-    this.listTopics.topics= [environment.result];
+    this.listTopics.topics = [environment.result];
     for ( let i = 0; i < this.input.records.length; i++){
-      if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
+      if ( this.input.records[i].value.measuresStream !== item.value) {
           newRecords.push(this.input.records[i]);
-          this.listTopics.topics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
-          //REMOVE IN LISTTOPIC
+          this.listTopics.topics.push(this.input.records[i].value.measuresStream);
           }
       this.input.records = newRecords;
     }
@@ -253,9 +253,6 @@ export class ClientComponent implements OnInit {
         console.log('=====Subscription Fail=====');
       }
     );
-
-
-
     console.log('===> Selected item', this.input);
   }
 

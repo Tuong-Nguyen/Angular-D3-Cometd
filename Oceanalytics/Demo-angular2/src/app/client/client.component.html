@@ -4,7 +4,7 @@
     <div class="box">
       <div class="box-header with-border">
         <h3 class="box-title">Client Progress</h3>
-
+        <a routerLink="/server" class="serverLink">Server Link</a>
       </div>
       <div class="box-body">
         <form role="form">
@@ -38,14 +38,14 @@
                 <!-- Custom Tabs -->
                 <div class="nav-tabs-custom">
                   <ul class="nav nav-tabs">
-                    <li class="active" [hidden]="!messages.SoDagentmeasuresproducer.length"><a href="#tab_1" data-toggle="tab">SoDagentmeasuresproducer</a></li>
-                    <li><a href="#tab_2" data-toggle="tab" [hidden]="messages.SoDagentbyaccountmeasuresproducer.length == 0">SoDagentbyaccountmeasuresproducer</a></li>
-                    <li><a href="#tab_3" data-toggle="tab" [hidden]="messages.SoDroutingservicemeasuresproducer.length == 0">SoDroutingservicemeasuresproducer</a></li>
-                    <li><a href="#tab_4" data-toggle="tab" [hidden]="messages.servermeasurespumpuprequest.length == 0">servermeasurespumpuprequest</a></li>
-                    <li><a href="#tab_5" data-toggle="tab" [hidden]="messages.MWagentmeasuresproducer.length == 0">MWagentmeasuresproducer</a></li>
-                    <li><a href="#tab_6" data-toggle="tab" [hidden]="messages.MWagentbyaccountmeasuresproducer.length == 0">MWagentbyaccountmeasuresproducer</a></li>
-                    <li><a href="#tab_7" data-toggle="tab" [hidden]="messages.MWroutingservicemeasuresproducer.length == 0">MWroutingservicemeasuresproducer</a></li>
-                    <li><a href="#tab_8" data-toggle="tab" [hidden]="messages.MWagentbyroutingservicemeasuresproducer.length == 0">MWagentbyroutingservicemeasuresproducer</a></li>
+                    <li class="active" [hidden]="!messages[env.AGENTMEASURES].length"><a href="#tab_1" data-toggle="tab" [innerHtml] = "env.AGENTMEASURES"></a></li>
+                    <li><a href="#tab_2" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURES].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURES"></a></li>
+                    <li><a href="#tab_3" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURES"></a></li>
+                    <li><a href="#tab_4" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURES"></a></li>
+                    <li><a href="#tab_5" data-toggle="tab" [hidden]="messages[env.AGENTMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTMEASURESMOVINGWINDOW"></a></li>
+                    <li><a href="#tab_6" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURSMOVINGWINDOW"></a></li>
+                    <li><a href="#tab_7" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
+                    <li><a href="#tab_8" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
                   </ul>
                   <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
@@ -53,19 +53,20 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.SoDagentmeasuresproducer">
+                        <tr *ngFor="let item of messages[env.AGENTMEASURES]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
                         </tr>
                       </table>
+
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
@@ -73,14 +74,14 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.SoDagentbyaccountmeasuresproducer">
+                        <tr *ngFor="let item of messages[env.AGENTBYACCOUNTMEASURES]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
@@ -93,14 +94,14 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.SoDroutingservicemeasuresproducer">
+                        <tr *ngFor="let item of messages[env.ROUTINGSERVICEMEASURES]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
@@ -112,14 +113,14 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.servermeasurespumpuprequest">
+                        <tr *ngFor="let item of messages[env.AGENTBYROUTINGSERVICEMEASURES]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
@@ -131,14 +132,14 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWagentmeasuresproducer">
+                        <tr *ngFor="let item of messages[env.AGENTMEASURESMOVINGWINDOW]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
@@ -150,14 +151,14 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWagentbyaccountmeasuresproducer">
+                        <tr *ngFor="let item of messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
@@ -169,14 +170,14 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWroutingservicemeasuresproducer">
+                        <tr *ngFor="let item of messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
@@ -188,20 +189,20 @@
                         <tr>
                           <th style="width: 10px">#</th>
                           <th>Instance Name</th>
-                          <th>Task</th>
+                          <th>Message</th>
                           <th>Measure topics</th>
                           <th style="width: 40px">code</th>
                         </tr>
-                        <tr *ngFor="let item of messages.MWagentbyroutingservicemeasuresproducer">
+                        <tr *ngFor="let item of messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]">
                           <td [innerHtml]="$index"></td>
-                          <td [innerHtml]="item.key"></td>
-                          <td [innerHtml]="item.value.kafkaTopicName">
+                          <td [innerHtml]="item.value.measuresStream"></td>
+                          <td>{{convertString(item.value)}}</td>
                           <td [innerHtml]="item.topic">
                           </td>
                           <td><span class="badge bg-red" [innerHtml]="item.value.time"></span></td>
                         </tr>
                       </table>
-                    </div>                  
+                    </div>
                     <!-- /.tab-pane -->
                   </div>
                   <!-- /.tab-content -->
