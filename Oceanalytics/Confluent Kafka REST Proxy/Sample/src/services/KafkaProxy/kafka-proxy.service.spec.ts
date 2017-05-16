@@ -72,6 +72,50 @@ describe('KafkaProxyService', () => {
     }, 2000);
   });
 
+  describe('#sendArrayData', () => {
+    function sendDataTest(data: any, done) {
+      service.sendArrayData('TestTopic', data)
+        .subscribe(
+          offsets => {
+            expect(offsets.offsets.length).toBe(data.length);
+            done();
+          },
+          error => {
+            fail(error);
+            done();
+          }
+        );
+    }
+
+    it('send an array with 1 object return the offset of the message in the topic', (done) => {
+      const data = [{
+        id: 10,
+        name: 'hello'
+      }];
+      sendDataTest(data, done);
+    }, 2000);
+
+    it('send an empty array return error code 422', (done) => {
+      const data = [];
+
+      service.sendArrayData('TestTopic', [])
+        .subscribe(
+          item => {
+            fail();
+            done();
+          },
+          (error: Response) => {
+            expect(error.status).toBe(422);
+            done();
+          });
+    }, 2000);
+
+    it('send an array with 2 items return the offset of the messages in the topic', (done) => {
+      const data = ['test', 1];
+      sendDataTest(data, done);
+    }, 2000);
+  });
+
   describe('#poll', () => {
     it('can read data', (done) => {
       service.addTopic('TestTopic');
