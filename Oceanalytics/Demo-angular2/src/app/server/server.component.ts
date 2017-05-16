@@ -31,7 +31,7 @@ export class ServerComponent implements OnInit, OnChanges {
   public isPump: Boolean = false;
   public isPending: Boolean = false;
 
-  public dtrs: any;
+  public realtimeData: any;
   public arrTopicName = [];
   public arrLabelName = [];
   private timer;
@@ -130,7 +130,7 @@ export class ServerComponent implements OnInit, OnChanges {
                     this.arrTopicName.push(data[i].value.subscriptionRequest.measuresStream);
                     this.arrLabelName.push(data[i].value.kafkaTopicName);
 
-                    this.dtrs = {
+                    this.realtimeData = {
                       'records': [
                         {
                           'key': data[i].key,
@@ -139,7 +139,7 @@ export class ServerComponent implements OnInit, OnChanges {
                       ]
                     };
 
-                    this.sendMessage(topicName, this.dtrs);
+                    this.sendMessage(topicName, this.realtimeData);
 
                     // push data to result topic
                     const subscribeResponse = {
@@ -180,16 +180,16 @@ export class ServerComponent implements OnInit, OnChanges {
     console.log('Arr topic: ', this.arrTopicName);
     console.log('Arr label: ', this.arrLabelName);
 
-    console.log(this.dtrs);
-    if (this.dtrs !== '' && this.dtrs !== undefined && this.isPump === true) {
-      console.log(this.dtrs);
+    console.log(this.realtimeData);
+    if (this.realtimeData !== '' && this.realtimeData !== undefined && this.isPump === true) {
+      console.log(this.realtimeData);
       const dateTime = this.datePipe.transform(new Date(), 'HHmmss');
 
       for (let i = 0; i < this.arrTopicName.length; i++) {
-        this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
-        this.dtrs.records[0].value.time = dateTime;
+        this.realtimeData.records[0].value.kafkaTopicName = this.arrLabelName[i];
+        this.realtimeData.records[0].value.time = dateTime;
         console.log('============> push messge to topic: ', this.arrTopicName[i]);
-        this.sendMessage(this.arrTopicName[i], this.dtrs);
+        this.sendMessage(this.arrTopicName[i], this.realtimeData);
       }
     }
   }
