@@ -5,10 +5,10 @@
 
 export const environment = {
   production: false,
-  server: 'http://192.168.104.18:8082', // 192.168.104.18 //11.11.254.102
+  server: 'http://11.11.254.102:8082', // 192.168.104.18 //11.11.254.102
   generalErr: 'Internal error',
   result: 'Realtimesubscriptionresponse',
   rsr: 'Realtimesubscriptionrequest',
   pump: 'Realtimemeasurespumpuprequest',
-  kafka_rest_proxy: 'http://192.168.104.18:8082'
+  kafka_rest_proxy: 'http://11.11.254.102:8082'
 };

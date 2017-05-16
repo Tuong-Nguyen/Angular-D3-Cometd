@@ -23,7 +23,8 @@ import { TabularTableComponent } from './tabular-table/tabular-table.component';
   declarations: [
     AppComponent,
     ClientComponent,
-    ServerComponent
+    ServerComponent,
+    TabularTableComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +33,15 @@ import { TabularTableComponent } from './tabular-table/tabular-table.component';
     route,
     SelectModule
   ],
-  providers: [ServerService],
+  providers: [
+    ServerService,
+    KafkaProxyService,
+    ConsumerApi,
+    TopicApi,
+    {
+      provide: BASE_PATH, useValue: environment.kafka_rest_proxy
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

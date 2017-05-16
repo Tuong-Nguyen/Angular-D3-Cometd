@@ -102,7 +102,6 @@ export class ServerComponent implements OnInit, OnChanges {
         if (!this.isPending && flag) {
           flag = false;
           this.isPending = true;
-          let arrayUrl: any[];
           this.isDisplay = true;
           // Call service
           this._serverService.getRecords(this.urlInstance).subscribe(
