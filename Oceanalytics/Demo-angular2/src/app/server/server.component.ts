@@ -28,9 +28,6 @@ export class ServerComponent implements OnInit, OnChanges {
   public isPump: Boolean = false;
   public isPending: Boolean = false;
 
-
-  public dtrs: any;
-  public tpName: string;
   public arrTopicName = [];
   public arrRecord = [];
   private timer;
@@ -141,8 +138,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                       case environment.AGENTBYACCOUNTMEASURES:
                         this.arrRecord.push({
@@ -185,8 +181,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                       case environment.AGENTBYROUTINGSERVICEMEASURES:
                         this.arrRecord.push({
@@ -206,8 +201,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                       case environment.AGENTMEASURESMOVINGWINDOW:
                         this.arrRecord.push({
@@ -227,8 +221,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                       case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
                         this.arrRecord.push({
@@ -248,8 +241,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                       case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW:
                         this.arrRecord.push({
@@ -269,8 +261,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                       case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
                         this.arrRecord.push({
@@ -290,8 +281,7 @@ export class ServerComponent implements OnInit, OnChanges {
                               }
                             }
                           ]
-                        })
-                        ;
+                        });
                         break;
                     }
                     console.log('After adding', this.arrRecord);
@@ -324,15 +314,13 @@ export class ServerComponent implements OnInit, OnChanges {
                     console.log(dataTmp2);
                     this._serverService.addRecord(environment.result, dataTmp2).subscribe(
                       res2 => {
-                        console.log('===Add new message to topic result ===')
-                        ;
+                        console.log('===Add new message to topic result ===');
                         console.log(res2);
                       },
                       err2 => {
                         console.log('===Add message fail 2===');
                       }
                     );
-
                   } else {
                     this.isPump = true;
                   }
@@ -358,7 +346,6 @@ export class ServerComponent implements OnInit, OnChanges {
                   }
                 }
               }
-
             },
             err => {
               console.log('===Get records fail===');
@@ -389,12 +376,8 @@ export class ServerComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.createInstance();
-
-
   }
 
   ngOnChanges() {
-
   }
-
 }
