@@ -1,191 +1,585 @@
-// import {Injectable, Optional} from '@angular/core';
-// import {Observable} from 'rxjs/Rx';
-//
-//
-// @Injectable()
-// export class FakeDataService {
-//   constructor() {}
-//
-//   var schemaStartDayAgentByAccount = {
-//     type: 'object',
-//     properties: {
-//       user: {
-//         type: 'object',
-//         properties: {
-//           Agent_ID: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Provider_ID: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Account_ID: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Supervisor_ID: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Offered: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Completed: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Abandoned: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Not_Answered: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Conferenced: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Answered: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Consults: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Transfers: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Logged_In_Time: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Hold_Time: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Alert_Time: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Active_Time: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Not_Ready_Time: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Disconnects_From_Hold: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Long_Holds: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           First_Name: {
-//             type: 'string',
-//             faker: 'name.firstName'
-//           },
-//           Last_Name: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Display_Name: {
-//             type: 'string',
-//             faker: 'name.findName'
-//           },
-//           Supervisor_First_Name: {
-//             type: 'string',
-//             faker: 'name.firstName'
-//           },
-//           Ready: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Not_Ready: {
-//             $ref: '#/definitions/positiveInt'
-//           },
-//           Channel: {
-//             type: 'string',
-//             faker: 'name.findName'
-//           },
-//           loginTimeStamp: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           logoutTimeStamp: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           lastStateChangeTimestamp: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           LastStateReasonTimestamp: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           agentbyAccountState: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Long_Engagements: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Short_Engagements: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Long_Wrap_Ups: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Short_Wrap_Ups: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Holds: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           NR_Reason_Code: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           NR_Reason_Code_Name: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Blended_Active_Time: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           ADHOC: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           ADHOC_DURATION: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Long_Wrap_Ups: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Long_Wrap_Ups: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           Long_Wrap_Ups: {
-//             type: 'string',
-//             faker: 'name.lastName'
-//           },
-//           email: {
-//             type: 'string',
-//             format: 'email',
-//             faker: 'internet.email'
-//           }
-//         },
-//         required: ['id', 'name', 'email']
-//       }
-//     },
-//     required: ['user'],
-//     definitions: {
-//       positiveInt: {
-//         type: 'integer',
-//         minimum: 0,
-//         exclusiveMinimum: true
-//       }
-//     }
-//   };
-//
-//
-// }
-//
+import {Injectable, Optional} from '@angular/core';
+import {Observable} from 'rxjs/Rx';
+
+@Injectable()
+export class FakeDataService {
+  public StartOfDayAgentByAccount = {};
+  public StartOfDayAgent = {};
+  public StartOfDayRoutingService = {};
+  public StartOfDayAgentByRoutingService = {};
+  public MovingWindowAgentByAccount = {};
+  public MovingWindowAgent = {};
+  public MovingWindowRoutingService = {};
+  public MovingWindowAgentByRoutingService = {};
+
+  public result : any;
+
+  constructor() {
+  }
+
+  public realtimeData(type: string) {
+    switch (type){
+      case 'StartOfDayAgentByAccount': {
+        this.result = this.StartOfDayAgentByAccount = {
+          'Agent_ID': this.randomNumber(),
+          'Provider_ID': this.randomNumber(),
+          'Account_ID': this.randomNumber(),
+          'Supervisor_ID': this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Abandoned': this.randomNumber(),
+          'Not_Answered': this.randomNumber(),
+          'Conferenced': this.randomNumber(),
+          'Answered': this.randomNumber(),
+          'Consults': this.randomNumber(),
+          'Transfers': this.randomNumber(),
+          'Logged_In_Time': this.randomNumber(),
+          'Hold_Time': this.randomNumber(),
+          'Alert_Time': this.randomNumber(),
+          'Active_Time': this.randomNumber(),
+          'Not_Ready_Time': this.randomNumber(),
+          'Disconnects_From_Hold': this.randomNumber(),
+          'Long_Holds': this.randomNumber(),
+          'First_Name': this.randomString(),
+          'Last_Name': this.randomString(),
+          'Display_Name': this.randomString(),
+          'Supervisor_First_Name': this.randomString(),
+          'Supervisor_Last_Name': this.randomString(),
+          'Ready': this.randomNumber(),
+          'Not_Ready': this.randomNumber(),
+          'Work_State': this.randomString(),
+          'Channel': this.randomString(),
+          'loginTimeStamp': this.randomString(),
+          'logoutTimeStamp': this.randomString(),
+          'lastStateChangeTimestamp': this.randomNumber(),
+          'LastStateReasonTimestamp': this.randomNumber(),
+          'agentbyAccountState': this.randomNumber(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber(),
+          'Holds': this.randomNumber(),
+          'NR_Reason_Code': this.randomString(),
+          'NR_Reason_Code_Name': this.randomString(),
+          'Blended_Active_Time': this.randomNumber(),
+          'ADHOC': this.randomNumber(),
+          'ADHOC_DURATION': this.randomNumber(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber()
+        };
+        break;
+      }
+      case 'StartOfDayAgent':{
+        this.result = this.StartOfDayAgent = {
+          'First_Name': this.randomString(),
+          'Last_Name': this.randomString(),
+          'Agent_ID': this.randomNumber(),
+          'Display_Name': this.randomString(),
+          'Supervisor_First_Name': this.randomString(),
+          'Supervisor_Last_Name': this.randomString(),
+          'Supervisor_ID': this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Abandoned': this.randomNumber(),
+          'Answered': this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Transfers': this.randomNumber(),
+          'Conferenced': this.randomNumber(),
+          'Consults': this.randomNumber(),
+          'Active_Time': this.randomNumber(),
+          'Hold_Time': this.randomNumber(),
+          'Alert_Time': this.randomNumber(),
+          'Not_Ready_Time': this.randomNumber(),
+          'Logged_In_Time': this.randomNumber(),
+          'Idle_Time': this.randomNumber(),
+          'Ready': this.randomNumber(),
+          'Not_Ready': this.randomNumber(),
+          'Disconnects_From_Hold': this.randomNumber(),
+          'Long_Holds': this.randomNumber(),
+          'Last_State_Change_Time': this.randomNumber(),
+          'Provider_ID': this.randomNumber(),
+          'Agent_State': this.randomNumber(),
+          'Work_State': this.randomString(),
+          'ID': this.randomNumber(),
+          'LastState_Change_Timestamp': this.randomNumber(),
+          'Login_TimeStamp': this.randomString(),
+          'logoutTimeStamp': this.randomString(),
+          'Last_State_Reason_Timestamp': this.randomNumber(),
+          'Last_WorkCodeChangeTimestamp': this.randomNumber(),
+          'NR_Reason_Code': this.randomString(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber(),
+          'Short_Not_Ready': this.randomNumber(),
+          'Blended_active_time': this.randomNumber(),
+          'Blended_alerting_time': this.randomNumber(),
+          'Additional_time': this.randomNumber(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'ADHOC': this.randomNumber(),
+          'ADHOC_DURATION': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_AGENT': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber()
+        };
+        break;
+      }
+      case 'StartOfDayRoutingService':{
+        this.result = this.StartOfDayRoutingService = {
+          'Routing_Service_Name': this.randomString(),
+          'Routing_Service_ID': this.randomString(),
+          'Available': this.randomString(),
+          'Contacts_Waiting' : this.randomNumber(),
+          'Contacts_At_Agent' : this.randomNumber(),
+          'In_ACW' : this.randomNumber(),
+          'Active' : this.randomNumber(),
+          'Answered' : this.randomNumber(),
+          'Answered_After_Threshold' : this.randomNumber(),
+          'Abandoned_After_Threshold' : this.randomNumber(),
+          'Held_Contacts' : this.randomNumber(),
+          'Holds' : this.randomNumber(),
+          'Alerting' : this.randomNumber(),
+          'Offered' : this.randomNumber(),
+          'Not_Answered' : this.randomNumber(),
+          'Abandoned' : this.randomNumber(),
+          'Consults' : this.randomNumber(),
+          'Transfers' : this.randomNumber(),
+          'Conferences' : this.randomNumber(),
+          'Hold_Time' : this.randomNumber(),
+          'Abandon_Time' : this.randomNumber(),
+          'Total_Time' : this.randomNumber(),
+          'Ring_Time' : this.randomNumber(),
+          'WaitTime' : this.randomNumber(),
+          'Active_Time' : this.randomNumber(),
+          'Oldest_Contact_Waiting' : this.randomString(),
+          'Service_Display_Name' : this.randomString(),
+          'Provider_ID' : this.randomNumber(),
+          'Expected_Wait_Time' : this.randomNumber(),
+          'Channel_ID' : this.randomNumber(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_AGENT': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber()
+        }
+        break;
+      }
+      case 'StartOfDayAgentByRoutingService':{
+        this.result = this.StartOfDayAgentByRoutingService = {
+          'Agent_ID': this.randomNumber(),
+          'Supervisor_ID': this.randomNumber(),
+          'Agent_Surname': this.randomString(),
+          'Agent_Firstname': this.randomString(),
+          'Supervisor_Surname': this.randomString(),
+          'Supervisor_Firstname': this.randomString(),
+          'Service_Display_Name': this.randomString(),
+          'Provider_ID': this.randomNumber(),
+          'Channel_ID': this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Abandoned' : this.randomNumber(),
+          'Not_Answered' : this.randomNumber(),
+          'Conferences' : this.randomNumber(),
+          'Answered' : this.randomNumber(),
+          'Consults' : this.randomNumber(),
+          'Transfers' : this.randomNumber(),
+          'Hold_Duration' : this.randomNumber(),
+          'Disconnects_From_Hold' : this.randomNumber(),
+          'Holds' : this.randomNumber(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Holds': this.randomNumber(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_AGENT': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber()
+        }
+        break;
+      }
+      case 'MovingWindowAgentByAccount':{
+        this.result = this.MovingWindowAgentByAccount = {
+          'Agent_ID': this.randomNumber(),
+          'Provider_ID': this.randomNumber(),
+          'Supervisor_ID': this.randomNumber(),
+          'Account_ID': this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Abandoned' : this.randomNumber(),
+          'Not_Answered' : this.randomNumber(),
+          'Conferences' : this.randomNumber(),
+          'Answered' : this.randomNumber(),
+          'Consults' : this.randomNumber(),
+          'Transfers' : this.randomNumber(),
+          'Hold_Time' : this.randomNumber(),
+          'Alert_Time' : this.randomNumber(),
+          'Active_Time' : this.randomNumber(),
+          'Not_Ready_Time' : this.randomNumber(),
+          'Disconnects_From_Hold' : this.randomNumber(),
+          'Long_Holds': this.randomNumber(),
+          'ID': this.randomNumber(),
+          'First_Name': this.randomString(),
+          'Last_Name': this.randomString(),
+          'Display_Name': this.randomString(),
+          'Supervisor_First_Name': this.randomString(),
+          'Supervisor_Last_Name': this.randomString(),
+          'Ready': this.randomNumber(),
+          'Not_Ready': this.randomNumber(),
+          'Work_State': this.randomString(),
+          'Channel': this.randomString(),
+          'loginTimeStamp': this.randomString(),
+          'logoutTimeStamp': this.randomString(),
+          'lastStateChangeTimestamp': this.randomNumber(),
+          'LastStateReasonTimestamp': this.randomNumber(),
+          'agentbyAccountState': this.randomString(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber(),
+          'Holds' : this.randomNumber(),
+          'NR_Reason_Code': this.randomString(),
+          'NR_Reason_Code_Name': this.randomString(),
+          'Blended_Active_Time': this.randomString(),
+          'ADHOC': this.randomNumber(),
+          'ADHOC_DURATION ': this.randomNumber(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_AGENT': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber()
+        }
+        break;
+      }
+      case 'MovingWindowAgent':{
+        this.result = this.MovingWindowAgent = {
+          'First_Name': this.randomString(),
+          'Last_Name': this.randomString(),
+          'Agent_ID': this.randomNumber(),
+          'Display_Name': this.randomString(),
+          'Supervisor_First_Name': this.randomString(),
+          'Supervisor_Last_Name': this.randomString(),
+          'Supervisor_ID': this.randomNumber(),
+          'Account_ID': this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Abandoned' : this.randomNumber(),
+          'Answered' : this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Transfers' : this.randomNumber(),
+          'Conferences' : this.randomNumber(),
+          'Consults' : this.randomNumber(),
+          'Not_Answered' : this.randomNumber(),
+          'Holds' : this.randomNumber(),
+          'Active_Time' : this.randomNumber(),
+          'Hold_Time' : this.randomNumber(),
+          'Alert_Time' : this.randomNumber(),
+          'Not_Ready_Time' : this.randomNumber(),
+          'Logged_In_Time' : this.randomNumber(),
+          'Idle_Time' : this.randomNumber(),
+          'Ready': this.randomNumber(),
+          'Not_Ready': this.randomNumber(),
+          'Disconnects_From_Hold' : this.randomNumber(),
+          'Long_Holds': this.randomNumber(),
+          'Last_State_Change_Time': this.randomNumber(),
+          'Provider_ID': this.randomNumber(),
+          'Agent_State': this.randomString(),
+          'Work_State': this.randomString(),
+          'ID': this.randomNumber(),
+          'LastState_Change_Timestamp': this.randomNumber(),
+          'Login_TimeStamp': this.randomNumber(),
+          'logoutTimeStamp': this.randomNumber(),
+          'NR_Reason_Code_Name': this.randomString(),
+          'LastStateReasonTimestamp': this.randomNumber(),
+          'NR_Reason_Code': this.randomString(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber(),
+          'Short_Not_Ready': this.randomNumber(),
+          'Blended_active_time': this.randomString(),
+          'Blended_alerting_time': this.randomString(),
+          'Additional_time': this.randomString(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'ADHOC': this.randomNumber(),
+          'ADHOC_DURATION ': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_AGENT': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'CONSULTED_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber()
+        }
+        break;
+      }
+      case 'MovingWindowRoutingService':{
+        this.result = this.MovingWindowRoutingService = {
+          'Routing_Service_Name': this.randomString(),
+          'Available': this.randomString(),
+          'Staffed': this.randomString(),
+          'Contacts_Waiting': this.randomNumber(),
+          'Contacts_At_Agent': this.randomNumber(),
+          'Active': this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Answered' : this.randomNumber(),
+          'Answered_After_Threshold' : this.randomNumber(),
+          'Abandoned_After_Threshold' : this.randomNumber(),
+          'Held_Contacts' : this.randomNumber(),
+          'Holds' : this.randomNumber(),
+          'Alerting' : this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Not_Answered' : this.randomNumber(),
+          'Abandoned' : this.randomNumber(),
+          'Consults' : this.randomNumber(),
+          'Transfers' : this.randomNumber(),
+          'Hold_Time' : this.randomNumber(),
+          'Abandon_Time' : this.randomNumber(),
+          'Total_Time' : this.randomNumber(),
+          'Ring_Time' : this.randomNumber(),
+          'WaitTime' : this.randomNumber(),
+          'Active_Time' : this.randomNumber(),
+          'Oldest_Contact_Waiting': this.randomString(),
+          'Service_Display_Name': this.randomString(),
+          'Provider_ID': this.randomNumber(),
+          'Expected_Wait_Time': this.randomString(),
+          'Channel_ID': this.randomNumber(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber()
+        }
+        break;
+      }
+      case 'MovingWindowAgentByRoutingService':{
+        this.result = this.MovingWindowAgentByRoutingService = {
+          'Agent_ID': this.randomNumber(),
+          'Supervisor_ID': this.randomNumber(),
+          'Agent_Surname': this.randomString(),
+          'Agent_Firstname': this.randomString(),
+          'Supervisor_Surname': this.randomString(),
+          'Supervisor_First_Name': this.randomString(),
+          'Routing_Service_ID': this.randomNumber(),
+          'Service_Display_Name': this.randomString(),
+          'Provider_ID': this.randomNumber(),
+          'Channel_ID': this.randomNumber(),
+          'Offered': this.randomNumber(),
+          'Completed': this.randomNumber(),
+          'Abandoned' : this.randomNumber(),
+          'Not_Answered' : this.randomNumber(),
+          'Conferences' : this.randomNumber(),
+          'Answered' : this.randomNumber(),
+          'Consults' : this.randomNumber(),
+          'Transferred' : this.randomNumber(),
+          'Hold_Duration': this.randomNumber(),
+          'Blended_Active_Duration': this.randomNumber(),
+          'Alertting_Duration': this.randomNumber(),
+          'Active_Time': this.randomNumber(),
+          'Disconnects_From_Hold': this.randomNumber(),
+          'Holds': this.randomNumber(),
+          'Long_Engagements': this.randomNumber(),
+          'Short_Engagements': this.randomNumber(),
+          'Long_Wrap_Ups': this.randomNumber(),
+          'Short_Wrap_Ups': this.randomNumber(),
+          'Long_Holds': this.randomNumber(),
+          'TRANSFERRED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_TO_SERVICE': this.randomNumber(),
+          'CONSULTS_INITIATED': this.randomNumber(),
+          'TRANSFERRED_INITIATED': this.randomNumber(),
+          'CONFERENCED_INITIATED': this.randomNumber(),
+          'CONSULTS_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED': this.randomNumber(),
+          'CONFERENCED_ACCEPTED': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_SERVICE': this.randomNumber(),
+          'TRANSFERRED_INITIATED_TO_AGENT': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_SERVICE': this.randomNumber(),
+          'TRANSFERRED_ACCEPTED_FROM_AGENT': this.randomNumber(),
+          'COACHED': this.randomNumber(),
+          'COACHING': this.randomNumber(),
+          'OBSERVED': this.randomNumber(),
+          'OBSERVING': this.randomNumber(),
+          'BARGED_IN': this.randomNumber(),
+          'BARGED_OUT': this.randomNumber(),
+          'CONSULT_DURATION': this.randomNumber(),
+          'CONSULTING_DURATION': this.randomNumber(),
+          'CONSULTED_DURATION': this.randomNumber(),
+          'COACHED_DURATION': this.randomNumber(),
+          'COACHING_DURATION': this.randomNumber(),
+          'OBSERVED_DURATION': this.randomNumber(),
+          'OBSERVING_DURATION': this.randomNumber(),
+          'BARGED_IN_DURATION': this.randomNumber(),
+          'BARGED_OUT_DURATION': this.randomNumber(),
+          'ACW_DURATION': this.randomNumber(),
+          'ACW': this.randomNumber(),
+          'ACW_EXTENDED': this.randomNumber()
+        }
+        break;
+      }
+    }
+    return this.result;
+  }
+
+  public randomNumber(): number {
+    // return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (9000 - 1000 + 1)) + 1000;
+  };
+
+  public randomString(): string {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for ( let i = 0; i < 15; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  };
+}
+

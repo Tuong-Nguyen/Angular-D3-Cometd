@@ -14,6 +14,7 @@ import { ServerService } from './server/server.service';
 import { KafkaProxyService } from 'app/services/KafkaProxy/kafka-proxy.service';
 import { ConsumerApi } from 'app/services/kafka-rest/api/ConsumerApi';
 import { TopicApi } from 'app/services/kafka-rest/api/TopicApi';
+import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 
 import { BASE_PATH } from 'app/services/kafka-rest/variables';
 import { environment } from 'environments/environment';
@@ -34,8 +35,9 @@ import { environment } from 'environments/environment';
   providers: [
     ServerService,
     KafkaProxyService,
+    FakeDataService,
     ConsumerApi,
-    TopicApi, 
+    TopicApi,
     {provide: BASE_PATH, useValue: environment.kafka_rest_proxy}
   ],
   bootstrap: [AppComponent]

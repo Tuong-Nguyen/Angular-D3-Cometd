@@ -79,6 +79,8 @@ export class ClientComponent implements OnInit {
     'topics': []
   };
 
+  public dataResult = [];
+
   constructor(private _clientService: ClientService, private _kafkaProxyService: KafkaProxyService) {
   }
 
@@ -100,13 +102,13 @@ export class ClientComponent implements OnInit {
             console.log("==============Item: ", item);
             console.log("=====>Key: ", item.key + " =====>Instance: ", this.instanceName);
             console.log("=====>Topic: ", data[i].topic + "=====>Topic Result: ", environment.result);
-
-            if (item[0].key === this.instanceName && data[i].topic !== environment.result) {
-              console.log('==========> push topic name ', data[i].topic);
-              this.messages[data[i].topic].push(data[i].value[0]);
-
-            } else {
-              if (item[0].key === this.instanceName) {
+            console.log(item[0]);
+            // if (item[0].key === this.instanceName && data[i].topic !== environment.result) {
+            //   console.log('==========> push topic name ', data[i].topic);
+            //   this.messages[data[i].topic].push(data[i].value[0]);
+            //   console.log(this.messages[data[i].topic]);
+            // } else {
+              if (item[0] !== undefined && item[0].key !== undefined && item[0].key === this.instanceName) {
                 console.log("=====> Send PUMP");
                 this._kafkaProxyService.sendData(environment.pump, this.pump.records[0]).subscribe(
                   dataSub => {
@@ -118,8 +120,11 @@ export class ClientComponent implements OnInit {
                     console.log('Subscribe failed', err);
                   }
                 );
+              }else{ //Handle -> will remove
+                this.dataResult.push(data[i].value);
+                console.log(this.dataResult);
               }
-            };
+            // };
           }
         }
       },

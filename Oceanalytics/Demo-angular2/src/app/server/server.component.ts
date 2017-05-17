@@ -11,6 +11,7 @@ import {ServerService} from 'app/server/server.service';
 import {environment} from '../../environments/environment';
 
 import { KafkaProxyService } from '../services/KafkaProxy/kafka-proxy.service';
+import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 
 @Component({
   selector: 'app-server',
@@ -22,7 +23,7 @@ export class ServerComponent implements OnInit, OnChanges {
 
   newInstance: Consumer;
 
-  constructor(private _serverService: ServerService, private _kafkaProxyService: KafkaProxyService) {
+  constructor(private _serverService: ServerService, private _kafkaProxyService: KafkaProxyService, private  _fakeDataService: FakeDataService) {
   }
 
   public datePipe = new DatePipe('en-US');
@@ -277,7 +278,7 @@ export class ServerComponent implements OnInit, OnChanges {
 
               this.tpName = topicName = item.value.subscriptionRequest.measuresStream;
               topicName = item.value.subscriptionRequest.measuresStream;
-              
+
               console.log('Topic Name: ', topicName);
 
               this.arrTopicName.push(item.value.subscriptionRequest.measuresStream);
@@ -335,10 +336,22 @@ export class ServerComponent implements OnInit, OnChanges {
           if (this.dtObject != '' && this.dtObject !== undefined && this.isPump == true) {
             var dttime = this.datePipe.transform(new Date(), 'HHmmss');
             for (var i = 0; i < this.arrTopicName.length; i++) {
+              let realtimeData = this._fakeDataService.realtimeData('StartOfDayAgentByAccount');
+              let dtObject2 = {
+                "dimension":
+                  {
+                    "agentId":"88888888"
+                  },
+                "realtimeData": realtimeData,
+                "pumpup":true,
+                "pumpupComplete":true
+              }
+
               this.dtObject.records[0].value.kafkaTopicName = this.arrLabelName[i];
               this.dtObject.records[0].value.time = dttime;
               console.log('============> push messge to topic: ', this.arrTopicName[i]);
-              this._kafkaProxyService.sendData(this.arrTopicName[i], this.dtObject.records).subscribe();
+              // this._kafkaProxyService.sendData(this.arrTopicName[i], this.dtObject.records).subscribe();
+              this._kafkaProxyService.sendData(this.arrTopicName[i], dtObject2).subscribe();
             }
           }
         }
