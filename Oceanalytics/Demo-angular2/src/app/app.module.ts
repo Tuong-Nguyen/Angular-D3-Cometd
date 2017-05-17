@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import {SelectModule} from 'angular2-select';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { route } from './route';
 import { AppComponent } from './app.component';
@@ -27,7 +28,7 @@ import {TabularTableComponent} from './tabular-table/tabular-table.component';
     route,
     SelectModule
   ],
-  providers: [ServerService],
+  providers: [ServerService, {provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
