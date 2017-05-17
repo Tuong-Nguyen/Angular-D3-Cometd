@@ -1,5 +1,4 @@
-import {Injectable, Optional} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
+import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 
 import {StartOfDayAgentByAccount} from 'app/services/fake-data/model/StartOfDayAgentByAccount';
@@ -13,15 +12,15 @@ import {MovingWindowAgentByRoutingService} from 'app/services/fake-data/model/Mo
 
 @Injectable()
 export class FakeDataService {
-  public result : any;
+  public result: any;
 
   constructor() {
   }
 
   public realtimeData(type: string) {
-    switch (type){
+    switch (type) {
       case environment.AGENTMEASURES: {
-        let startOfDayAgentByAccount: StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
+        const startOfDayAgentByAccount: StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
         startOfDayAgentByAccount.Agent_ID = this.randomNumber();
         startOfDayAgentByAccount.Provider_ID = this.randomNumber();
         startOfDayAgentByAccount.Account_ID = this.randomNumber();
@@ -97,8 +96,8 @@ export class FakeDataService {
         this.result = startOfDayAgentByAccount;
         break;
       }
-      case environment.AGENTBYACCOUNTMEASURES :{
-        let startOfDayAgent : StartOfDayAgent = new StartOfDayAgent();
+      case environment.AGENTBYACCOUNTMEASURES : {
+        const startOfDayAgent: StartOfDayAgent = new StartOfDayAgent();
         startOfDayAgent.First_Name = this.randomString();
         startOfDayAgent.Last_Name = this.randomString();
         startOfDayAgent.Agent_ID = this.randomNumber();
@@ -176,8 +175,8 @@ export class FakeDataService {
         this.result = startOfDayAgent;
         break;
       }
-      case environment.ROUTINGSERVICEMEASURES :{
-        let startOfDayRoutingService : StartOfDayRoutingService = new StartOfDayRoutingService();
+      case environment.ROUTINGSERVICEMEASURES : {
+        const startOfDayRoutingService: StartOfDayRoutingService = new StartOfDayRoutingService();
         startOfDayRoutingService.Routing_Service_Name = this.randomString();
         startOfDayRoutingService.Routing_Service_ID = this.randomString();
         startOfDayRoutingService.Available = this.randomString();
@@ -245,8 +244,8 @@ export class FakeDataService {
         this.result = startOfDayRoutingService;
         break;
       }
-      case environment.AGENTBYROUTINGSERVICEMEASURES :{
-        let startOfDayAgentByRoutingService : StartOfDayAgentByRoutingService = new StartOfDayAgentByRoutingService();
+      case environment.AGENTBYROUTINGSERVICEMEASURES : {
+        const startOfDayAgentByRoutingService: StartOfDayAgentByRoutingService = new StartOfDayAgentByRoutingService();
         startOfDayAgentByRoutingService.Agent_ID = this.randomNumber();
         startOfDayAgentByRoutingService.Supervisor_ID = this.randomNumber();
         startOfDayAgentByRoutingService.Agent_Surname = this.randomString();
@@ -302,11 +301,11 @@ export class FakeDataService {
         startOfDayAgentByRoutingService.Long_Wrap_Ups = this.randomNumber();
         startOfDayAgentByRoutingService.Short_Wrap_Ups = this.randomNumber();
 
-        this.result = startOfDayAgentByRoutingService; 
+        this.result = startOfDayAgentByRoutingService;
         break;
       }
-      case environment.AGENTMEASURESMOVINGWINDOW :{
-        let movingWindowAgentByAccount : MovingWindowAgentByAccount = new MovingWindowAgentByAccount();
+      case environment.AGENTMEASURESMOVINGWINDOW : {
+        const movingWindowAgentByAccount: MovingWindowAgentByAccount = new MovingWindowAgentByAccount();
         movingWindowAgentByAccount.Agent_ID = this.randomNumber();
         movingWindowAgentByAccount.Provider_ID = this.randomNumber();
         movingWindowAgentByAccount.Supervisor_ID = this.randomNumber();
@@ -382,9 +381,9 @@ export class FakeDataService {
         this.result = movingWindowAgentByAccount;
         break;
       }
-      case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW :{
-        let movingWindowAgent : MovingWindowAgent;
-        
+      case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW : {
+        const movingWindowAgent: MovingWindowAgent = new MovingWindowAgent();
+
         movingWindowAgent.First_Name = this.randomString();
         movingWindowAgent.Last_Name = this.randomString();
         movingWindowAgent.Agent_ID = this.randomNumber();
@@ -467,9 +466,9 @@ export class FakeDataService {
         this.result = movingWindowAgent;
         break;
       }
-      case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW :{
-        let movingWindowRoutingService ; MovingWindowRoutingService;
-        
+      case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW : {
+        const movingWindowRoutingService: MovingWindowRoutingService = new MovingWindowRoutingService();
+
         movingWindowRoutingService.Routing_Service_Name = this.randomString();
         movingWindowRoutingService.Available = this.randomString();
         movingWindowRoutingService.Staffed = this.randomString();
@@ -506,9 +505,9 @@ export class FakeDataService {
         this.result = movingWindowRoutingService;
         break;
       }
-      case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW :{
-        let movingWindowAgentByRoutingService : MovingWindowAgentByRoutingService;
-        
+      case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW : {
+        const movingWindowAgentByRoutingService: MovingWindowAgentByRoutingService = new MovingWindowAgentByRoutingService();
+
         movingWindowAgentByRoutingService.Agent_ID = this.randomNumber();
         movingWindowAgentByRoutingService.Supervisor_ID = this.randomNumber();
         movingWindowAgentByRoutingService.Agent_Surname = this.randomString();
