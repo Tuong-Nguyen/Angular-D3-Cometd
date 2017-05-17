@@ -79,9 +79,9 @@ export class ClientComponent implements OnInit {
 
   ngOnInit() {
 
-    // console.log("angdhjasdja");
-    // let abc : StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
-    // console.log(Object.getOwnPropertyNames(abc));
+    // console.log("Cách lấy properties nè a Hạnh");
+    // let propertiesssss : StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
+    // console.log(Object.getOwnPropertyNames(propertiesssss));
 
     this.messages[env.AGENTMEASURES] = [];
     this.messages[env.AGENTBYACCOUNTMEASURES] = [];
