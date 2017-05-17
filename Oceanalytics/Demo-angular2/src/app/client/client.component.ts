@@ -4,6 +4,7 @@ import {DatePipe} from '@angular/common';
 import {SelectModule} from 'angular2-select';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
+import {StartOfDayAgentByAccount} from 'app/services/fake-data/model/StartOfDayAgentByAccount';
 
 @Component({
   selector: 'app-client',
@@ -77,7 +78,11 @@ export class ClientComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.createInstance();
+
+    // console.log("angdhjasdja");
+    // let abc : StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
+    // console.log(Object.getOwnPropertyNames(abc));
+
     this.messages[env.AGENTMEASURES] = [];
     this.messages[env.AGENTBYACCOUNTMEASURES] = [];
     this.messages[env.ROUTINGSERVICEMEASURES] = [];
@@ -104,16 +109,16 @@ export class ClientComponent implements OnInit {
               console.log('==========> Push data receive to topic: ', data[i].topic);
               this.messages[data[i].topic].push(data[i]);
               console.log(this.messages[data[i].topic]);
+
+
             } else {
-              console.log(2222222222222);
-              console.log(data[i].value.subscriptionRequestId);
+              console.log('====>subscriptionRequestId: ',data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
               if (data[i].value.subscriptionRequestId === this.instanceName) {
                 console.log("=====> Send PUMP");
                 this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
                 this._kafkaProxyService.sendData(env.pump, this.pump.records[0].value).subscribe(
                   dataSub => {
                     console.log('Subscribe successfully', dataSub);
-                    // this._kafkaProxyService.removeTopic(env.result);
                     this._kafkaProxyService.addTopic(data[i].value.measuresStream);
                   },
                   err => {

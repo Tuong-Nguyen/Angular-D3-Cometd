@@ -1,0 +1,35 @@
+export class MovingWindowRoutingService {
+	Routing_Service_Name: string;
+	Available: string;
+	Staffed: string;
+	Contacts_Waiting: number;
+	Contacts_At_Agent: number;
+	Active: number;
+	Completed: number;
+	Answered : number;
+	Answered_After_Threshold : number;
+	Abandoned_After_Threshold : number;
+	Held_Contacts : number;
+	Holds : number;
+	Alerting : number;
+	Offered: number;
+	Not_Answered : number;
+	Abandoned : number;
+	Consults : number;
+	Transfers : number;
+	Hold_Time : number;
+	Abandon_Time : number;
+	Total_Time : number;
+	Ring_Time : number;
+	WaitTime : number;
+	Active_Time : number;
+	Oldest_Contact_Waiting: string;
+	Service_Display_Name: string;
+	Provider_ID: number;
+	Expected_Wait_Time: string;
+	Channel_ID: number;
+	Long_Engagements: number;
+	Short_Engagements: number;
+	Long_Wrap_Ups: number;
+	Short_Wrap_Ups: number;
+}
