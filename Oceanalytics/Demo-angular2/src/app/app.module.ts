@@ -9,6 +9,7 @@ import { route } from './route';
 import { AppComponent } from './app.component';
 import { ClientComponent } from './client/client.component';
 import { ServerComponent } from './server/server.component';
+import { TabularTableComponent } from './tabular-table/tabular-table.component';
 
 import { ServerService } from './server/server.service';
 import { KafkaProxyService } from 'app/services/KafkaProxy/kafka-proxy.service';
@@ -23,7 +24,8 @@ import { environment } from 'environments/environment';
   declarations: [
     AppComponent,
     ClientComponent,
-    ServerComponent
+    ServerComponent,
+    TabularTableComponent
   ],
   imports: [
     BrowserModule,

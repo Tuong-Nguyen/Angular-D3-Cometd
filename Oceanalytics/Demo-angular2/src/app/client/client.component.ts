@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
 import {SelectModule} from 'angular2-select';
-import {environment} from '../../environments/environment';
+import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
 
 @Component({
@@ -20,17 +20,8 @@ export class ClientComponent implements OnInit {
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
   public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
-  public messages = {
-    'SoDagentmeasuresproducer1': [],
-    'SoDagentbyaccountmeasuresproducer1': [],
-    'SoDroutingservicemeasuresproducer1': [],
-    'MWagentmeasuresproducer1': [],
-    'MWagentbyaccountmeasuresproducer1': [],
-    'MWroutingservicemeasuresproducer1': [],
-    'MWagentbyroutingservicemeasuresproducer1': [],
-    'servermeasurespumpuprequest1': []
-  };
-  public env = environment;
+  public env = env;
+  public messages = {};
   public input = {
     'records': []
   };
@@ -38,38 +29,39 @@ export class ClientComponent implements OnInit {
   public pump = {
     'records': [
       {
-        'key': this.instanceName,
         'value': {
-          'pump': this.instanceName
+          'userName': 'SupervisorOne',
+          'password': 's3cr3t',
+          'measuresStreams': []
         }
       }
     ]
   };
 
   public options = [{
-    value: 'SoDagentmeasuresproducer1',
-    label: 'SoDagentmeasuresproducer1'
+    value: env.AGENTMEASURES,
+    label: env.AGENTMEASURES
   }, {
-    value: 'SoDagentbyaccountmeasuresproducer1',
-    label: 'SoDagentbyaccountmeasuresproducer1'
+    value: env.AGENTBYACCOUNTMEASURES,
+    label: env.AGENTBYACCOUNTMEASURES
   }, {
-    value: 'SoDroutingservicemeasuresproducer1',
-    label: 'SoDroutingservicemeasuresproducer1'
+    value: env.ROUTINGSERVICEMEASURES,
+    label: env.ROUTINGSERVICEMEASURES
   }, {
-    value: 'MWagentmeasuresproducer1',
-    label: 'MWagentmeasuresproducer1'
+    value: env.AGENTBYROUTINGSERVICEMEASURES,
+    label: env.AGENTBYROUTINGSERVICEMEASURES
   }, {
-    value: 'MWagentbyaccountmeasuresproducer1',
-    label: 'MWagentbyaccountmeasuresproducer1'
+    value: env.AGENTMEASURESMOVINGWINDOW,
+    label: env.AGENTMEASURESMOVINGWINDOW
   }, {
-    value: 'MWroutingservicemeasuresproducer1',
-    label: 'MWroutingservicemeasuresproducer1'
+    value: env.AGENTBYACCOUNTMEASURSMOVINGWINDOW,
+    label: env.AGENTBYACCOUNTMEASURSMOVINGWINDOW
   }, {
-    value: 'MWagentbyroutingservicemeasuresproducer1',
-    label: 'MWagentbyroutingservicemeasuresproducer1'
+    value: env.ROUTINGSERVICEMEASURESMOVINGWINDOW,
+    label: env.ROUTINGSERVICEMEASURESMOVINGWINDOW
   }, {
-    value: 'servermeasurespumpuprequest1',
-    label: 'servermeasurespumpuprequest1'}
+    value: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW,
+    label: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW}
   ];
 
   public logSingleString;
@@ -86,45 +78,50 @@ export class ClientComponent implements OnInit {
 
   ngOnInit() {
     // this.createInstance();
+    this.messages[env.AGENTMEASURES] = [];
+    this.messages[env.AGENTBYACCOUNTMEASURES] = [];
+    this.messages[env.ROUTINGSERVICEMEASURES] = [];
+    this.messages[env.AGENTBYROUTINGSERVICEMEASURES] = [];
+    this.messages[env.AGENTMEASURESMOVINGWINDOW] = [];
+    this.messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
+    this.messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.fData();
   }
 
   //=============================== New Code ==================================================
   fData(): any {
-    this._kafkaProxyService.addTopic(environment.result);
+    this._kafkaProxyService.addTopic(env.result);
     this._kafkaProxyService.poll().subscribe(
       data => {
         console.log("==========Client Poll Success========");
         console.log(data);
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            const item = (data[i].value);
-            console.log("==============Item: ", item);
-            console.log("=====>Key: ", item.key + " =====>Instance: ", this.instanceName);
-            console.log("=====>Topic: ", data[i].topic + "=====>Topic Result: ", environment.result);
-            console.log(item[0]);
-            // if (item[0].key === this.instanceName && data[i].topic !== environment.result) {
-            //   console.log('==========> push topic name ', data[i].topic);
-            //   this.messages[data[i].topic].push(data[i].value[0]);
-            //   console.log(this.messages[data[i].topic]);
-            // } else {
-              if (item[0] !== undefined && item[0].key !== undefined && item[0].key === this.instanceName) {
+            console.log("==============Item: ", data[i].value);
+            console.log("=====>Topic: ", data[i].topic + "=====>Topic Result: ", env.result);
+            if (data[i].topic !== env.result) {
+              console.log('==========> Push data receive to topic: ', data[i].topic);
+              this.messages[data[i].topic].push(data[i]);
+              console.log(this.messages[data[i].topic]);
+            } else {
+              console.log(2222222222222);
+              console.log(data[i].value.subscriptionRequestId);
+              if (data[i].value.subscriptionRequestId === this.instanceName) {
                 console.log("=====> Send PUMP");
-                this._kafkaProxyService.sendData(environment.pump, this.pump.records[0]).subscribe(
+                this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
+                this._kafkaProxyService.sendData(env.pump, this.pump.records[0].value).subscribe(
                   dataSub => {
                     console.log('Subscribe successfully', dataSub);
-                    this._kafkaProxyService.removeTopic(environment.result);
-                    this._kafkaProxyService.addTopic(item[0].value);
+                    // this._kafkaProxyService.removeTopic(env.result);
+                    this._kafkaProxyService.addTopic(data[i].value.measuresStream);
                   },
                   err => {
                     console.log('Subscribe failed', err);
                   }
                 );
-              }else{ //Handle -> will remove
-                this.dataResult.push(data[i].value);
-                console.log(this.dataResult);
               }
-            // };
+            };
           }
         }
       },
@@ -138,7 +135,7 @@ export class ClientComponent implements OnInit {
   sendData(topic, message): any {
     console.log(message);
     for (var i = 0; i < message.records.length; i++) {
-        this._kafkaProxyService.sendData(topic, message.records[i]).subscribe(
+        this._kafkaProxyService.sendData(topic, message.records[i].value).subscribe(
         data => {
           console.log('====== Push data into RSR topic ====', data);
         },
@@ -147,104 +144,6 @@ export class ClientComponent implements OnInit {
         }
       );
     }
-  }
-
-  //=============================== Old Code===================================================
-  createInstance(): any {
-    this.isReady = false;
-    const instance = {
-      'name': this.instanceName,
-      'format': 'json',
-      'auto.offset.reset': 'earliest', // earliest or latest
-      'auto.commit.enable': 'false'
-    };
-
-    this._clientService.createInstance(this.groupName, instance).subscribe(
-      data => {
-        this.newInstance = data;
-        console.log(data);
-
-        // Change urlInstance
-        this.urlInstance = data.base_uri;
-      },
-      err => {
-        console.log('====Create Instance Fail======');
-        console.log(err);
-      },
-      () => this.subscribeTopic(environment.result)
-    );
-  }
-
-  subscribeTopic(topic): any {
-    this.listTopics.topics.push(topic);
-    console.log('===========> Subscribe topic: ', this.listTopics);
-    // Change status
-    this.status = 'Subscribe';
-    // Call Service
-    this._clientService.subscribeTopic(this.urlInstance, this.listTopics).subscribe(
-      data => {
-        console.log('=====Subscription Success=====');
-        console.log(data);
-        this.isReady = true;
-        console.log('====> befor delete', this.listTopics);
-      },
-      err => {
-        console.log('=====Subscription Fail=====');
-      }
-    );
-  }
-
-
-  addRecord(topic, message): any {
-    this._clientService.addRecord(topic, message).subscribe(
-      data => {
-        console.log('====== Push data into RSR topic ====', data);
-      },
-      err => {
-        console.log('===== Push data into RSR topic unsuccessfully =====', err);
-      },
-      () => this.listen()
-    );
-  }
-
-  listen(): any {
-    let flag = true;
-    setInterval(() => {
-      if (this.isReady === true && flag) {
-        flag = false;
-        console.log(this.urlInstance);
-        this._clientService.getRecord(this.urlInstance).subscribe(
-          data => {
-            flag = true;
-            console.log('listening server .....', data);
-            for (let i = 0; i < data.length; i++) {
-              if (data[i].key === this.instanceName && data[i].topic !== environment.result) {
-                console.log('==========> push topic name ', data[i].topic);
-                this.messages[data[i].topic].push(data[i]);
-              } else {
-                if (data[i].key === this.instanceName) {
-                  this.status = 'Push to Pump topic';
-                  this._clientService.addRecord(environment.pump, this.pump).subscribe(
-                    dataSub => {
-                      console.log('Subscribe successfully', dataSub);
-                      this.status = 'Listening topic ' + data[i].key;
-                      this.subscribeTopic(data[i].value);
-                    },
-                    err => {
-                      console.log('Subscribe failed', err);
-                    }
-                  );
-                }
-              }
-              ;
-            }
-          },
-          err => {
-            console.log('listen server failed');
-          }
-        );
-      }
-    }, 5000);
   }
 
   onSingleOpened() {
@@ -276,14 +175,12 @@ export class ClientComponent implements OnInit {
 
   onMultipleSelected(item) {
     const record = {
-      'key': this.instanceName,
       'value': {
-        'kafkaTopicName': item.label,
-        'subscriptionRequest': {
-          'measuresStream': item.value,
-          'password': 'secret',
-          'user': this.instanceName
-        }
+        'userName': '',
+        'subscriptionRequestId':  this.instanceName,
+        'password': 's3cr3t',
+        'request': 'SUBSCRIBE',
+        'measuresStream': item.value
       }
     };
     this.input.records.push(record);
@@ -293,7 +190,7 @@ export class ClientComponent implements OnInit {
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
-    this.listTopics.topics= [environment.result];
+    this.listTopics.topics= [env.result];
     for ( let i = 0; i < this.input.records.length; i++){
       if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
           newRecords.push(this.input.records[i]);
@@ -322,6 +219,10 @@ export class ClientComponent implements OnInit {
 
 
     console.log('===> Selected item', this.input);
+  }
+
+  convertString(json): any {
+    return JSON.stringify(json);
   }
 
   private logSingle(msg: string) {

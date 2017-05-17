@@ -45,7 +45,6 @@ export class ServerComponent implements OnInit, OnChanges {
 
 
   public dtrs: any;
-  public tpName: string;
   public arrTopicName = [];
   public arrLabelName = [];
   private timer;
@@ -53,203 +52,8 @@ export class ServerComponent implements OnInit, OnChanges {
 
   public dtObject : any;
 
+  public arrRecord = [];
 
-  createInstance(): any {
-    this.isDisplay = false;
-    let data = {
-      'name': this.instanceName,
-      'format': 'json',
-      'auto.offset.reset': 'latest', // earliest latest
-      'auto.commit.enable': 'false'
-    };
-    // Call Service
-    this._serverService.createInstance(this.groupName, data).subscribe(
-      data => {
-        this.newInstance = data;
-        console.log('====Create Instance Success======');
-        console.log(data);
-
-        // Change urlInstance
-        this.urlInstance = data.base_uri;
-      },
-      err => {
-        console.log('====Create Instance Fail======');
-        console.log(err);
-      },
-      () => this.subscribeTopic()
-    );
-  }
-
-  subscribeTopic(): any {
-    const listTopics = {
-      'topics': [
-        environment.rsr,
-        environment.pump
-      ]
-    }
-    // Change status
-    this.status = 'Subscribe';
-    // Call Service
-    this._serverService.subscribe(this.urlInstance, listTopics).subscribe(
-      data => {
-        console.log('=====Subscription Success=====');
-        this.isReady = true;
-        this.status = 'Listening';
-      },
-      err => {
-        console.log('=====Subscription Fail=====');
-      },
-      () => this.fetchData()
-    );
-  }
-
-  fetchData(): any {
-    // Code here
-    if (this.isReady === true && this.urlInstance != '' && this.flag === true) {
-      this.records = [];
-      let flag = true;
-      this.timer = setInterval(() => {
-        if (!this.isPending && flag) {
-          flag = false;
-          this.isPending = true;
-          let arrayUrl: any[];
-          this.isDisplay = true;
-          // Call service
-          this._serverService.getRecords(this.urlInstance).subscribe(
-            data => {
-              flag = true;
-              console.log('===Get records success===');
-              console.log(data);
-              let topicName = '';
-              let dataTmp1: any;
-              let dataTmp2: any;
-
-              this.isPending = false;
-              this.isDisplay = true;
-
-              if (data.length > 0) {
-                this.records = this.records.concat(data);
-                console.log(data);
-                // this.arrTopicName = [];
-                // this.arrLabelName = [];
-                for (let i = 0; i < data.length; i++) {
-                  if (data[i].value.pump === undefined) {
-                    this.status = 'Listening Pump';
-                    this.flag = false;
-                    // this.tpName = topicName = data[i].value.subscriptionRequest.measuresStream;
-                    topicName = data[i].value.subscriptionRequest.measuresStream;
-
-                    console.log('topicName');
-                    console.log(topicName);
-
-
-                    this.arrTopicName.push(data[i].value.subscriptionRequest.measuresStream);
-                    this.arrLabelName.push(data[i].value.kafkaTopicName);
-                    // console.log('arrTopicName');
-                    // console.log(this.arrTopicName);
-
-                    this.dtrs = dataTmp1 = {
-                      'records': [
-                        {
-                          'key': data[i].key,
-                          'value': data[i].value
-                        }
-                      ]
-                    }
-
-                    this._serverService.addRecord(topicName, dataTmp1).subscribe(
-                      res1 => {
-                        console.log('===Add new message to topic===');
-                        console.log(res1);
-                      },
-                      err1 => {
-                        console.log('===Add message fail 1===');
-                      }
-                    )
-
-                    // push data to result topic
-                    dataTmp2 = {
-                      'records': [
-                        {
-                          'key': data[i].key,
-                          'value': topicName
-                        }
-                      ]
-                    }
-                    console.log(dataTmp2);
-                    this._serverService.addRecord(environment.result, dataTmp2).subscribe(
-                      res2 => {
-                        console.log('===Add new message to topic result ===')
-                        ;
-                        console.log(res2);
-                      },
-                      err2 => {
-                        console.log('===Add message fail 2===');
-                      }
-                    )
-
-                  }
-                  else {
-                    this.status = 'Ready';
-                    this.isPump = true;
-                  }
-                }
-              } else {
-                this.status = 'Sending';
-                console.log('Case else');
-                console.log('is pump: ' + this.isPump);
-                console.log('Arr topic: ');
-                console.log(this.arrTopicName);
-                console.log('Arr label: ');
-                console.log(this.arrLabelName);
-
-                console.log(this.dtrs);
-                if (this.dtrs != '' && this.dtrs !== undefined && this.isPump == true) {
-                  console.log(this.dtrs);
-                  var dttime = this.datePipe.transform(new Date(), 'HHmmss');
-
-                  for (var i = 0; i < this.arrTopicName.length; i++) {
-                    this.dtrs.records[0].value.kafkaTopicName = this.arrLabelName[i];
-                    this.dtrs.records[0].value.time = dttime;
-                    console.log('============> push messge to topic: ', this.arrTopicName[i]);
-                    this._serverService.addRecord(this.arrTopicName[i], this.dtrs).subscribe(
-                      res1 => {
-                        console.log('===Add new message to topic===');
-                        console.log(res1);
-                      },
-                      err1 => {
-                        console.log('===Add message fail 3===');
-                      }
-                    )
-                  }
-                }
-              }
-
-            },
-            err => {
-              console.log('===Get records fail===');
-            }
-          )
-        }
-      }, 2000);
-    }
-  }
-
-  deleteInstance(): any {
-    this._serverService.deleteInstance(this.urlInstance).subscribe(
-      data => {
-        console.log('Delete ins' + data);
-        this.records = [];
-        clearInterval(this.timer);
-        this.isReady = false;
-      },
-      err => {
-        console.log('=====Delete Ins Fail=====');
-      }
-    );
-  }
-
-    //New Code here
   fData(): any {
     //Pull data
     this._kafkaProxyService.addTopic(environment.rsr);
@@ -264,39 +68,163 @@ export class ServerComponent implements OnInit, OnChanges {
         let dataTmp2: any;
 
         if (data.length > 0){
-          console.log("Data Poll");
-          // this.records = this.records.concat(data);
-          // this.arrTopicName = [];
-          // this.arrLabelName = [];
-          // const recordItems = (data[0].value.records as any);
+          console.log("Case IF in Poll Success");
+          // this.records = this.records.concat(data); ????
           for (let i = 0; i < data.length; i++) {
-            // data[i] = JSON.parse(data[i]);
-            const item = (data[i].value as any);
-            console.log(item);
-            if (item.value.pump === undefined) {
-              console.log('=====item: ', item);
-
-              this.tpName = topicName = item.value.subscriptionRequest.measuresStream;
-              topicName = item.value.subscriptionRequest.measuresStream;
-
+            console.log('======> Item : ', data[i].value);
+            if (data[i].topic !== environment.pump) {
+              // Reset
+              if (i === 0) {
+                this.arrRecord = [];
+                this.arrTopicName = [];
+              }
+              topicName = data[i].value.measuresStream;
               console.log('Topic Name: ', topicName);
 
-              this.arrTopicName.push(item.value.subscriptionRequest.measuresStream);
-              this.arrLabelName.push(item.value.kafkaTopicName);
-              // console.log('arrTopicName');
-              // console.log(this.arrTopicName);
-
-              this.dtObject = dataTmp1 = {
-                'records': [
-                  {
-                    'key': item.key,
-                    'value': item
-                  }
-                ]
+              this.arrTopicName.push(data[i].value.measuresStream);
+              let realtimeData = this._fakeDataService.realtimeData(topicName);
+              switch (topicName) {
+                case environment.AGENTMEASURES:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'agentId': '8881001'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': true,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  });
+                  break;
+                case environment.AGENTBYACCOUNTMEASURES:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'accountId': '8881002',
+                            'agentId': '8881002'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': false,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  })
+                  ;
+                  break;
+                case environment.ROUTINGSERVICEMEASURES:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'routingServiceName': 'ChatRoutingService'
+                          },
+                          'realtimeData':realtimeData,
+                          'pumpup': true,
+                          'pumpupComplete': true
+                        }
+                      }
+                    ]
+                  });
+                  break;
+                case environment.AGENTBYROUTINGSERVICEMEASURES:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'agentId': '8881003',
+                            'routingServiceName': 'ChatRoutingService'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': false,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  });
+                  break;
+                case environment.AGENTMEASURESMOVINGWINDOW:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'agentId': '8881004',
+                            'routingServiceName': 'ChatRoutingService'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': false,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  });
+                  break;
+                case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'agentId': '8881005',
+                            'routingServiceName': 'ChatRoutingService'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': false,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  });
+                  break;
+                case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'agentId': '8881006',
+                            'routingServiceName': 'ChatRoutingService'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': false,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  });
+                  break;
+                case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
+                  this.arrRecord.push({
+                    'records': [
+                      {
+                        'value': {
+                          'dimension': {
+                            'agentId': '8881007',
+                            'routingServiceName': 'ChatRoutingService'
+                          },
+                          'realtimeData': realtimeData,
+                          'pumpup': false,
+                          'pumpupComplete': false
+                        }
+                      }
+                    ]
+                  });
+                  break;
               }
 
               //Send data to Topic
-              this._kafkaProxyService.sendData(topicName, dataTmp1.records).subscribe(
+              console.log(this.arrRecord);
+              console.log(this.arrRecord[i].records[0]);
+              this._kafkaProxyService.sendData(topicName, this.arrRecord[i].records[0].value).subscribe(
                 data => {
                   console.log("=====>Send Data "+topicName+" Success");
                 },
@@ -305,16 +233,22 @@ export class ServerComponent implements OnInit, OnChanges {
                 }
               );
 
-              //Push data to result topic
+              //Send data to Result Topic
               dataTmp2 = {
                 'records': [
                   {
-                    'key': item.key,
-                    'value': topicName
+                    'value': {
+                      'userName': data[i].value.userName,
+                      'subscriptionRequestId': data[i].value.subscriptionRequestId,
+                      'measuresStream': topicName,
+                      'result': 'SUCCESS',
+                      'reason': 'The request was successful.',
+                      'topic': topicName
+                    }
                   }
                 ]
               }
-              this._kafkaProxyService.sendData(environment.result, dataTmp2.records).subscribe(
+              this._kafkaProxyService.sendData(environment.result, dataTmp2.records[0].value).subscribe(
                 data => {
                   console.log("=====>Send Data "+ environment.result +" Success");
                 },
@@ -328,30 +262,18 @@ export class ServerComponent implements OnInit, OnChanges {
             }
           }
         }else{
-          console.log("Case ELSE in Poll Success")
+          console.log("Case ELSE in Poll Success");
           console.log('Arr topic: ', this.arrTopicName);
-          console.log('Data Object: ', this.dtObject);
           console.log("PUMP: ", this.isPump);
-
-          if (this.dtObject != '' && this.dtObject !== undefined && this.isPump == true) {
+          if (this.arrRecord.length !== 0 && this.isPump == true) {
             var dttime = this.datePipe.transform(new Date(), 'HHmmss');
             for (var i = 0; i < this.arrTopicName.length; i++) {
-              let realtimeData = this._fakeDataService.realtimeData('StartOfDayAgentByAccount');
-              let dtObject2 = {
-                "dimension":
-                  {
-                    "agentId":"88888888"
-                  },
-                "realtimeData": realtimeData,
-                "pumpup":true,
-                "pumpupComplete":true
-              }
-
-              this.dtObject.records[0].value.kafkaTopicName = this.arrLabelName[i];
-              this.dtObject.records[0].value.time = dttime;
+              let realtimeData = this._fakeDataService.realtimeData(this.arrTopicName[i]);
+              this.arrRecord[i].records[0].value.measuresStream = this.arrTopicName[i];
+              this.arrRecord[i].records[0].value.realtimeData = realtimeData;
+              this.arrRecord[i].records[0].value.time = dttime;
               console.log('============> push messge to topic: ', this.arrTopicName[i]);
-              // this._kafkaProxyService.sendData(this.arrTopicName[i], this.dtObject.records).subscribe();
-              this._kafkaProxyService.sendData(this.arrTopicName[i], dtObject2).subscribe();
+              this._kafkaProxyService.sendData(this.arrTopicName[i], this.arrRecord[i].records[0].value).subscribe();
             }
           }
         }
@@ -363,7 +285,6 @@ export class ServerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    // this.createInstance();
     this.fData();
   }
 

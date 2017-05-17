@@ -1,0 +1,12 @@
+<table class="table table-condensed">
+  <tr>
+    <th style="width: 10px">#</th>
+    <th *ngFor="let field of fields" [innerHtml]="field"></th>
+    <th>Topic</th>
+  </tr>
+  <tr *ngFor="let item of data; let i = index;">
+    <td [innerHtml]="i"></td>
+    <td *ngFor="let field of fields" [innerHtml]="item.value.realtimeData[field]"></td>
+    <td [innerHtml]="item.topic"></td>
+  </tr>
+</table>

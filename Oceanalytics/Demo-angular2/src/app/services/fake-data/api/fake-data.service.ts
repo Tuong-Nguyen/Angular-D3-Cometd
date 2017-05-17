@@ -1,5 +1,6 @@
 import {Injectable, Optional} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
+import {environment} from 'environments/environment';
 
 @Injectable()
 export class FakeDataService {
@@ -19,7 +20,7 @@ export class FakeDataService {
 
   public realtimeData(type: string) {
     switch (type){
-      case 'StartOfDayAgentByAccount': {
+      case environment.AGENTMEASURES: {
         this.result = this.StartOfDayAgentByAccount = {
           'Agent_ID': this.randomNumber(),
           'Provider_ID': this.randomNumber(),
@@ -95,7 +96,7 @@ export class FakeDataService {
         };
         break;
       }
-      case 'StartOfDayAgent':{
+      case environment.AGENTBYACCOUNTMEASURES :{
         this.result = this.StartOfDayAgent = {
           'First_Name': this.randomString(),
           'Last_Name': this.randomString(),
@@ -174,7 +175,7 @@ export class FakeDataService {
         };
         break;
       }
-      case 'StartOfDayRoutingService':{
+      case environment.ROUTINGSERVICEMEASURES :{
         this.result = this.StartOfDayRoutingService = {
           'Routing_Service_Name': this.randomString(),
           'Routing_Service_ID': this.randomString(),
@@ -242,7 +243,7 @@ export class FakeDataService {
         }
         break;
       }
-      case 'StartOfDayAgentByRoutingService':{
+      case environment.AGENTBYROUTINGSERVICEMEASURES :{
         this.result = this.StartOfDayAgentByRoutingService = {
           'Agent_ID': this.randomNumber(),
           'Supervisor_ID': this.randomNumber(),
@@ -301,7 +302,7 @@ export class FakeDataService {
         }
         break;
       }
-      case 'MovingWindowAgentByAccount':{
+      case environment.AGENTMEASURESMOVINGWINDOW :{
         this.result = this.MovingWindowAgentByAccount = {
           'Agent_ID': this.randomNumber(),
           'Provider_ID': this.randomNumber(),
@@ -378,7 +379,7 @@ export class FakeDataService {
         }
         break;
       }
-      case 'MovingWindowAgent':{
+      case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW :{
         this.result = this.MovingWindowAgent = {
           'First_Name': this.randomString(),
           'Last_Name': this.randomString(),
@@ -461,7 +462,7 @@ export class FakeDataService {
         }
         break;
       }
-      case 'MovingWindowRoutingService':{
+      case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW :{
         this.result = this.MovingWindowRoutingService = {
           'Routing_Service_Name': this.randomString(),
           'Available': this.randomString(),
@@ -499,7 +500,7 @@ export class FakeDataService {
         }
         break;
       }
-      case 'MovingWindowAgentByRoutingService':{
+      case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW :{
         this.result = this.MovingWindowAgentByRoutingService = {
           'Agent_ID': this.randomNumber(),
           'Supervisor_ID': this.randomNumber(),
