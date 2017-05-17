@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { ClientComponent } from './client/client.component';
 import { ServerComponent } from './server/server.component';
 import { TabularTableComponent } from './tabular-table/tabular-table.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { ServerService } from './server/server.service';
 import { KafkaProxyService } from 'app/services/KafkaProxy/kafka-proxy.service';
@@ -40,7 +41,8 @@ import { environment } from 'environments/environment';
     FakeDataService,
     ConsumerApi,
     TopicApi,
-    {provide: BASE_PATH, useValue: environment.kafka_rest_proxy}
+    {provide: BASE_PATH, useValue: environment.kafka_rest_proxy},
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })
