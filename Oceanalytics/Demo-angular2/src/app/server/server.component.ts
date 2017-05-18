@@ -37,7 +37,6 @@ export class ServerComponent implements OnInit, OnChanges {
         console.log(data);
 
         let topicName = '';
-        let dataTmp2: any;
 
         if (data.length > 0) {
           console.log('Case IF in Poll Success');
@@ -199,21 +198,8 @@ export class ServerComponent implements OnInit, OnChanges {
               this.sendMessage(topicName, this.arrRecord[i].records[0].value);
 
               // Send data to Result Topic
-              dataTmp2 = {
-                'records': [
-                  {
-                    'value': {
-                      'userName': data[i].value.userName,
-                      'subscriptionRequestId': data[i].value.subscriptionRequestId,
-                      'measuresStream': topicName,
-                      'result': 'SUCCESS',
-                      'reason': 'The request was successful.',
-                      'topic': topicName
-                    }
-                  }
-                ]
-              };
-              this.sendMessage(environment.result, dataTmp2.records[0].value);
+              this.sendMessage(environment.result, this.createSubscriptionResponse(data[i].value.userName,
+                data[i].value.subscriptionRequestId, topicName, topicName));
             } else {
               this.isPump = true;
             }
@@ -239,6 +225,25 @@ export class ServerComponent implements OnInit, OnChanges {
         console.log('=====Poll Fail=====');
       }
     );
+  }
+
+  /**
+   * Create a SUCCESS response for a subscription
+   * @param userName
+   * @param subscriptionRequestId
+   * @param measuresStream
+   * @param topic
+   * @returns {{userName: string, subscriptionRequestId: string, measuresStream: string, result: string, reason: string, topic: string}}
+   */
+  private createSubscriptionResponse(userName: string, subscriptionRequestId: string, measuresStream: string, topic: string): any {
+    return {
+      'userName': userName,
+      'subscriptionRequestId': subscriptionRequestId,
+      'measuresStream': measuresStream,
+      'result': 'SUCCESS',
+      'reason': 'The request was successful.',
+      'topic': topic
+    };
   }
 
   /**
