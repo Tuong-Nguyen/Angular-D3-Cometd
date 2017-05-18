@@ -13,7 +13,6 @@ import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 export class ServerComponent implements OnInit, OnChanges {
 
   public datePipe = new DatePipe('en-US');
-  public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
 
   public status = 'Create Instance';
 
@@ -22,7 +21,6 @@ export class ServerComponent implements OnInit, OnChanges {
   public isPump: Boolean = false;
 
   public arrTopicName = [];
-  public arrRecord = [];
 
   constructor(private _kafkaProxyService: KafkaProxyService, private  _fakeDataService: FakeDataService) {
   }
@@ -46,156 +44,16 @@ export class ServerComponent implements OnInit, OnChanges {
             if (data[i].topic !== environment.pump) {
               // Reset
               if (i === 0) {
-                this.arrRecord = [];
                 this.arrTopicName = [];
               }
               topicName = data[i].value.measuresStream;
               console.log('Topic Name: ', topicName);
 
               this.arrTopicName.push(data[i].value.measuresStream);
-              const realtimeData = this._fakeDataService.realtimeData(topicName);
-              switch (topicName) {
-                case environment.AGENTMEASURES:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'agentId': '8881001'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': true,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  });
-                  break;
-                case environment.AGENTBYACCOUNTMEASURES:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'accountId': '8881002',
-                            'agentId': '8881002'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': false,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  })
-                  ;
-                  break;
-                case environment.ROUTINGSERVICEMEASURES:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'routingServiceName': 'ChatRoutingService'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': true,
-                          'pumpupComplete': true
-                        }
-                      }
-                    ]
-                  });
-                  break;
-                case environment.AGENTBYROUTINGSERVICEMEASURES:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'agentId': '8881003',
-                            'routingServiceName': 'ChatRoutingService'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': false,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  });
-                  break;
-                case environment.AGENTMEASURESMOVINGWINDOW:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'agentId': '8881004',
-                            'routingServiceName': 'ChatRoutingService'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': false,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  });
-                  break;
-                case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'agentId': '8881005',
-                            'routingServiceName': 'ChatRoutingService'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': false,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  });
-                  break;
-                case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'agentId': '8881006',
-                            'routingServiceName': 'ChatRoutingService'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': false,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  });
-                  break;
-                case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
-                  this.arrRecord.push({
-                    'records': [
-                      {
-                        'value': {
-                          'dimension': {
-                            'agentId': '8881007',
-                            'routingServiceName': 'ChatRoutingService'
-                          },
-                          'realtimeData': realtimeData,
-                          'pumpup': false,
-                          'pumpupComplete': false
-                        }
-                      }
-                    ]
-                  });
-                  break;
-              }
+              const realtimeData = this.generateRealtimeData(topicName);
 
               // Send data to Topic
-              console.log(this.arrRecord);
-              console.log(this.arrRecord[i].records[0]);
-              this.sendMessage(topicName, this.arrRecord[i].records[0].value);
+              this.sendMessage(topicName, realtimeData.records[0].value);
 
               // Send data to Result Topic
               this.sendMessage(environment.result, this.createSubscriptionResponse(data[i].value.userName,
@@ -204,19 +62,18 @@ export class ServerComponent implements OnInit, OnChanges {
               this.isPump = true;
             }
           }
-        }else {
+        }else { // Send realtime data
           console.log('Case ELSE in Poll Success');
           console.log('Arr topic: ', this.arrTopicName);
           console.log('PUMP: ', this.isPump);
-          if (this.arrRecord.length !== 0 && this.isPump == true) {
+          if (this.isPump === true) {
             const dttime = this.datePipe.transform(new Date(), 'HHmmss');
             for (let i = 0; i < this.arrTopicName.length; i++) {
               const realtimeData = this._fakeDataService.realtimeData(this.arrTopicName[i]);
-              this.arrRecord[i].records[0].value.measuresStream = this.arrTopicName[i];
-              this.arrRecord[i].records[0].value.realtimeData = realtimeData;
-              this.arrRecord[i].records[0].value.time = dttime;
               console.log('============> push messge to topic: ', this.arrTopicName[i]);
-              this.sendMessage(this.arrTopicName[i], this.arrRecord[i].records[0].value);
+
+              const generatedData = this.generateRealtimeData(this.arrTopicName[i]);
+              this.sendMessage(this.arrTopicName[i], generatedData.records[0].value);
             }
           }
         }
@@ -225,6 +82,148 @@ export class ServerComponent implements OnInit, OnChanges {
         console.log('=====Poll Fail=====');
       }
     );
+  }
+
+  private generateRealtimeData(topicName: string): any {
+    const realtimeData = this._fakeDataService.realtimeData(topicName);
+    let generatedData;
+    switch (topicName) {
+      case environment.AGENTMEASURES:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'agentId': '8881001'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': true,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+      case environment.AGENTBYACCOUNTMEASURES:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'accountId': '8881002',
+                  'agentId': '8881002'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': false,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+      case environment.ROUTINGSERVICEMEASURES:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'routingServiceName': 'ChatRoutingService'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': true,
+                'pumpupComplete': true
+              }
+            }
+          ]
+        };
+        break;
+      case environment.AGENTBYROUTINGSERVICEMEASURES:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'agentId': '8881003',
+                  'routingServiceName': 'ChatRoutingService'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': false,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+      case environment.AGENTMEASURESMOVINGWINDOW:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'agentId': '8881004',
+                  'routingServiceName': 'ChatRoutingService'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': false,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+      case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'agentId': '8881005',
+                  'routingServiceName': 'ChatRoutingService'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': false,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+      case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'agentId': '8881006',
+                  'routingServiceName': 'ChatRoutingService'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': false,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+      case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
+        generatedData = {
+          'records': [
+            {
+              'value': {
+                'dimension': {
+                  'agentId': '8881007',
+                  'routingServiceName': 'ChatRoutingService'
+                },
+                'realtimeData': realtimeData,
+                'pumpup': false,
+                'pumpupComplete': false
+              }
+            }
+          ]
+        };
+        break;
+    }
+    return generatedData;
   }
 
   /**
