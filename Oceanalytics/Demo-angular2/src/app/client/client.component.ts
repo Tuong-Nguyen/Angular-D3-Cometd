@@ -100,7 +100,11 @@ export class ClientComponent implements OnInit {
     );
   }
 
-  // Send data
+  /**
+   * Send a message
+   * @param topic
+   * @param message
+   */
   sendMessage(topic, message): void {
     this._kafkaProxyService.sendData(topic, message).subscribe(
       data => {
@@ -122,7 +126,6 @@ export class ClientComponent implements OnInit {
 
   onMultipleSelected(item) {
     this.subscribedMeasures.push(item.value);
-    console.log('=====> selected item', this.subscribedMeasures);
   }
 
   /**
@@ -141,21 +144,19 @@ export class ClientComponent implements OnInit {
   }
 
   onMultipleDeselected(item) {
-    console.log('====> Delete item', item);
-
     const index = this.subscribedMeasures.indexOf(item.value);
     if (index > -1) {
       this.subscribedMeasures.splice(index, 1);
     }
     this.subscribedTopics = this.subscribedMeasures.map(measure => measure);
     this.subscribedTopics.push(env.result);
-    console.log('===> After delete ', this.subscribedTopics);
 
     this._kafkaProxyService.removeTopic(item.value);
-
-    console.log('===> Selected item', this.subscribedMeasures);
   }
 
+  /**
+   * Subscribe for measures
+   */
   public subscribeMeasures(): void {
     for (const measure of this.subscribedMeasures) {
       this.sendMessage(env.rsr, this.createSubscribeRequest(measure));
