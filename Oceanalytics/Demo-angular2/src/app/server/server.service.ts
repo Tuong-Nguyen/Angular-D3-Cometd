@@ -2,10 +2,6 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {environment} from '../../environments/environment';
-// Import RxJs required methods
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-
 import {Consumer} from 'app/server/consumer';
 
 @Injectable()
@@ -15,13 +11,13 @@ export class ServerService {
 
   // CREATE Instance
   createInstance(groupName, data): Observable<Consumer> {
-    let headers = new Headers({
+    const headers = new Headers({
       'Content-Type': 'application/vnd.kafka.json.v2+json',
       'Accept': 'application/vnd.kafka.v2+json'
     });
-    let options = new RequestOptions({headers: headers});
-    let baseUrl = environment.server;
-    let url = baseUrl + '/consumers/' + groupName;
+    const options = new RequestOptions({headers: headers});
+    const baseUrl = environment.server;
+    const url = baseUrl + '/consumers/' + groupName;
 
     return this.http.post(url, data, options)
       .map((res: Response) => res.json())
@@ -30,8 +26,8 @@ export class ServerService {
 
   // DELETE Instance
   deleteInstance(urlInstance): Observable<any> {
-    let headers = new Headers({'Content-Type': 'application/vnd.kafka.v2+json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({'Content-Type': 'application/vnd.kafka.v2+json'});
+    const options = new RequestOptions({headers: headers});
 
     return this.http.post(urlInstance, options)
       .map((res: Response) => res.json())
@@ -40,9 +36,9 @@ export class ServerService {
 
   // Subscription Topics
   subscribe(urlInstance, data): Observable<void> {
-    let headers = new Headers({'Content-Type': 'application/vnd.kafka.v2+json'});
-    var options = new RequestOptions({headers: headers});
-    let url = urlInstance + '/subscription';
+    const headers = new Headers({'Content-Type': 'application/vnd.kafka.v2+json'});
+    const options = new RequestOptions({headers: headers});
+    const url = urlInstance + '/subscription';
 
     return this.http.post(url, data, options)
       .map((res: Response) => res.json())
@@ -51,14 +47,14 @@ export class ServerService {
 
   // POST Messages
   addRecord(topic, data): Observable<any> {
-    let headers = new Headers({
+    const headers = new Headers({
       'Content-Type': 'application/vnd.kafka.json.v2+json',
       'Accept': 'application/vnd.kafka.v2+json, application/vnd.kafka+json, application/json'
     });
-    let options = new RequestOptions({headers: headers});
+    const options = new RequestOptions({headers: headers});
 
-    let baseUrl = environment.server;
-    let url = baseUrl + '/topics/' + topic;
+    const baseUrl = environment.server;
+    const url = baseUrl + '/topics/' + topic;
 
     return this.http.post(url, data, options)
       .map((res: Response) => res.json())
@@ -67,10 +63,10 @@ export class ServerService {
 
   // GET Message
   getRecords(urlInstance): Observable<any> {
-    let headers = new Headers({'Accept': 'application/vnd.kafka.json.v2+json'});
-    let options = new RequestOptions({headers: headers});
+    const headers = new Headers({'Accept': 'application/vnd.kafka.json.v2+json'});
+    const options = new RequestOptions({headers: headers});
 
-    let url = urlInstance + '/records';
+    const url = urlInstance + '/records';
 
     return this.http.get(url, options)
       .map((res: Response) => res.json())
