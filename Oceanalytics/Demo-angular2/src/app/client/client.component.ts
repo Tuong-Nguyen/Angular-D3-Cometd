@@ -3,7 +3,7 @@ import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
-import {forEach} from "@angular/router/src/utils/collection";
+
 
 @Component({
   selector: 'app-client',
@@ -12,9 +12,6 @@ import {forEach} from "@angular/router/src/utils/collection";
   providers: [ClientService]
 })
 export class ClientComponent implements OnInit {
-  public isReady = false;
-  public newInstance;
-  public urlInstance;
   public status = 'Create Instance';
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
