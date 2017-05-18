@@ -60,7 +60,8 @@ export class ClientComponent implements OnInit {
     label: env.ROUTINGSERVICEMEASURESMOVINGWINDOW
   }, {
     value: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW,
-    label: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW}
+    label: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW
+  }
   ];
 
   public logSingleString;
@@ -98,13 +99,11 @@ export class ClientComponent implements OnInit {
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
             console.log('==============Item: ', data[i].value);
-            console.log('=====>Topic: ', data[i].topic + '=====>Topic Result: ', env.result);
+
             if (data[i].topic !== env.result) {
               console.log('==========> Push data receive to topic: ', data[i].topic);
               this.messages[data[i].topic].push(data[i]);
               console.log(this.messages[data[i].topic]);
-
-
             } else {
               console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
               if (data[i].value.subscriptionRequestId === this.instanceName) {
@@ -130,11 +129,11 @@ export class ClientComponent implements OnInit {
     );
   }
 
-  //Send data
+  // Send data
   sendData(topic, message): any {
     console.log(message);
     for (let i = 0; i < message.records.length; i++) {
-        this._kafkaProxyService.sendData(topic, message.records[i].value).subscribe(
+      this._kafkaProxyService.sendData(topic, message.records[i].value).subscribe(
         data => {
           console.log('====== Push data into RSR topic ====', data);
         },
@@ -176,7 +175,7 @@ export class ClientComponent implements OnInit {
     const record = {
       'value': {
         'userName': '',
-        'subscriptionRequestId':  this.instanceName,
+        'subscriptionRequestId': this.instanceName,
         'password': 's3cr3t',
         'request': 'SUBSCRIBE',
         'measuresStream': item.value
@@ -190,16 +189,14 @@ export class ClientComponent implements OnInit {
     console.log('====> Delete item', item);
     const newRecords = [];
     this.listTopics.topics = [env.result];
-    for ( let i = 0; i < this.input.records.length; i++){
-      if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
-          newRecords.push(this.input.records[i]);
-          this.listTopics.topics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
-          //REMOVE IN LISTTOPIC
-          }
+    for (let i = 0; i < this.input.records.length; i++) {
+      if (this.input.records[i].value.subscriptionRequest.measuresStream !== item.value) {
+        newRecords.push(this.input.records[i]);
+        this.listTopics.topics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
+      }
       this.input.records = newRecords;
     }
     console.log('===> After delete ', this.listTopics);
-
 
     // SUBSCRIBE TOPIC AGAIN
     // Call Service
@@ -214,8 +211,6 @@ export class ClientComponent implements OnInit {
         console.log('=====Subscription Fail=====');
       }
     );
-
-
 
     console.log('===> Selected item', this.input);
   }
