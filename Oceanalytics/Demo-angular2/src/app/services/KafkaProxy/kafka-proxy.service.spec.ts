@@ -6,7 +6,7 @@ import {AutoOffsetResetEnum} from './auto-offset-reset-enum.enum';
 import {BASE_PATH} from '../kafka-rest/variables';
 import {KafkaProxyConfiguration} from './kafka-configuration';
 import {ConsumerApi} from '../kafka-rest/api/ConsumerApi';
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
 
 describe('KafkaProxyService', () => {
   let service: KafkaProxyService;
