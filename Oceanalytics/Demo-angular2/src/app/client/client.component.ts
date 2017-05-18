@@ -3,6 +3,7 @@ import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
+import {forEach} from "@angular/router/src/utils/collection";
 
 @Component({
   selector: 'app-client',
@@ -191,19 +192,9 @@ export class ClientComponent implements OnInit {
     }
     console.log('===> After delete ', this.listTopics);
 
-    // SUBSCRIBE TOPIC AGAIN
-    // Call Service
-    this._clientService.subscribeTopic(this.urlInstance, this.listTopics).subscribe(
-      data => {
-        console.log('=====Subscription Success=====');
-        console.log(data);
-        this.messages[item.value] = [];
-        // this.isReady = true;
-      },
-      err => {
-        console.log('=====Subscription Fail=====');
-      }
-    );
+    for (const topicName of this.listTopics.topics) {
+      this._kafkaProxyService.addTopic(topicName);
+    }
 
     console.log('===> Selected item', this.input);
   }
