@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
-import {SelectModule} from 'angular2-select';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
-import {StartOfDayAgentByAccount} from 'app/services/fake-data/model/StartOfDayAgentByAccount';
 
 @Component({
   selector: 'app-client',
@@ -72,8 +70,6 @@ export class ClientComponent implements OnInit {
     'topics': []
   };
 
-  public dataResult = [];
-
   constructor(private _clientService: ClientService, private _kafkaProxyService: KafkaProxyService) {
   }
 
@@ -94,17 +90,15 @@ export class ClientComponent implements OnInit {
     this.fData();
   }
 
-  //=============================== New Code ==================================================
   fData(): any {
     this._kafkaProxyService.addTopic(env.result);
     this._kafkaProxyService.poll().subscribe(
       data => {
-        console.log("==========Client Poll Success========");
-        console.log(data);
+        console.log('==========Client Poll Success======== ', data);
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            console.log("==============Item: ", data[i].value);
-            console.log("=====>Topic: ", data[i].topic + "=====>Topic Result: ", env.result);
+            console.log('==============Item: ', data[i].value);
+            console.log('=====>Topic: ', data[i].topic + '=====>Topic Result: ', env.result);
             if (data[i].topic !== env.result) {
               console.log('==========> Push data receive to topic: ', data[i].topic);
               this.messages[data[i].topic].push(data[i]);
@@ -112,9 +106,9 @@ export class ClientComponent implements OnInit {
 
 
             } else {
-              console.log('====>subscriptionRequestId: ',data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
+              console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
               if (data[i].value.subscriptionRequestId === this.instanceName) {
-                console.log("=====> Send PUMP");
+                console.log('=====> Send PUMP');
                 this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
                 this._kafkaProxyService.sendData(env.pump, this.pump.records[0].value).subscribe(
                   dataSub => {
@@ -131,7 +125,7 @@ export class ClientComponent implements OnInit {
         }
       },
       error => {
-        console.log("==========Client Poll Fail ==========");
+        console.log('==========Client Poll Fail ==========');
       }
     );
   }
@@ -139,7 +133,7 @@ export class ClientComponent implements OnInit {
   //Send data
   sendData(topic, message): any {
     console.log(message);
-    for (var i = 0; i < message.records.length; i++) {
+    for (let i = 0; i < message.records.length; i++) {
         this._kafkaProxyService.sendData(topic, message.records[i].value).subscribe(
         data => {
           console.log('====== Push data into RSR topic ====', data);
@@ -195,7 +189,7 @@ export class ClientComponent implements OnInit {
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
-    this.listTopics.topics= [env.result];
+    this.listTopics.topics = [env.result];
     for ( let i = 0; i < this.input.records.length; i++){
       if ( this.input.records[i].value.subscriptionRequest.measuresStream !== item.value){
           newRecords.push(this.input.records[i]);
