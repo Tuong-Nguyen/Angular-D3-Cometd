@@ -21,35 +21,19 @@ import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 
 export class ServerComponent implements OnInit, OnChanges {
 
-  newInstance: Consumer;
-
-
-
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
 
-  public groupName = 'Oceana_' + this.currentDate;
-  public instanceName = 'Instance_' + this.currentDate;
-
-  public urlInstance = '';
   public status = 'Create Instance';
 
   public records = [];
 
   public isReady: Boolean = false;
   public isDisplay: Boolean = false;
-  public flag: Boolean = true;
   public isPump: Boolean = false;
-  public isPending: Boolean = false;
 
-
-  public dtrs: any;
   public arrTopicName = [];
   public arrLabelName = [];
-  private timer;
-
-
-  public dtObject: any;
 
   public arrRecord = [];
 
