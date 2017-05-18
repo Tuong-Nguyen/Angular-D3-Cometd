@@ -50,9 +50,7 @@ export class ClientComponent implements OnInit {
   public logSingleString;
   public logMultipleString;
 
-  private listTopics = {
-    'topics': []
-  };
+  private subscribedTopics: Array<string> = [];
 
   constructor(private _kafkaProxyService: KafkaProxyService) {
   }
@@ -171,20 +169,35 @@ export class ClientComponent implements OnInit {
     console.log('=====> selected item', this.input);
   }
 
+  /**
+   * Create a pump request
+   * @param measureStreams
+   * @returns {{userName: string, password: string, measuresStreams: Array<string>}}
+   */
+  private createSubscribeRequest(measureStreams: string): any {
+    return {
+      'userName': '',
+      'subscriptionRequestId': this.instanceName,
+      'password': 's3cr3t',
+      'request': 'SUBSCRIBE',
+      'measuresStream': measureStreams
+    };
+  }
+
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
     const newRecords = [];
-    this.listTopics.topics = [env.result];
+    this.subscribedTopics = [env.result];
     for (let i = 0; i < this.input.records.length; i++) {
       if (this.input.records[i].value.subscriptionRequest.measuresStream !== item.value) {
         newRecords.push(this.input.records[i]);
-        this.listTopics.topics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
+        this.subscribedTopics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
       }
       this.input.records = newRecords;
     }
-    console.log('===> After delete ', this.listTopics);
+    console.log('===> After delete ', this.subscribedTopics);
 
-    for (const topicName of this.listTopics.topics) {
+    for (const topicName of this.subscribedTopics) {
       this._kafkaProxyService.addTopic(topicName);
     }
 
