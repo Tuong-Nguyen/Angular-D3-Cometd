@@ -46,7 +46,6 @@ export class ClientComponent implements OnInit {
   }
   ];
 
-  public logSingleString;
   public logMultipleString;
 
   private subscribedTopics: Array<string> = [];
@@ -113,25 +112,6 @@ export class ClientComponent implements OnInit {
     );
   }
 
-  onSingleOpened() {
-    this.logSingle('- opened');
-  }
-
-  onSingleClosed() {
-    this.logSingle('- closed');
-  }
-
-  onSingleSelected(item) {
-    console.log('selected single item', item.label);
-    this.logSingle('- selected (value: ' + item.value + ', label:' +
-      item.label + ')');
-  }
-
-  onSingleDeselected(item) {
-    this.logSingle('- deselected (value: ' + item.value + ', label:' +
-      item.label + ')');
-  }
-
   onMultipleOpened() {
     this.logMultiple('- opened');
   }
@@ -193,14 +173,6 @@ export class ClientComponent implements OnInit {
       'password': 's3cr3t',
       'measuresStreams': measureStreams
     };
-  }
-
-  convertString(json): any {
-    return JSON.stringify(json);
-  }
-
-  private logSingle(msg: string) {
-    this.logSingleString += msg + '\n';
   }
 
   private logMultiple(msg: string) {
