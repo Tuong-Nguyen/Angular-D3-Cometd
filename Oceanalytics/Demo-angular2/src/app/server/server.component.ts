@@ -54,7 +54,7 @@ export class ServerComponent implements OnInit, OnChanges {
 
         if (data.length > 0) {
           console.log('Case IF in Poll Success');
-          // this.records = this.records.concat(data); ????
+
           for (let i = 0; i < data.length; i++) {
             console.log('======> Item : ', data[i].value);
             if (data[i].topic !== environment.pump) {
@@ -209,14 +209,7 @@ export class ServerComponent implements OnInit, OnChanges {
               // Send data to Topic
               console.log(this.arrRecord);
               console.log(this.arrRecord[i].records[0]);
-              this._kafkaProxyService.sendData(topicName, this.arrRecord[i].records[0].value).subscribe(
-                data => {
-                  console.log('=====>Send Data ' + topicName + ' Success');
-                },
-                error => {
-                  console.log('=====>Send Data Fail');
-                }
-              );
+              this.sendMessage(topicName, this.arrRecord[i].records[0].value);
 
               // Send data to Result Topic
               dataTmp2 = {
@@ -233,14 +226,7 @@ export class ServerComponent implements OnInit, OnChanges {
                   }
                 ]
               };
-              this._kafkaProxyService.sendData(environment.result, dataTmp2.records[0].value).subscribe(
-                data => {
-                  console.log('=====>Send Data ' + environment.result + ' Success');
-                },
-                error => {
-                  console.log('=====>Send Data Fail');
-                }
-              );
+              this.sendMessage(environment.result, dataTmp2.records[0].value);
             } else {
               this.isPump = true;
             }
@@ -257,13 +243,28 @@ export class ServerComponent implements OnInit, OnChanges {
               this.arrRecord[i].records[0].value.realtimeData = realtimeData;
               this.arrRecord[i].records[0].value.time = dttime;
               console.log('============> push messge to topic: ', this.arrTopicName[i]);
-              this._kafkaProxyService.sendData(this.arrTopicName[i], this.arrRecord[i].records[0].value).subscribe();
+              this.sendMessage(this.arrTopicName[i], this.arrRecord[i].records[0].value);
             }
           }
         }
       },
       error => {
         console.log('=====Poll Fail=====');
+      }
+    );
+  }
+
+  /**
+   * Send message
+   * @param message
+   */
+  private sendMessage(topicName: string, message: any) {
+    this._kafkaProxyService.sendData(topicName, message).subscribe(
+      response => {
+        console.log('=====>Send message ', topicName, ' Success');
+      },
+      error => {
+        console.log('=====>Send message Fail');
       }
     );
   }
