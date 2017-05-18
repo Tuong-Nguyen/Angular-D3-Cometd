@@ -23,18 +23,6 @@ export class ClientComponent implements OnInit {
     'records': []
   };
 
-  public pump = {
-    'records': [
-      {
-        'value': {
-          'userName': 'SupervisorOne',
-          'password': 's3cr3t',
-          'measuresStreams': []
-        }
-      }
-    ]
-  };
-
   public options = [{
     value: env.AGENTMEASURES,
     label: env.AGENTMEASURES
@@ -106,9 +94,10 @@ export class ClientComponent implements OnInit {
               console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
               if (data[i].value.subscriptionRequestId === this.instanceName) {
                 console.log('=====> Send PUMP');
-                this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
+                // this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
                 this._kafkaProxyService.addTopic(data[i].value.measuresStream);
-                this.sendData(env.pump, this.pump);
+                // this.sendData(env.pump, this.pump);
+                this.sendMessage(env.pump, data[i].value.measuresStream);
               }
             }
           }
@@ -121,18 +110,30 @@ export class ClientComponent implements OnInit {
   }
 
   // Send data
-  sendData(topic, message): any {
-    console.log(message);
+  sendData(topic, message): void {
     for (let i = 0; i < message.records.length; i++) {
       this._kafkaProxyService.sendData(topic, message.records[i].value).subscribe(
         data => {
-          console.log('====== Push data into RSR topic ====', data);
+          console.log('====== Push data into topic ==== ', topic, ' --- ', data);
         },
         error => {
-          console.log('===== Push data into RSR topic unsuccessfully =====', error);
+          console.log('===== Push data into topic unsuccessfully ===== ', topic, ' --- ', error);
         }
       );
     }
+  }
+
+  // Send data
+  sendMessage(topic, message): void {
+      this._kafkaProxyService.sendData(topic, message).subscribe(
+        data => {
+          console.log('====== Push data into topic ==== ', topic, ' --- ', data);
+        },
+        error => {
+          console.log('===== Push data into topic unsuccessfully ===== ', topic, ' --- ', error);
+        }
+      );
+
   }
 
   onSingleOpened() {
@@ -194,6 +195,19 @@ export class ClientComponent implements OnInit {
     }
 
     console.log('===> Selected item', this.input);
+  }
+
+  /**
+   * Create a pump request
+   * @param measureStreams
+   * @returns {{userName: string, password: string, measuresStreams: Array<string>}}
+   */
+  private createPumpRequest(measureStreams: Array<string>): any {
+    return {
+      'userName': 'SupervisorOne',
+      'password': 's3cr3t',
+      'measuresStreams': measureStreams
+    };
   }
 
   convertString(json): any {
