@@ -16,9 +16,8 @@ export class ClientComponent implements OnInit {
   public instanceName = 'Instance_' + this.currentDate;
   public env = env;
   public messages = {};
-  public input = {
-    'records': []
-  };
+
+  public subscribedMeasures: Array<string> = [];
 
   public options = [{
     value: env.AGENTMEASURES,
@@ -103,29 +102,15 @@ export class ClientComponent implements OnInit {
   }
 
   // Send data
-  sendData(topic, message): void {
-    for (let i = 0; i < message.records.length; i++) {
-      this._kafkaProxyService.sendData(topic, message.records[i].value).subscribe(
-        data => {
-          console.log('====== Push data into topic ==== ', topic, ' --- ', data);
-        },
-        error => {
-          console.log('===== Push data into topic unsuccessfully ===== ', topic, ' --- ', error);
-        }
-      );
-    }
-  }
-
-  // Send data
   sendMessage(topic, message): void {
-      this._kafkaProxyService.sendData(topic, message).subscribe(
-        data => {
-          console.log('====== Push data into topic ==== ', topic, ' --- ', data);
-        },
-        error => {
-          console.log('===== Push data into topic unsuccessfully ===== ', topic, ' --- ', error);
-        }
-      );
+    this._kafkaProxyService.sendData(topic, message).subscribe(
+      data => {
+        console.log('====== Push data into topic ==== ', topic, ' --- ', data);
+      },
+      error => {
+        console.log('===== Push data into topic unsuccessfully ===== ', topic, ' --- ', error);
+      }
+    );
   }
 
   onSingleOpened() {
@@ -156,17 +141,8 @@ export class ClientComponent implements OnInit {
   }
 
   onMultipleSelected(item) {
-    const record = {
-      'value': {
-        'userName': '',
-        'subscriptionRequestId': this.instanceName,
-        'password': 's3cr3t',
-        'request': 'SUBSCRIBE',
-        'measuresStream': item.value
-      }
-    };
-    this.input.records.push(record);
-    console.log('=====> selected item', this.input);
+    this.subscribedMeasures.push(item.value);
+    console.log('=====> selected item', this.subscribedMeasures);
   }
 
   /**
@@ -186,22 +162,24 @@ export class ClientComponent implements OnInit {
 
   onMultipleDeselected(item) {
     console.log('====> Delete item', item);
-    const newRecords = [];
-    this.subscribedTopics = [env.result];
-    for (let i = 0; i < this.input.records.length; i++) {
-      if (this.input.records[i].value.subscriptionRequest.measuresStream !== item.value) {
-        newRecords.push(this.input.records[i]);
-        this.subscribedTopics.push(this.input.records[i].value.subscriptionRequest.measuresStream);
-      }
-      this.input.records = newRecords;
+
+    const index = this.subscribedMeasures.indexOf(item.value);
+    if (index > -1) {
+      this.subscribedMeasures.splice(index, 1);
     }
+    this.subscribedTopics = this.subscribedMeasures.map(measure => measure);
+    this.subscribedTopics.push(env.result);
     console.log('===> After delete ', this.subscribedTopics);
 
-    for (const topicName of this.subscribedTopics) {
-      this._kafkaProxyService.addTopic(topicName);
-    }
+    this._kafkaProxyService.removeTopic(item.value);
 
-    console.log('===> Selected item', this.input);
+    console.log('===> Selected item', this.subscribedMeasures);
+  }
+
+  public subscribeMeasures(): void {
+    for (const measure of this.subscribedMeasures) {
+      this.sendMessage(env.rsr, this.createSubscribeRequest(measure));
+    }
   }
 
   /**

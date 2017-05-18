@@ -21,7 +21,7 @@
               (deselected)="onMultipleDeselected($event)">
             </ng-select>
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="input.records.length == 0" (click)="sendData(env.rsr, input)">Submit</button>
+          <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length==0" (click)="subscribeMeasures()">Submit</button>
 
         </form>
         <div class="box" style="margin-top: 30px;">
