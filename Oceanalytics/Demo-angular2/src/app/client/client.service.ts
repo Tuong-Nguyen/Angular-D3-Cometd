@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import { environment } from '../../environments/environment';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import {environment} from '../../environments/environment';
+import {Http, Response, Headers, RequestOptions} from '@angular/http';
 
 // Import RxJs required methods
 import 'rxjs/add/operator/map';
@@ -9,7 +9,8 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class ClientService {
-  constructor(private http: Http) { };
+  constructor(private http: Http) {
+  };
 
   /**
    * @Description: create a new instance
@@ -18,8 +19,11 @@ export class ClientService {
    */
   createInstance(groupName, data): Observable<any> {
     const apiUrl = environment.server + '/consumers/' + groupName;
-    const headers = new Headers({ 'Content-Type': 'application/vnd.kafka.json.v2+json', 'Accept' : 'application/vnd.kafka.v2+json'});
-    const options = new RequestOptions({ headers: headers });
+    const headers = new Headers({
+      'Content-Type': 'application/vnd.kafka.json.v2+json',
+      'Accept': 'application/vnd.kafka.v2+json'
+    });
+    const options = new RequestOptions({headers: headers});
 
     return this.http.post(apiUrl, data, options).map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
@@ -33,8 +37,8 @@ export class ClientService {
    */
   subscribeTopic(urlInstance, data): Observable<any> {
     const apiUrl = urlInstance + '/subscription';
-    const headers = new Headers({ 'Content-Type': 'application/vnd.kafka.v2+json'});
-    const options = new RequestOptions({ headers: headers });
+    const headers = new Headers({'Content-Type': 'application/vnd.kafka.v2+json'});
+    const options = new RequestOptions({headers: headers});
 
     return this.http.post(apiUrl, data, options).map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || environment.generalErr));
@@ -48,7 +52,7 @@ export class ClientService {
   getRecord(urlInstance): Observable<any> {
     const apiUrl = urlInstance + '/records';
     const headers = new Headers({'Accept': 'application/vnd.kafka.json.v2+json'});
-    const options = new RequestOptions({ headers: headers });
+    const options = new RequestOptions({headers: headers});
 
     return this.http.get(apiUrl, options).map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json() || environment.generalErr));
@@ -56,11 +60,13 @@ export class ClientService {
 
   addRecord(topic, data): Observable<any> {
     const apiUrl = environment.server + '/topics/' + topic;
-    const headers = new Headers({ 'Content-Type': 'application/vnd.kafka.json.v2+json', 'Accept': 'application/vnd.kafka.v2+json, application/vnd.kafka+json, application/json'});
-    const options = new RequestOptions({ headers: headers });
+    const headers = new Headers({
+      'Content-Type': 'application/vnd.kafka.json.v2+json',
+      'Accept': 'application/vnd.kafka.v2+json, application/vnd.kafka+json, application/json'
+    });
+    const options = new RequestOptions({headers: headers});
 
     return this.http.post(apiUrl, data, options).map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json() || environment.generalErr));
   }
-
 }
