@@ -94,9 +94,7 @@ export class ClientComponent implements OnInit {
               console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
               if (data[i].value.subscriptionRequestId === this.instanceName) {
                 console.log('=====> Send PUMP');
-                // this.pump.records[0].value.measuresStreams = [data[i].value.measuresStream];
                 this._kafkaProxyService.addTopic(data[i].value.measuresStream);
-                // this.sendData(env.pump, this.pump);
                 this.sendMessage(env.pump, data[i].value.measuresStream);
               }
             }
