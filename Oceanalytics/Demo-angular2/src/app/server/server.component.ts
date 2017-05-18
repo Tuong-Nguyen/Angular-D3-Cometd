@@ -23,8 +23,7 @@ export class ServerComponent implements OnInit, OnChanges {
 
   newInstance: Consumer;
 
-  constructor(private _serverService: ServerService, private _kafkaProxyService: KafkaProxyService, private  _fakeDataService: FakeDataService) {
-  }
+
 
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
@@ -50,25 +49,27 @@ export class ServerComponent implements OnInit, OnChanges {
   private timer;
 
 
-  public dtObject : any;
+  public dtObject: any;
 
   public arrRecord = [];
 
+  constructor(private _kafkaProxyService: KafkaProxyService, private  _fakeDataService: FakeDataService) {
+  }
+
   fData(): any {
-    //Pull data
+    // Pull data
     this._kafkaProxyService.addTopic(environment.rsr);
     this._kafkaProxyService.addTopic(environment.pump);
     this._kafkaProxyService.poll().subscribe(
       data => {
-        console.log("Poll Success");
+        console.log('Poll Success');
         console.log(data);
 
         let topicName = '';
-        let dataTmp1: any;
         let dataTmp2: any;
 
-        if (data.length > 0){
-          console.log("Case IF in Poll Success");
+        if (data.length > 0) {
+          console.log('Case IF in Poll Success');
           // this.records = this.records.concat(data); ????
           for (let i = 0; i < data.length; i++) {
             console.log('======> Item : ', data[i].value);
@@ -82,7 +83,7 @@ export class ServerComponent implements OnInit, OnChanges {
               console.log('Topic Name: ', topicName);
 
               this.arrTopicName.push(data[i].value.measuresStream);
-              let realtimeData = this._fakeDataService.realtimeData(topicName);
+              const realtimeData = this._fakeDataService.realtimeData(topicName);
               switch (topicName) {
                 case environment.AGENTMEASURES:
                   this.arrRecord.push({
@@ -126,7 +127,7 @@ export class ServerComponent implements OnInit, OnChanges {
                           'dimension': {
                             'routingServiceName': 'ChatRoutingService'
                           },
-                          'realtimeData':realtimeData,
+                          'realtimeData': realtimeData,
                           'pumpup': true,
                           'pumpupComplete': true
                         }
@@ -221,19 +222,19 @@ export class ServerComponent implements OnInit, OnChanges {
                   break;
               }
 
-              //Send data to Topic
+              // Send data to Topic
               console.log(this.arrRecord);
               console.log(this.arrRecord[i].records[0]);
               this._kafkaProxyService.sendData(topicName, this.arrRecord[i].records[0].value).subscribe(
                 data => {
-                  console.log("=====>Send Data "+topicName+" Success");
+                  console.log('=====>Send Data ' + topicName + ' Success');
                 },
                 error => {
-                  console.log("=====>Send Data Fail");
+                  console.log('=====>Send Data Fail');
                 }
               );
 
-              //Send data to Result Topic
+              // Send data to Result Topic
               dataTmp2 = {
                 'records': [
                   {
@@ -247,28 +248,27 @@ export class ServerComponent implements OnInit, OnChanges {
                     }
                   }
                 ]
-              }
+              };
               this._kafkaProxyService.sendData(environment.result, dataTmp2.records[0].value).subscribe(
                 data => {
-                  console.log("=====>Send Data "+ environment.result +" Success");
+                  console.log('=====>Send Data ' + environment.result + ' Success');
                 },
                 error => {
-                  console.log("=====>Send Data Fail");
+                  console.log('=====>Send Data Fail');
                 }
               );
-            }
-            else {
+            } else {
               this.isPump = true;
             }
           }
-        }else{
-          console.log("Case ELSE in Poll Success");
+        }else {
+          console.log('Case ELSE in Poll Success');
           console.log('Arr topic: ', this.arrTopicName);
-          console.log("PUMP: ", this.isPump);
+          console.log('PUMP: ', this.isPump);
           if (this.arrRecord.length !== 0 && this.isPump == true) {
-            var dttime = this.datePipe.transform(new Date(), 'HHmmss');
-            for (var i = 0; i < this.arrTopicName.length; i++) {
-              let realtimeData = this._fakeDataService.realtimeData(this.arrTopicName[i]);
+            const dttime = this.datePipe.transform(new Date(), 'HHmmss');
+            for (let i = 0; i < this.arrTopicName.length; i++) {
+              const realtimeData = this._fakeDataService.realtimeData(this.arrTopicName[i]);
               this.arrRecord[i].records[0].value.measuresStream = this.arrTopicName[i];
               this.arrRecord[i].records[0].value.realtimeData = realtimeData;
               this.arrRecord[i].records[0].value.time = dttime;
@@ -289,7 +289,5 @@ export class ServerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-
   }
-
 }
