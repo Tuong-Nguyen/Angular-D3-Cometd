@@ -1,15 +1,6 @@
-import {Component, OnInit, OnChanges, Pipe, PipeTransform} from '@angular/core';
+import {Component, OnInit, OnChanges} from '@angular/core';
 import {DatePipe} from '@angular/common';
-
-import {Observable} from 'rxjs/Rx';
-
-import {Consumer} from 'app/server/consumer';
-
-import {Record} from 'app/server/record';
-
-import {ServerService} from 'app/server/server.service';
 import {environment} from '../../environments/environment';
-
 import { KafkaProxyService } from '../services/KafkaProxy/kafka-proxy.service';
 import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 
@@ -28,13 +19,9 @@ export class ServerComponent implements OnInit, OnChanges {
 
   public records = [];
 
-  public isReady: Boolean = false;
-  public isDisplay: Boolean = false;
   public isPump: Boolean = false;
 
   public arrTopicName = [];
-  public arrLabelName = [];
-
   public arrRecord = [];
 
   constructor(private _kafkaProxyService: KafkaProxyService, private  _fakeDataService: FakeDataService) {
