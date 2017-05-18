@@ -13,13 +13,13 @@ import {MovingWindowAgentByRoutingService} from 'app/services/fake-data/model/Mo
 @Injectable()
 export class FakeDataService {
   public result: any;
-
   constructor() {
   }
 
   public realtimeData(type: string) {
+    let result: any;
     switch (type) {
-      case environment.AGENTMEASURES: {
+      case environment.AGENTMEASURES:
         const startOfDayAgentByAccount: StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
         startOfDayAgentByAccount.Agent_ID = this.randomNumber();
         startOfDayAgentByAccount.Provider_ID = this.randomNumber();
@@ -95,7 +95,7 @@ export class FakeDataService {
 
         this.result = startOfDayAgentByAccount;
         break;
-      }
+
       case environment.AGENTBYACCOUNTMEASURES : {
         const startOfDayAgent: StartOfDayAgent = new StartOfDayAgent();
         startOfDayAgent.First_Name = this.randomString();
@@ -174,7 +174,7 @@ export class FakeDataService {
         startOfDayAgent.ACW_EXTENDED = this.randomNumber();
         this.result = startOfDayAgent;
         break;
-      }
+
       case environment.ROUTINGSERVICEMEASURES : {
         const startOfDayRoutingService: StartOfDayRoutingService = new StartOfDayRoutingService();
         startOfDayRoutingService.Routing_Service_Name = this.randomString();
@@ -243,7 +243,7 @@ export class FakeDataService {
 
         this.result = startOfDayRoutingService;
         break;
-      }
+
       case environment.AGENTBYROUTINGSERVICEMEASURES : {
         const startOfDayAgentByRoutingService: StartOfDayAgentByRoutingService = new StartOfDayAgentByRoutingService();
         startOfDayAgentByRoutingService.Agent_ID = this.randomNumber();
@@ -303,7 +303,7 @@ export class FakeDataService {
 
         this.result = startOfDayAgentByRoutingService;
         break;
-      }
+
       case environment.AGENTMEASURESMOVINGWINDOW : {
         const movingWindowAgentByAccount: MovingWindowAgentByAccount = new MovingWindowAgentByAccount();
         movingWindowAgentByAccount.Agent_ID = this.randomNumber();
@@ -380,7 +380,7 @@ export class FakeDataService {
         movingWindowAgentByAccount.ACW_EXTENDED = this.randomNumber();
         this.result = movingWindowAgentByAccount;
         break;
-      }
+
       case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW : {
         const movingWindowAgent: MovingWindowAgent = new MovingWindowAgent();
 
@@ -465,7 +465,7 @@ export class FakeDataService {
 
         this.result = movingWindowAgent;
         break;
-      }
+
       case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW : {
         const movingWindowRoutingService: MovingWindowRoutingService = new MovingWindowRoutingService();
 
@@ -504,7 +504,7 @@ export class FakeDataService {
         movingWindowRoutingService.Short_Wrap_Ups = this.randomNumber();
         this.result = movingWindowRoutingService;
         break;
-      }
+
       case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW : {
         const movingWindowAgentByRoutingService: MovingWindowAgentByRoutingService = new MovingWindowAgentByRoutingService();
 
@@ -571,9 +571,8 @@ export class FakeDataService {
         this.result = movingWindowAgentByRoutingService;
 
         break;
-      }
     }
-    return this.result;
+    return result;
   }
 
   public randomNumber(): number {
@@ -585,7 +584,7 @@ export class FakeDataService {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for ( let i = 0; i < 15; i++ ) {
+    for (let i = 0; i < 15; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
