@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {ClientService} from './client.service';
 import {DatePipe} from '@angular/common';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
@@ -9,13 +8,11 @@ import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
   selector: 'app-client',
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css'],
-  providers: [ClientService]
 })
 export class ClientComponent implements OnInit {
   public status = 'Create Instance';
   public datePipe = new DatePipe('en-US');
   public currentDate = this.datePipe.transform(new Date(), 'HHmmss');
-  public groupName = 'Oceana_' + this.currentDate;
   public instanceName = 'Instance_' + this.currentDate;
   public env = env;
   public messages = {};
@@ -53,11 +50,11 @@ export class ClientComponent implements OnInit {
   public logSingleString;
   public logMultipleString;
 
-  public listTopics = {
+  private listTopics = {
     'topics': []
   };
 
-  constructor(private _clientService: ClientService, private _kafkaProxyService: KafkaProxyService) {
+  constructor(private _kafkaProxyService: KafkaProxyService) {
   }
 
   ngOnInit() {
@@ -131,7 +128,6 @@ export class ClientComponent implements OnInit {
           console.log('===== Push data into topic unsuccessfully ===== ', topic, ' --- ', error);
         }
       );
-
   }
 
   onSingleOpened() {
