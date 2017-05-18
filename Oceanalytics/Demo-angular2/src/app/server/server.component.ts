@@ -1,8 +1,7 @@
 import {Component, OnInit, OnChanges} from '@angular/core';
-import {DatePipe} from '@angular/common';
 import {environment} from '../../environments/environment';
-import { KafkaProxyService } from '../services/KafkaProxy/kafka-proxy.service';
-import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
+import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
+import {FakeDataService} from 'app/services/fake-data/api/fake-data.service';
 
 @Component({
   selector: 'app-server',
@@ -11,16 +10,10 @@ import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 })
 
 export class ServerComponent implements OnInit, OnChanges {
-
-  public datePipe = new DatePipe('en-US');
-
   public status = 'Create Instance';
-
   public records = [];
-
-  public isPump: Boolean = false;
-
-  public arrTopicName = [];
+  private isPump: Boolean = false;
+  private arrTopicName = [];
 
   constructor(private _kafkaProxyService: KafkaProxyService, private  _fakeDataService: FakeDataService) {
   }
@@ -50,10 +43,6 @@ export class ServerComponent implements OnInit, OnChanges {
               console.log('Topic Name: ', topicName);
 
               this.arrTopicName.push(data[i].value.measuresStream);
-              const realtimeData = this.generateRealtimeData(topicName);
-
-              // Send data to Topic
-              this.sendMessage(topicName, realtimeData.records[0].value);
 
               // Send data to Result Topic
               this.sendMessage(environment.result, this.createSubscriptionResponse(data[i].value.userName,
@@ -62,18 +51,14 @@ export class ServerComponent implements OnInit, OnChanges {
               this.isPump = true;
             }
           }
-        }else { // Send realtime data
+        } else { // Send realtime data
           console.log('Case ELSE in Poll Success');
           console.log('Arr topic: ', this.arrTopicName);
           console.log('PUMP: ', this.isPump);
           if (this.isPump === true) {
-            const dttime = this.datePipe.transform(new Date(), 'HHmmss');
             for (let i = 0; i < this.arrTopicName.length; i++) {
-              const realtimeData = this._fakeDataService.realtimeData(this.arrTopicName[i]);
               console.log('============> push messge to topic: ', this.arrTopicName[i]);
-
-              const generatedData = this.generateRealtimeData(this.arrTopicName[i]);
-              this.sendMessage(this.arrTopicName[i], generatedData.records[0].value);
+              this.sendMessage(this.arrTopicName[i], this.generateRealtimeData(this.arrTopicName[i]));
             }
           }
         }
@@ -90,139 +75,92 @@ export class ServerComponent implements OnInit, OnChanges {
     switch (topicName) {
       case environment.AGENTMEASURES:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'agentId': '8881001'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': true,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'agentId': '8881001'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': true,
+          'pumpupComplete': false
         };
         break;
       case environment.AGENTBYACCOUNTMEASURES:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'accountId': '8881002',
-                  'agentId': '8881002'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': false,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'accountId': '8881002',
+            'agentId': '8881002'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': false,
+          'pumpupComplete': false
         };
         break;
       case environment.ROUTINGSERVICEMEASURES:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'routingServiceName': 'ChatRoutingService'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': true,
-                'pumpupComplete': true
-              }
-            }
-          ]
+          'dimension': {
+            'routingServiceName': 'ChatRoutingService'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': true,
+          'pumpupComplete': true
         };
         break;
       case environment.AGENTBYROUTINGSERVICEMEASURES:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'agentId': '8881003',
-                  'routingServiceName': 'ChatRoutingService'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': false,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'agentId': '8881003',
+            'routingServiceName': 'ChatRoutingService'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': false,
+          'pumpupComplete': false
         };
         break;
       case environment.AGENTMEASURESMOVINGWINDOW:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'agentId': '8881004',
-                  'routingServiceName': 'ChatRoutingService'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': false,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'agentId': '8881004',
+            'routingServiceName': 'ChatRoutingService'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': false,
+          'pumpupComplete': false
         };
         break;
       case environment.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'agentId': '8881005',
-                  'routingServiceName': 'ChatRoutingService'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': false,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'agentId': '8881005',
+            'routingServiceName': 'ChatRoutingService'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': false,
+          'pumpupComplete': false
         };
         break;
       case environment.ROUTINGSERVICEMEASURESMOVINGWINDOW:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'agentId': '8881006',
-                  'routingServiceName': 'ChatRoutingService'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': false,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'agentId': '8881006',
+            'routingServiceName': 'ChatRoutingService'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': false,
+          'pumpupComplete': false
         };
         break;
       case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
         generatedData = {
-          'records': [
-            {
-              'value': {
-                'dimension': {
-                  'agentId': '8881007',
-                  'routingServiceName': 'ChatRoutingService'
-                },
-                'realtimeData': realtimeData,
-                'pumpup': false,
-                'pumpupComplete': false
-              }
-            }
-          ]
+          'dimension': {
+            'agentId': '8881007',
+            'routingServiceName': 'ChatRoutingService'
+          },
+          'realtimeData': realtimeData,
+          'pumpup': false,
+          'pumpupComplete': false
         };
         break;
     }
+
     return generatedData;
   }
 
