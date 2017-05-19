@@ -3,7 +3,6 @@ import {DatePipe} from '@angular/common';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
 
-
 @Component({
   selector: 'app-client',
   templateUrl: './client.component.html',
