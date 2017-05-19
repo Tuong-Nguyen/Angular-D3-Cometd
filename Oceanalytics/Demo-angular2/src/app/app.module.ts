@@ -11,8 +11,6 @@ import { ClientComponent } from './client/client.component';
 import { ServerComponent } from './server/server.component';
 import { TabularTableComponent } from './tabular-table/tabular-table.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-
-import { ServerService } from './server/server.service';
 import { KafkaProxyService } from 'app/services/KafkaProxy/kafka-proxy.service';
 import { ConsumerApi } from 'app/services/kafka-rest/api/ConsumerApi';
 import { TopicApi } from 'app/services/kafka-rest/api/TopicApi';
@@ -36,7 +34,6 @@ import { environment } from 'environments/environment';
     SelectModule
   ],
   providers: [
-    ServerService,
     KafkaProxyService,
     FakeDataService,
     ConsumerApi,
