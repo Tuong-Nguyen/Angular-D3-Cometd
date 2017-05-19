@@ -15,6 +15,10 @@ export class ClientComponent implements OnInit {
   public instanceName = 'Instance_' + this.currentDate;
   public env = env;
   public messages = {};
+  public user = {
+    name: '',
+    password: ''
+  };
 
   public subscribedMeasures: Array<string> = [];
   private subscribedTopics: Array<string> = [];
@@ -122,9 +126,9 @@ export class ClientComponent implements OnInit {
    */
   private createSubscribeRequest(measureStreams: string): any {
     return {
-      'userName': '',
+      'userName': this.user.name,
       'subscriptionRequestId': this.instanceName,
-      'password': 's3cr3t',
+      'password': this.user.password,
       'request': 'SUBSCRIBE',
       'measuresStream': measureStreams
     };
@@ -157,8 +161,8 @@ export class ClientComponent implements OnInit {
    */
   private createPumpRequest(measureStreams: Array<string>): any {
     return {
-      'userName': 'SupervisorOne',
-      'password': 's3cr3t',
+      'userName': this.user.name,
+      'password': this.user.password,
       'measuresStreams': measureStreams
     };
   }

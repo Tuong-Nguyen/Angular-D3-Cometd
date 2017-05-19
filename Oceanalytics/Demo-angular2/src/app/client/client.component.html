@@ -8,9 +8,18 @@
       </div>
       <div class="box-body">
         <form role="form">
-          <!-- select -->
+
           <div class="form-group">
-            <label>Measure topics</label>
+            <label for="username">Username: </label>
+            <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}"/>
+          </div>
+          <div class="form-group">
+            <label for="password">Password: </label>
+            <input type="password" class="form-control" id="password" placeholder="Password" [(ngModel)]="user.password" [ngModelOptions]="{standalone: true}"/>
+          </div>
+
+          <div class="form-group">
+            <label>Measure topics: </label>
             <ng-select
               [options]="options"
               [multiple]="true"
@@ -19,8 +28,7 @@
               (deselected)="onMultipleDeselected($event)">
             </ng-select>
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length==0" (click)="subscribeMeasures()">Submit</button>
-
+          <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length === 0 || user.name === '' || user.password === ''" (click)="subscribeMeasures()">Submit</button>
         </form>
         <div class="box" style="margin-top: 30px;">
           <div class="box-header">
