@@ -27,8 +27,6 @@ export class ServerComponent implements OnInit, OnChanges {
         console.log('Poll Success');
         console.log(data);
 
-        let topicName = '';
-
         if (data.length > 0) {
           console.log('Case IF in Poll Success');
 
@@ -39,7 +37,7 @@ export class ServerComponent implements OnInit, OnChanges {
               if (i === 0) {
                 this.arrTopicName = [];
               }
-              topicName = data[i].value.measuresStream;
+              const topicName = data[i].value.measuresStream;
               console.log('Topic Name: ', topicName);
 
               this.arrTopicName.push(data[i].value.measuresStream);
