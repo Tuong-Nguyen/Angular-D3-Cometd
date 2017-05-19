@@ -25,9 +25,9 @@ export class MovingWindowRoutingService {
   Active_Time = 0;
   Oldest_Contact_Waiting = '';
   Service_Display_Name = '';
-  Provider_ID = 0;
+  Provider_ID = '';
   Expected_Wait_Time = '';
-  Channel_ID = 0;
+  Channel_ID = '';
   Long_Engagements = 0;
   Short_Engagements = 0;
   Long_Wrap_Ups = 0;

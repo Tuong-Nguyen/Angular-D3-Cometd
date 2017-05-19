@@ -1,17 +1,17 @@
 export class MovingWindowAgentByRoutingService {
-  Agent_ID = 0;
-  Supervisor_ID = 0;
+  Agent_ID = '';
+  Supervisor_ID = '';
   Agent_Surname = '';
   Agent_Firstname = '';
   Supervisor_Surname = '';
   Supervisor_First_Name = '';
-  Routing_Service_ID = 0;
+  Routing_Service_ID = '';
   Service_Display_Name = '';
-  Provider_ID = 0;
-  Channel_ID = 0;
+  Provider_ID = '';
+  Channel_ID = '';
   Offered = 0;
   Completed = 0;
-  Abandoned = 0;
+  Abandoned = '';
   Not_Answered = 0;
   Conferences = 0;
   Answered = 0;

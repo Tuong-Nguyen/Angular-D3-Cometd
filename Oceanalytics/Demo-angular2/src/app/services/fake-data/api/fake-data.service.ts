@@ -21,10 +21,10 @@ export class FakeDataService {
     switch (type) {
       case environment.AGENTMEASURES:
         const startOfDayAgentByAccount: StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
-        startOfDayAgentByAccount.Agent_ID = this.randomNumber();
-        startOfDayAgentByAccount.Provider_ID = this.randomNumber();
-        startOfDayAgentByAccount.Account_ID = this.randomNumber();
-        startOfDayAgentByAccount.Supervisor_ID = this.randomNumber();
+        startOfDayAgentByAccount.Agent_ID = this.randomNumber().toString();
+        startOfDayAgentByAccount.Provider_ID = this.randomNumber().toString();
+        startOfDayAgentByAccount.Account_ID = this.randomNumber().toString();
+        startOfDayAgentByAccount.Supervisor_ID = this.randomNumber().toString();
         startOfDayAgentByAccount.Offered = this.randomNumber();
         startOfDayAgentByAccount.Completed = this.randomNumber();
         startOfDayAgentByAccount.Abandoned = this.randomNumber();
@@ -51,9 +51,9 @@ export class FakeDataService {
         startOfDayAgentByAccount.Channel = this.randomString();
         startOfDayAgentByAccount.loginTimeStamp = this.randomString();
         startOfDayAgentByAccount.logoutTimeStamp = this.randomString();
-        startOfDayAgentByAccount.lastStateChangeTimestamp = this.randomNumber();
-        startOfDayAgentByAccount.LastStateReasonTimestamp = this.randomNumber();
-        startOfDayAgentByAccount.agentbyAccountState = this.randomNumber();
+        startOfDayAgentByAccount.lastStateChangeTimestamp = this.randomNumber().toString();
+        startOfDayAgentByAccount.LastStateReasonTimestamp = this.randomNumber().toString();
+        startOfDayAgentByAccount.agentbyAccountState = this.randomString();
         startOfDayAgentByAccount.Long_Engagements = this.randomNumber();
         startOfDayAgentByAccount.Short_Engagements = this.randomNumber();
         startOfDayAgentByAccount.Long_Wrap_Ups = this.randomNumber();
@@ -100,11 +100,11 @@ export class FakeDataService {
         const startOfDayAgent: StartOfDayAgent = new StartOfDayAgent();
         startOfDayAgent.First_Name = this.randomString();
         startOfDayAgent.Last_Name = this.randomString();
-        startOfDayAgent.Agent_ID = this.randomNumber();
+        startOfDayAgent.Agent_ID = this.randomNumber().toString();
         startOfDayAgent.Display_Name = this.randomString();
         startOfDayAgent.Supervisor_First_Name = this.randomString();
         startOfDayAgent.Supervisor_Last_Name = this.randomString();
-        startOfDayAgent.Supervisor_ID = this.randomNumber();
+        startOfDayAgent.Supervisor_ID = this.randomNumber().toString();
         startOfDayAgent.Offered = this.randomNumber();
         startOfDayAgent.Abandoned = this.randomNumber();
         startOfDayAgent.Answered = this.randomNumber();
@@ -127,11 +127,11 @@ export class FakeDataService {
         startOfDayAgent.Agent_State = this.randomNumber();
         startOfDayAgent.Work_State = this.randomString();
         startOfDayAgent.ID = this.randomNumber();
-        startOfDayAgent.LastState_Change_Timestamp = this.randomNumber();
-        startOfDayAgent.Login_TimeStamp = this.randomString();
-        startOfDayAgent.logoutTimeStamp = this.randomString();
-        startOfDayAgent.Last_State_Reason_Timestamp = this.randomNumber();
-        startOfDayAgent.Last_WorkCodeChangeTimestamp = this.randomNumber();
+        startOfDayAgent.LastState_Change_Timestamp = this.randomNumber().toString();
+        startOfDayAgent.Login_TimeStamp = this.randomString().toString();
+        startOfDayAgent.logoutTimeStamp = this.randomString().toString();
+        startOfDayAgent.Last_State_Reason_Timestamp = this.randomNumber().toString();
+        startOfDayAgent.Last_WorkCodeChangeTimestamp = this.randomNumber().toString();
         startOfDayAgent.NR_Reason_Code = this.randomString();
         startOfDayAgent.Long_Engagements = this.randomNumber();
         startOfDayAgent.Short_Engagements = this.randomNumber();
@@ -204,9 +204,9 @@ export class FakeDataService {
         startOfDayRoutingService.Active_Time = this.randomNumber();
         startOfDayRoutingService.Oldest_Contact_Waiting = this.randomString();
         startOfDayRoutingService.Service_Display_Name = this.randomString();
-        startOfDayRoutingService.Provider_ID = this.randomNumber();
-        startOfDayRoutingService.Expected_Wait_Time = this.randomNumber();
-        startOfDayRoutingService.Channel_ID = this.randomNumber();
+        startOfDayRoutingService.Provider_ID = this.randomNumber().toString();
+        startOfDayRoutingService.Expected_Wait_Time = this.randomNumber().toString();
+        startOfDayRoutingService.Channel_ID = this.randomNumber().toString();
         startOfDayRoutingService.TRANSFERRED_TO_AGENT = this.randomNumber();
         startOfDayRoutingService.TRANSFERRED_TO_SERVICE = this.randomNumber();
         startOfDayRoutingService.CONSULTS_INITIATED = this.randomNumber();
@@ -246,18 +246,18 @@ export class FakeDataService {
 
       case environment.AGENTBYROUTINGSERVICEMEASURES :
         const startOfDayAgentByRoutingService: StartOfDayAgentByRoutingService = new StartOfDayAgentByRoutingService();
-        startOfDayAgentByRoutingService.Agent_ID = this.randomNumber();
-        startOfDayAgentByRoutingService.Supervisor_ID = this.randomNumber();
+        startOfDayAgentByRoutingService.Agent_ID = this.randomNumber().toString();
+        startOfDayAgentByRoutingService.Supervisor_ID = this.randomNumber().toString();
         startOfDayAgentByRoutingService.Agent_Surname = this.randomString();
         startOfDayAgentByRoutingService.Agent_Firstname = this.randomString();
         startOfDayAgentByRoutingService.Supervisor_Surname = this.randomString();
         startOfDayAgentByRoutingService.Supervisor_Firstname = this.randomString();
         startOfDayAgentByRoutingService.Service_Display_Name = this.randomString();
-        startOfDayAgentByRoutingService.Provider_ID = this.randomNumber();
-        startOfDayAgentByRoutingService.Channel_ID = this.randomNumber();
+        startOfDayAgentByRoutingService.Provider_ID = this.randomNumber().toString();
+        startOfDayAgentByRoutingService.Channel_ID = this.randomNumber().toString();
         startOfDayAgentByRoutingService.Offered = this.randomNumber();
         startOfDayAgentByRoutingService.Completed = this.randomNumber();
-        startOfDayAgentByRoutingService.Abandoned = this.randomNumber();
+        startOfDayAgentByRoutingService.Abandoned = this.randomNumber().toString();
         startOfDayAgentByRoutingService.Not_Answered = this.randomNumber();
         startOfDayAgentByRoutingService.Conferences = this.randomNumber();
         startOfDayAgentByRoutingService.Answered = this.randomNumber();
@@ -306,9 +306,9 @@ export class FakeDataService {
 
       case environment.AGENTMEASURESMOVINGWINDOW :
         const movingWindowAgentByAccount: MovingWindowAgentByAccount = new MovingWindowAgentByAccount();
-        movingWindowAgentByAccount.Agent_ID = this.randomNumber();
-        movingWindowAgentByAccount.Provider_ID = this.randomNumber();
-        movingWindowAgentByAccount.Supervisor_ID = this.randomNumber();
+        movingWindowAgentByAccount.Agent_ID = this.randomNumber().toString();
+        movingWindowAgentByAccount.Provider_ID = this.randomNumber().toString();
+        movingWindowAgentByAccount.Supervisor_ID = this.randomNumber().toString();
         movingWindowAgentByAccount.Account_ID = this.randomNumber();
         movingWindowAgentByAccount.Offered = this.randomNumber();
         movingWindowAgentByAccount.Completed = this.randomNumber();
@@ -324,7 +324,7 @@ export class FakeDataService {
         movingWindowAgentByAccount.Not_Ready_Time = this.randomNumber();
         movingWindowAgentByAccount.Disconnects_From_Hold = this.randomNumber();
         movingWindowAgentByAccount.Long_Holds = this.randomNumber();
-        movingWindowAgentByAccount.ID = this.randomNumber();
+        movingWindowAgentByAccount.ID = this.randomNumber().toString();
         movingWindowAgentByAccount.First_Name = this.randomString();
         movingWindowAgentByAccount.Last_Name = this.randomString();
         movingWindowAgentByAccount.Display_Name = this.randomString();
@@ -336,8 +336,8 @@ export class FakeDataService {
         movingWindowAgentByAccount.Channel = this.randomString();
         movingWindowAgentByAccount.loginTimeStamp = this.randomString();
         movingWindowAgentByAccount.logoutTimeStamp = this.randomString();
-        movingWindowAgentByAccount.lastStateChangeTimestamp = this.randomNumber();
-        movingWindowAgentByAccount.LastStateReasonTimestamp = this.randomNumber();
+        movingWindowAgentByAccount.lastStateChangeTimestamp = this.randomNumber().toString();
+        movingWindowAgentByAccount.LastStateReasonTimestamp = this.randomNumber().toString();
         movingWindowAgentByAccount.agentbyAccountState = this.randomString();
         movingWindowAgentByAccount.Long_Engagements = this.randomNumber();
         movingWindowAgentByAccount.Short_Engagements = this.randomNumber();
@@ -346,7 +346,7 @@ export class FakeDataService {
         movingWindowAgentByAccount.Holds = this.randomNumber();
         movingWindowAgentByAccount.NR_Reason_Code = this.randomString();
         movingWindowAgentByAccount.NR_Reason_Code_Name = this.randomString();
-        movingWindowAgentByAccount.Blended_Active_Time = this.randomString();
+        movingWindowAgentByAccount.Blended_Active_Time = this.randomNumber();
         movingWindowAgentByAccount.ADHOC = this.randomNumber();
         movingWindowAgentByAccount.ADHOC_DURATION = this.randomNumber();
         movingWindowAgentByAccount.TRANSFERRED_TO_AGENT = this.randomNumber();
@@ -385,12 +385,11 @@ export class FakeDataService {
         const movingWindowAgent: MovingWindowAgent = new MovingWindowAgent();
         movingWindowAgent.First_Name = this.randomString();
         movingWindowAgent.Last_Name = this.randomString();
-        movingWindowAgent.Agent_ID = this.randomNumber();
+        movingWindowAgent.Agent_ID = this.randomNumber().toString();
         movingWindowAgent.Display_Name = this.randomString();
         movingWindowAgent.Supervisor_First_Name = this.randomString();
         movingWindowAgent.Supervisor_Last_Name = this.randomString();
-        movingWindowAgent.Supervisor_ID = this.randomNumber();
-        movingWindowAgent.Account_ID = this.randomNumber();
+        movingWindowAgent.Supervisor_ID = this.randomNumber().toString();
         movingWindowAgent.Offered = this.randomNumber();
         movingWindowAgent.Abandoned = this.randomNumber();
         movingWindowAgent.Answered = this.randomNumber();
@@ -412,23 +411,23 @@ export class FakeDataService {
         movingWindowAgent.Long_Holds = this.randomNumber();
         movingWindowAgent.Last_State_Change_Time = this.randomNumber();
         movingWindowAgent.Provider_ID = this.randomNumber();
-        movingWindowAgent.Agent_State = this.randomString();
-        movingWindowAgent.Work_State = this.randomString();
+        movingWindowAgent.Agent_State = this.randomNumber();
+        movingWindowAgent.Work_State = this.randomNumber();
         movingWindowAgent.ID = this.randomNumber();
-        movingWindowAgent.LastState_Change_Timestamp = this.randomNumber();
-        movingWindowAgent.Login_TimeStamp = this.randomNumber();
-        movingWindowAgent.logoutTimeStamp = this.randomNumber();
+        movingWindowAgent.LastState_Change_Timestamp = this.randomNumber().toString();
+        movingWindowAgent.Login_TimeStamp = this.randomNumber().toString();
+        movingWindowAgent.logoutTimeStamp = this.randomNumber().toString();
         movingWindowAgent.NR_Reason_Code_Name = this.randomString();
-        movingWindowAgent.LastStateReasonTimestamp = this.randomNumber();
+        movingWindowAgent.LastStateReasonTimestamp = this.randomNumber().toString();
         movingWindowAgent.NR_Reason_Code = this.randomString();
         movingWindowAgent.Long_Engagements = this.randomNumber();
         movingWindowAgent.Short_Engagements = this.randomNumber();
         movingWindowAgent.Long_Wrap_Ups = this.randomNumber();
         movingWindowAgent.Short_Wrap_Ups = this.randomNumber();
         movingWindowAgent.Short_Not_Ready = this.randomNumber();
-        movingWindowAgent.Blended_active_time = this.randomString();
-        movingWindowAgent.Blended_alerting_time = this.randomString();
-        movingWindowAgent.Additional_time = this.randomString();
+        movingWindowAgent.Blended_active_time = this.randomNumber();
+        movingWindowAgent.Blended_alerting_time = this.randomNumber();
+        movingWindowAgent.Additional_time = this.randomNumber();
         movingWindowAgent.TRANSFERRED_TO_AGENT = this.randomNumber();
         movingWindowAgent.TRANSFERRED_TO_SERVICE = this.randomNumber();
         movingWindowAgent.ADHOC = this.randomNumber();
@@ -492,9 +491,9 @@ export class FakeDataService {
         movingWindowRoutingService.Active_Time = this.randomNumber();
         movingWindowRoutingService.Oldest_Contact_Waiting = this.randomString();
         movingWindowRoutingService.Service_Display_Name = this.randomString();
-        movingWindowRoutingService.Provider_ID = this.randomNumber();
+        movingWindowRoutingService.Provider_ID = this.randomNumber().toString();
         movingWindowRoutingService.Expected_Wait_Time = this.randomString();
-        movingWindowRoutingService.Channel_ID = this.randomNumber();
+        movingWindowRoutingService.Channel_ID = this.randomNumber().toString();
         movingWindowRoutingService.Long_Engagements = this.randomNumber();
         movingWindowRoutingService.Short_Engagements = this.randomNumber();
         movingWindowRoutingService.Long_Wrap_Ups = this.randomNumber();
@@ -504,19 +503,19 @@ export class FakeDataService {
 
       case environment.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW :
         const movingWindowAgentByRoutingService: MovingWindowAgentByRoutingService = new MovingWindowAgentByRoutingService();
-        movingWindowAgentByRoutingService.Agent_ID = this.randomNumber();
-        movingWindowAgentByRoutingService.Supervisor_ID = this.randomNumber();
+        movingWindowAgentByRoutingService.Agent_ID = this.randomNumber().toString();
+        movingWindowAgentByRoutingService.Supervisor_ID = this.randomNumber().toString();
         movingWindowAgentByRoutingService.Agent_Surname = this.randomString();
         movingWindowAgentByRoutingService.Agent_Firstname = this.randomString();
         movingWindowAgentByRoutingService.Supervisor_Surname = this.randomString();
         movingWindowAgentByRoutingService.Supervisor_First_Name = this.randomString();
-        movingWindowAgentByRoutingService.Routing_Service_ID = this.randomNumber();
+        movingWindowAgentByRoutingService.Routing_Service_ID = this.randomNumber().toString();
         movingWindowAgentByRoutingService.Service_Display_Name = this.randomString();
-        movingWindowAgentByRoutingService.Provider_ID = this.randomNumber();
-        movingWindowAgentByRoutingService.Channel_ID = this.randomNumber();
+        movingWindowAgentByRoutingService.Provider_ID = this.randomNumber().toString();
+        movingWindowAgentByRoutingService.Channel_ID = this.randomNumber().toString();
         movingWindowAgentByRoutingService.Offered = this.randomNumber();
         movingWindowAgentByRoutingService.Completed = this.randomNumber();
-        movingWindowAgentByRoutingService.Abandoned = this.randomNumber();
+        movingWindowAgentByRoutingService.Abandoned = this.randomNumber().toString();
         movingWindowAgentByRoutingService.Not_Answered = this.randomNumber();
         movingWindowAgentByRoutingService.Conferences = this.randomNumber();
         movingWindowAgentByRoutingService.Answered = this.randomNumber();

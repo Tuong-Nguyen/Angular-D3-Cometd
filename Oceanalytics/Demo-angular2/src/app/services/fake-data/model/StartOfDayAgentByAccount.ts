@@ -1,8 +1,8 @@
 export class StartOfDayAgentByAccount {
-  Agent_ID = 0;
-  Provider_ID = 0;
-  Account_ID = 0;
-  Supervisor_ID = 0;
+  Agent_ID = '';
+  Provider_ID = '';
+  Account_ID = '';
+  Supervisor_ID = '';
   Offered = 0;
   Completed = 0;
   Abandoned = 0;
@@ -29,9 +29,9 @@ export class StartOfDayAgentByAccount {
   Channel = '';
   loginTimeStamp = '';
   logoutTimeStamp = '';
-  lastStateChangeTimestamp = 0;
-  LastStateReasonTimestamp = 0;
-  agentbyAccountState = 0;
+  lastStateChangeTimestamp = '';
+  LastStateReasonTimestamp = '';
+  agentbyAccountState = '';
   Long_Engagements = 0;
   Short_Engagements = 0;
   Long_Wrap_Ups = 0;

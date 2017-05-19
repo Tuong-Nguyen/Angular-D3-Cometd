@@ -1,11 +1,11 @@
 export class StartOfDayAgent {
   First_Name = '';
   Last_Name = '';
-  Agent_ID = 0;
+  Agent_ID = '';
   Display_Name = '';
   Supervisor_First_Name = '';
   Supervisor_Last_Name = '';
-  Supervisor_ID = 0;
+  Supervisor_ID = '';
   Offered = 0;
   Abandoned = 0;
   Answered = 0;
@@ -28,11 +28,11 @@ export class StartOfDayAgent {
   Agent_State = 0;
   Work_State = '';
   ID = 0;
-  LastState_Change_Timestamp = 0;
+  LastState_Change_Timestamp = '';
   Login_TimeStamp = '';
   logoutTimeStamp = '';
-  Last_State_Reason_Timestamp = 0;
-  Last_WorkCodeChangeTimestamp = 0;
+  Last_State_Reason_Timestamp = '';
+  Last_WorkCodeChangeTimestamp = '';
   NR_Reason_Code = '';
   Long_Engagements = 0;
   Short_Engagements = 0;

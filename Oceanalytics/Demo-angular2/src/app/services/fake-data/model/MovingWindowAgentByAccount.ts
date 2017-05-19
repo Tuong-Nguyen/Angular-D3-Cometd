@@ -1,7 +1,7 @@
 export class MovingWindowAgentByAccount {
-  Agent_ID = 0;
-  Provider_ID = 0;
-  Supervisor_ID = 0;
+  Agent_ID = '';
+  Provider_ID = '';
+  Supervisor_ID = '';
   Account_ID = 0;
   Offered = 0;
   Completed = 0;
@@ -17,7 +17,7 @@ export class MovingWindowAgentByAccount {
   Not_Ready_Time = 0;
   Disconnects_From_Hold = 0;
   Long_Holds = 0;
-  ID = 0;
+  ID = '';
   First_Name = '';
   Last_Name = '';
   Display_Name = '';
@@ -29,8 +29,8 @@ export class MovingWindowAgentByAccount {
   Channel = '';
   loginTimeStamp = '';
   logoutTimeStamp = '';
-  lastStateChangeTimestamp = 0;
-  LastStateReasonTimestamp = 0;
+  lastStateChangeTimestamp = '';
+  LastStateReasonTimestamp = '';
   agentbyAccountState = '';
   Long_Engagements = 0;
   Short_Engagements = 0;
@@ -39,7 +39,7 @@ export class MovingWindowAgentByAccount {
   Holds = 0;
   NR_Reason_Code = '';
   NR_Reason_Code_Name = '';
-  Blended_Active_Time = '';
+  Blended_Active_Time = 0;
   ADHOC = 0;
   ADHOC_DURATION = 0;
   TRANSFERRED_TO_AGENT = 0;

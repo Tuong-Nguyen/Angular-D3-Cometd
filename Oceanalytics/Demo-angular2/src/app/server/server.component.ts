@@ -27,6 +27,12 @@ export class ServerComponent implements OnInit, OnChanges {
         console.log('Poll ', data);
 
         if (data.length > 0) {
+          this.records = this.records.concat(data);
+
+          console.log('data');
+          console.log(data);
+          console.log(this.records);
+
           for (let i = 0; i < data.length; i++) {
             console.log('======> Item : ', data[i].value);
             if (data[i].topic !== environment.pump) {

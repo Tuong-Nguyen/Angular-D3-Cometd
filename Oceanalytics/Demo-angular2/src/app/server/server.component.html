@@ -18,16 +18,12 @@
             <tr>
               <th style="width: 10px">#</th>
               <th>Instance Name</th>
-              <th>Task</th>
               <th>Measure topics</th>
-              <th style="width: 40px">code</th>
             </tr>
             <tr *ngFor="let record of records; let i = index" [attr.data-index] ="i">
               <td>{{i}}</td>
-              <td>{{record.key}}</td>
-              <td>{{record.value.kafkaTopicName || record.value.pump}}</td>
+              <td>{{record.value.subscriptionRequestId}}</td>
               <td>{{record.topic}}</td>
-              <td><span class="badge bg-red">{{record.value.time}}</span></td>
             </tr>
           </table>
         </div>

@@ -26,9 +26,9 @@ export class StartOfDayRoutingService {
   Active_Time = 0;
   Oldest_Contact_Waiting = '';
   Service_Display_Name = '';
-  Provider_ID = 0;
-  Expected_Wait_Time = 0;
-  Channel_ID = 0;
+  Provider_ID = '';
+  Expected_Wait_Time = '';
+  Channel_ID = '';
   TRANSFERRED_TO_AGENT = 0;
   TRANSFERRED_TO_SERVICE = 0;
   CONSULTS_INITIATED = 0;
