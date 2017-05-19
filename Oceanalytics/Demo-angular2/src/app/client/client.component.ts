@@ -17,6 +17,7 @@ export class ClientComponent implements OnInit {
   public messages = {};
 
   public subscribedMeasures: Array<string> = [];
+  private subscribedTopics: Array<string> = [];
 
   public options = [{
     value: env.AGENTMEASURES,
@@ -44,10 +45,6 @@ export class ClientComponent implements OnInit {
     label: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW
   }
   ];
-
-  public logMultipleString;
-
-  private subscribedTopics: Array<string> = [];
 
   constructor(private _kafkaProxyService: KafkaProxyService) {
   }
@@ -114,14 +111,6 @@ export class ClientComponent implements OnInit {
     );
   }
 
-  onMultipleOpened() {
-    this.logMultiple('- opened');
-  }
-
-  onMultipleClosed() {
-    this.logMultiple('- closed');
-  }
-
   onMultipleSelected(item) {
     this.subscribedMeasures.push(item.value);
   }
@@ -172,10 +161,6 @@ export class ClientComponent implements OnInit {
       'password': 's3cr3t',
       'measuresStreams': measureStreams
     };
-  }
-
-  private logMultiple(msg: string) {
-    this.logMultipleString += msg + '\n';
   }
 
   private scrollToBottom(elem) {
