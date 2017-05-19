@@ -55,31 +55,30 @@
                   </ul>
                   <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
-                      <app-tabular-table [fields]="['ACW','contactsWaiting', 'active', 'heldContacts', 'contactsAtAgent', 'alerting']" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
-
+                      <app-tabular-table [fields]="['Agent_ID', 'Provider_ID', 'Account_ID', 'Supervisor_ID', 'Offered']" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
-                      <app-tabular-table [fields]="['ACW','activeWorkCount', 'lastStateReasonTimestamp']" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
+                      <app-tabular-table [fields]="['First_Name', 'Last_Name', 'Agent_ID', 'Display_Name', 'Supervisor_First_Name']" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_3">
-                      <app-tabular-table [fields]="['contactsWaiting', 'active','heldContacts','contactsAtAgent','alerting']" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
+                      <app-tabular-table [fields]="['Routing_Service_Name', 'Routing_Service_ID','Available','Contacts_Waiting','Contacts_At_Agent']" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_4">
-                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
+                      <app-tabular-table [fields]="['Agent_ID','Supervisor_ID','Agent_Surname','Agent_Firstname', 'Supervisor_Surname']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_5">
-                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
+                      <app-tabular-table [fields]="['Agent_ID', 'Provider_ID', 'Supervisor_ID', 'Account_ID', 'Offered']" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_6">
-                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
+                      <app-tabular-table [fields]="['First_Name', 'Last_Name', 'Agent_ID', 'Display_Name', 'Supervisor_First_Name']" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_7">
-                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                      <app-tabular-table [fields]="['Routing_Service_Name','Available','Staffed','Contacts_Waiting','Contacts_At_Agent']" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <div class="tab-pane" id="tab_8">
-                      <app-tabular-table [fields]="['offered','alertDuration','pumpup','pumpupComplete']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                      <app-tabular-table [fields]="['Agent_ID','Supervisor_ID','Agent_Surname','Agent_Firstname','Supervisor_Surname']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
                     </div>
                     <!-- /.tab-pane -->
                   </div>
