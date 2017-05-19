@@ -24,16 +24,14 @@ export class ServerComponent implements OnInit, OnChanges {
     this._kafkaProxyService.addTopic(environment.pump);
     this._kafkaProxyService.poll().subscribe(
       data => {
-        console.log('Poll Success');
-        console.log(data);
+        console.log('Poll ', data);
 
         if (data.length > 0) {
-          console.log('Case IF in Poll Success');
-
           for (let i = 0; i < data.length; i++) {
             console.log('======> Item : ', data[i].value);
             if (data[i].topic !== environment.pump) {
               // Reset
+              this.isPump = false;
               if (i === 0) {
                 this.arrTopicName = [];
               }
@@ -50,9 +48,6 @@ export class ServerComponent implements OnInit, OnChanges {
             }
           }
         } else { // Send realtime data
-          console.log('Case ELSE in Poll Success');
-          console.log('Arr topic: ', this.arrTopicName);
-          console.log('PUMP: ', this.isPump);
           if (this.isPump === true) {
             for (let i = 0; i < this.arrTopicName.length; i++) {
               console.log('============> push messge to topic: ', this.arrTopicName[i]);
