@@ -3,6 +3,15 @@ import {DatePipe} from '@angular/common';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
 
+import {MovingWindowAgent} from '../services/fake-data/model/MovingWindowAgent';
+import {MovingWindowRoutingService} from '../services/fake-data/model/MovingWindowRoutingService';
+import {MovingWindowAgentByAccount} from '../services/fake-data/model/MovingWindowAgentByAccount';
+import {MovingWindowAgentByRoutingService} from '../services/fake-data/model/MovingWindowAgentByRoutingService';
+import {StartOfDayAgent} from '../services/fake-data/model/StartOfDayAgent';
+import {StartOfDayRoutingService} from '../services/fake-data/model/StartOfDayRoutingService';
+import {StartOfDayAgentByAccount} from '../services/fake-data/model/StartOfDayAgentByAccount';
+import {StartOfDayAgentByRoutingService} from '../services/fake-data/model/StartOfDayAgentByRoutingService';
+
 @Component({
   selector: 'app-client',
   templateUrl: './client.component.html',
@@ -15,6 +24,9 @@ export class ClientComponent implements OnInit {
   public instanceName = 'Instance_' + this.currentDate;
   public env = env;
   public messages = {};
+  public listTopicProperties = {};
+  public listTopicFields = {};
+
   public user = {
     name: '',
     password: ''
@@ -67,6 +79,25 @@ export class ClientComponent implements OnInit {
     this.messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
     this.messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+
+    this.listTopicProperties[env.AGENTMEASURES] = [];
+    this.listTopicProperties[env.AGENTBYACCOUNTMEASURES] = [];
+    this.listTopicProperties[env.ROUTINGSERVICEMEASURES] = [];
+    this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES] = [];
+    this.listTopicProperties[env.AGENTMEASURESMOVINGWINDOW] = [];
+    this.listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
+    this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+
+    this.listTopicFields[env.AGENTMEASURES] = [];
+    this.listTopicFields[env.AGENTBYACCOUNTMEASURES] = [];
+    this.listTopicFields[env.ROUTINGSERVICEMEASURES] = [];
+    this.listTopicFields[env.AGENTBYROUTINGSERVICEMEASURES] = [];
+    this.listTopicFields[env.AGENTMEASURESMOVINGWINDOW] = [];
+    this.listTopicFields[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
+    this.listTopicFields[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.listTopicFields[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+
     this.fData();
   }
 
@@ -117,6 +148,10 @@ export class ClientComponent implements OnInit {
 
   onMultipleSelected(item) {
     this.subscribedMeasures.push(item.value);
+
+    //reset
+    let listMeasure = this.subscribedMeasures.map(measure => measure);
+    this.getListProperty(listMeasure);
   }
 
   /**
@@ -143,6 +178,10 @@ export class ClientComponent implements OnInit {
     this.subscribedTopics.push(env.result);
 
     this._kafkaProxyService.removeTopic(item.value);
+
+    let listMeasure = this.subscribedMeasures.map(measure => measure);
+    this.getListProperty(listMeasure);
+    console.log(this.listTopicProperties);
   }
 
   /**
@@ -151,6 +190,16 @@ export class ClientComponent implements OnInit {
   public subscribeMeasures(): void {
     for (const measure of this.subscribedMeasures) {
       this.sendMessage(env.rsr, this.createSubscribeRequest(measure));
+    }
+  }
+
+  public checkItem(topic,item): void{
+    let index = this.listTopicFields[topic].indexOf(item);
+    console.log("index: ",index);
+    if (index > -1) {
+      this.listTopicFields[topic].splice(index, 1);
+    }else{
+      this.listTopicFields[topic].push(item);
     }
   }
 
@@ -165,6 +214,65 @@ export class ClientComponent implements OnInit {
       'password': this.user.password,
       'measuresStreams': measureStreams
     };
+  }
+
+  private getListProperty(listTopic: Array<string>): any{
+    //Reset
+    this.listTopicProperties[env.AGENTMEASURES] = [];
+    this.listTopicProperties[env.AGENTBYACCOUNTMEASURES] = [];
+    this.listTopicProperties[env.ROUTINGSERVICEMEASURES] = [];
+    this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES] = [];
+    this.listTopicProperties[env.AGENTMEASURESMOVINGWINDOW] = [];
+    this.listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
+    this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+
+    let model : any;
+    let properties: any;
+    for (let i = 0; i < listTopic.length; i++) {
+      switch (listTopic[i]) {
+        case env.AGENTMEASURES:
+            model = new StartOfDayAgentByAccount();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.AGENTMEASURES] = properties;
+          break;
+        case env.AGENTBYACCOUNTMEASURES:
+            model = new StartOfDayAgent();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.AGENTBYACCOUNTMEASURES] = properties;
+          break;
+        case env.ROUTINGSERVICEMEASURES:
+            model = new StartOfDayRoutingService();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.ROUTINGSERVICEMEASURES] = properties;
+          break;
+        case env.AGENTBYROUTINGSERVICEMEASURES:
+            model = new StartOfDayAgentByRoutingService();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES] = properties;
+          break;
+        case env.AGENTMEASURESMOVINGWINDOW:
+            model = new MovingWindowAgentByAccount();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.AGENTMEASURESMOVINGWINDOW] = properties;
+          break;
+        case env.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
+            model = new MovingWindowAgent();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = properties;
+          break;
+        case env.ROUTINGSERVICEMEASURESMOVINGWINDOW:
+            model = new MovingWindowRoutingService();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = properties;
+          break;
+        case env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
+            model = new MovingWindowAgentByRoutingService();
+            properties = Object.getOwnPropertyNames(model);
+            this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = properties;
+          break;
+      }
+    }
   }
 
   private scrollToBottom(elem) {

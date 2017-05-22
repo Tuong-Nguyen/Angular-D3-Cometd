@@ -1,102 +1,199 @@
 <!-- Main content -->
 <section class="content">
-    <!-- Default box -->
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">Client Progress</h3>
-        <a routerLink="/server" class="serverLink" target="_blank">Server Link</a>
+  <!-- Default box -->
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">Client Progress</h3>
+      <a routerLink="/server" class="serverLink" target="_blank">Server Link</a>
+    </div>
+    <div class="box-body">
+      <form role="form">
+
+        <div class="form-group">
+          <label for="username">Username: </label>
+          <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}"/>
+        </div>
+        <div class="form-group">
+          <label for="password">Password: </label>
+          <input type="password" class="form-control" id="password" placeholder="Password" [(ngModel)]="user.password" [ngModelOptions]="{standalone: true}"/>
+        </div>
+
+        <div class="form-group">
+          <label>Measure topics: </label>
+          <ng-select
+          [options]="options"
+          [multiple]="true"
+          placeholder="Select multiple"
+          (selected)="onMultipleSelected($event)"
+          (deselected)="onMultipleDeselected($event)">
+        </ng-select>
       </div>
-      <div class="box-body">
-        <form role="form">
+      <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length === 0 || user.name === '' || user.password === ''" (click)="subscribeMeasures()">Submit</button>
+    </form>
 
-          <div class="form-group">
-            <label for="username">Username: </label>
-            <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}"/>
-          </div>
-          <div class="form-group">
-            <label for="password">Password: </label>
-            <input type="password" class="form-control" id="password" placeholder="Password" [(ngModel)]="user.password" [ngModelOptions]="{standalone: true}"/>
-          </div>
-
-          <div class="form-group">
-            <label>Measure topics: </label>
-            <ng-select
-              [options]="options"
-              [multiple]="true"
-              placeholder="Select multiple"
-              (selected)="onMultipleSelected($event)"
-              (deselected)="onMultipleDeselected($event)">
-            </ng-select>
-          </div>
-          <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length === 0 || user.name === '' || user.password === ''" (click)="subscribeMeasures()">Submit</button>
-        </form>
-        <div class="box" style="margin-top: 30px;">
-          <div class="box-header">
-            <h3 class="box-title">Received Messages</h3>
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body no-padding">
-
-
-
-            <div class="row">
-              <div class="col-md-12">
-                <!-- Custom Tabs -->
-                <div class="nav-tabs-custom">
-                  <ul class="nav nav-tabs">
-                    <li class="active" [hidden]="!messages[env.AGENTMEASURES].length"><a href="#tab_1" data-toggle="tab" [innerHtml] = "env.AGENTMEASURES"></a></li>
-                    <li><a href="#tab_2" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURES].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURES"></a></li>
-                    <li><a href="#tab_3" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURES"></a></li>
-                    <li><a href="#tab_4" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURES"></a></li>
-                    <li><a href="#tab_5" data-toggle="tab" [hidden]="messages[env.AGENTMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTMEASURESMOVINGWINDOW"></a></li>
-                    <li><a href="#tab_6" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURSMOVINGWINDOW"></a></li>
-                    <li><a href="#tab_7" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
-                    <li><a href="#tab_8" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
-                  </ul>
-                  <div class="tab-content">
-                    <div class="tab-pane active" id="tab_1">
-                      <app-tabular-table [fields]="['Agent_ID', 'Provider_ID', 'Account_ID', 'Supervisor_ID', 'Offered']" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
+    <div class="box" style="margin-top: 30px;" *ngIf="messages[env.AGENTMEASURES].length != 0
+                                              || messages[env.AGENTBYACCOUNTMEASURES].length != 0
+                                              || messages[env.ROUTINGSERVICEMEASURES].length != 0
+                                              || messages[env.AGENTBYROUTINGSERVICEMEASURES].length != 0
+                                              || messages[env.AGENTMEASURESMOVINGWINDOW].length != 0
+                                              || messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW].length != 0
+                                              || messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW].length != 0
+                                              || messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW].length != 0">
+      <div class="box-header">
+        <h1 class="box-title">Config Display</h1>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body no-padding">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+              <ul class="nav nav-tabs">
+                <li><a href="#tab_11" data-toggle="tab" *ngIf="listTopicProperties[env.AGENTMEASURES].length > 0" [innerHtml] = "env.AGENTMEASURES"></a></li>
+                <li><a href="#tab_22" data-toggle="tab" *ngIf="listTopicProperties[env.AGENTBYACCOUNTMEASURES].length > 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURES"></a></li>
+                <li><a href="#tab_33" data-toggle="tab" *ngIf="listTopicProperties[env.ROUTINGSERVICEMEASURES].length > 0" [innerHtml] = "env.ROUTINGSERVICEMEASURES"></a></li>
+                <li><a href="#tab_44" data-toggle="tab" *ngIf="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES].length > 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURES"></a></li>
+                <li><a href="#tab_55" data-toggle="tab" *ngIf="listTopicProperties[env.AGENTMEASURESMOVINGWINDOW].length > 0" [innerHtml] = "env.AGENTMEASURESMOVINGWINDOW"></a></li>
+                <li><a href="#tab_66" data-toggle="tab" *ngIf="listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW].length > 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURSMOVINGWINDOW"></a></li>
+                <li><a href="#tab_77" data-toggle="tab" *ngIf="listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW].length > 0" [innerHtml] = "env.ROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
+                <li><a href="#tab_88" data-toggle="tab" *ngIf="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW].length > 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane" id="tab_11">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.AGENTMEASURES]; let i = index;">
+                      <input type="checkbox" id="cb1{{i}}" value="{{item}}" (click)="checkItem(env.AGENTMEASURES, item)" /> {{item}}
                     </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_2">
-                      <app-tabular-table [fields]="['First_Name', 'Last_Name', 'Agent_ID', 'Display_Name', 'Supervisor_First_Name']" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
-                    </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_3">
-                      <app-tabular-table [fields]="['Routing_Service_Name', 'Routing_Service_ID','Available','Contacts_Waiting','Contacts_At_Agent']" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
-                    </div>
-                    <div class="tab-pane" id="tab_4">
-                      <app-tabular-table [fields]="['Agent_ID','Supervisor_ID','Agent_Surname','Agent_Firstname', 'Supervisor_Surname']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
-                    </div>
-                    <div class="tab-pane" id="tab_5">
-                      <app-tabular-table [fields]="['Agent_ID', 'Provider_ID', 'Supervisor_ID', 'Account_ID', 'Offered']" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
-                    </div>
-                    <div class="tab-pane" id="tab_6">
-                      <app-tabular-table [fields]="['First_Name', 'Last_Name', 'Agent_ID', 'Display_Name', 'Supervisor_First_Name']" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
-                    </div>
-                    <div class="tab-pane" id="tab_7">
-                      <app-tabular-table [fields]="['Routing_Service_Name','Available','Staffed','Contacts_Waiting','Contacts_At_Agent']" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
-                    </div>
-                    <div class="tab-pane" id="tab_8">
-                      <app-tabular-table [fields]="['Agent_ID','Supervisor_ID','Agent_Surname','Agent_Firstname','Supervisor_Surname']" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
-                    </div>
-                    <!-- /.tab-pane -->
                   </div>
-                  <!-- /.tab-content -->
                 </div>
-                <!-- nav-tabs-custom -->
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_22">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.AGENTBYACCOUNTMEASURES]; let i = index;">
+                      <input type="checkbox" id="cb2{{i}}" value="{{item}}" (click)="checkItem(env.AGENTBYACCOUNTMEASURES, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_33">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.ROUTINGSERVICEMEASURES]; let i = index;">
+                      <input type="checkbox" id="cb3{{i}}" value="{{item}}" (click)="checkItem(env.ROUTINGSERVICEMEASURES, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="tab_44">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES]; let i = index;">
+                      <input type="checkbox" id="cb4{{i}}" value="{{item}}" (click)="checkItem(env.AGENTBYROUTINGSERVICEMEASURES, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="tab_55">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.AGENTMEASURESMOVINGWINDOW]; let i = index;">
+                      <input type="checkbox" id="cb5{{i}}" value="{{item}}" (click)="checkItem(env.AGENTMEASURESMOVINGWINDOW, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="tab_66">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]; let i = index;">
+                      <input type="checkbox" id="cb6{{i}}" value="{{item}}" (click)="checkItem(env.AGENTBYACCOUNTMEASURSMOVINGWINDOW, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="tab_77">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]; let i = index;">
+                      <input type="checkbox" id="cb7{{i}}" value="{{item}}" (click)="checkItem(env.ROUTINGSERVICEMEASURESMOVINGWINDOW, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane" id="tab_88">
+                  <div class="row">
+                    <div class="col-md-3" *ngFor="let item of listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]; let i = index;">
+                      <input type="checkbox" id="cb8{{i}}" value="{{item}}" (click)="checkItem(env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW, item)" /> {{item}}
+                    </div>
+                  </div>
+                </div>
+                <!-- /.tab-pane -->
               </div>
-              <!-- /.col -->
+              <!-- /.tab-content -->
             </div>
+            <!-- nav-tabs-custom -->
           </div>
-          <!-- /.box-body -->
-
-
+          <!-- /.col -->
         </div>
       </div>
+      <!-- /.box-body -->
     </div>
-    <!-- /.box -->
 
-  </section>
+
+
+
+    <div class="box" style="margin-top: 30px;">
+      <div class="box-header">
+        <h3 class="box-title">Received Messages</h3>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body no-padding">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+              <ul class="nav nav-tabs">
+                <li [hidden]="!messages[env.AGENTMEASURES].length"><a href="#tab_1" data-toggle="tab" [innerHtml] = "env.AGENTMEASURES"></a></li>
+                <li><a href="#tab_2" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURES].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURES"></a></li>
+                <li><a href="#tab_3" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURES"></a></li>
+                <li><a href="#tab_4" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURES"></a></li>
+                <li><a href="#tab_5" data-toggle="tab" [hidden]="messages[env.AGENTMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTMEASURESMOVINGWINDOW"></a></li>
+                <li><a href="#tab_6" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURSMOVINGWINDOW"></a></li>
+                <li><a href="#tab_7" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
+                <li><a href="#tab_8" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW"></a></li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                  <app-tabular-table [fields]="listTopicFields[env.AGENTMEASURES]" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_2">
+                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYACCOUNTMEASURES]" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_3">
+                  <app-tabular-table [fields]="listTopicFields[env.ROUTINGSERVICEMEASURES]" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
+                </div>
+                <div class="tab-pane" id="tab_4">
+                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYROUTINGSERVICEMEASURES]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
+                </div>
+                <div class="tab-pane" id="tab_5">
+                  <app-tabular-table [fields]="listTopicFields[env.AGENTMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
+                </div>
+                <div class="tab-pane" id="tab_6">
+                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
+                </div>
+                <div class="tab-pane" id="tab_7">
+                  <app-tabular-table [fields]="listTopicFields[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                </div>
+                <div class="tab-pane" id="tab_8">
+                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                </div>
+                <!-- /.tab-pane -->
+              </div>
+              <!-- /.tab-content -->
+            </div>
+            <!-- nav-tabs-custom -->
+          </div>
+          <!-- /.col -->
+        </div>
+      </div>
+      <!-- /.box-body -->
+    </div>
+  </div>
+</div>
+<!-- /.box -->
+
+</section>
 <!-- /.content -->
 
