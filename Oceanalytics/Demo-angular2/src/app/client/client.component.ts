@@ -153,7 +153,8 @@ export class ClientComponent implements OnInit {
       'subscriptionRequestId': this.instanceName,
       'password': this.user.password,
       'request': 'SUBSCRIBE',
-      'measuresStream': measureStreams
+      'measuresStream': measureStreams,
+      'version': '3.3'
     };
   }
 
