@@ -66,11 +66,6 @@ export class ClientComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    // console.log("Cách lấy properties nè a Hạnh");
-    // let propertiesssss : StartOfDayAgentByAccount = new StartOfDayAgentByAccount();
-    // console.log(Object.getOwnPropertyNames(propertiesssss));
-
     this.messages[env.AGENTMEASURES] = [];
     this.messages[env.AGENTBYACCOUNTMEASURES] = [];
     this.messages[env.ROUTINGSERVICEMEASURES] = [];
@@ -149,8 +144,8 @@ export class ClientComponent implements OnInit {
   onMultipleSelected(item) {
     this.subscribedMeasures.push(item.value);
 
-    //reset
-    let listMeasure = this.subscribedMeasures.map(measure => measure);
+    // reset
+    const listMeasure = this.subscribedMeasures.map(measure => measure);
     this.getListProperty(listMeasure);
   }
 
@@ -179,7 +174,7 @@ export class ClientComponent implements OnInit {
 
     this._kafkaProxyService.removeTopic(item.value);
 
-    let listMeasure = this.subscribedMeasures.map(measure => measure);
+    const listMeasure = this.subscribedMeasures.map(measure => measure);
     this.getListProperty(listMeasure);
     console.log(this.listTopicProperties);
   }
@@ -193,12 +188,12 @@ export class ClientComponent implements OnInit {
     }
   }
 
-  public checkItem(topic,item): void{
-    let index = this.listTopicFields[topic].indexOf(item);
-    console.log("index: ",index);
+  public checkItem(topic, item): void {
+    const index = this.listTopicFields[topic].indexOf(item);
+    console.log('index: ', index);
     if (index > -1) {
       this.listTopicFields[topic].splice(index, 1);
-    }else{
+    } else {
       this.listTopicFields[topic].push(item);
     }
   }
@@ -216,8 +211,8 @@ export class ClientComponent implements OnInit {
     };
   }
 
-  private getListProperty(listTopic: Array<string>): any{
-    //Reset
+  private getListProperty(listTopic: Array<string>): any {
+    // Reset
     this.listTopicProperties[env.AGENTMEASURES] = [];
     this.listTopicProperties[env.AGENTBYACCOUNTMEASURES] = [];
     this.listTopicProperties[env.ROUTINGSERVICEMEASURES] = [];
@@ -227,7 +222,7 @@ export class ClientComponent implements OnInit {
     this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
 
-    let model : any;
+    let model: any;
     let properties: any;
     for (let i = 0; i < listTopic.length; i++) {
       switch (listTopic[i]) {
