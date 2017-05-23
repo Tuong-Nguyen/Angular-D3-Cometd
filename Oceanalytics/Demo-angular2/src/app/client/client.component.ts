@@ -62,6 +62,8 @@ export class ClientComponent implements OnInit {
   }
   ];
 
+
+
   constructor(private _kafkaProxyService: KafkaProxyService) {
   }
 
@@ -83,15 +85,6 @@ export class ClientComponent implements OnInit {
     this.listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
     this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
-
-    this.listTopicFields[env.AGENTMEASURES] = [];
-    this.listTopicFields[env.AGENTBYACCOUNTMEASURES] = [];
-    this.listTopicFields[env.ROUTINGSERVICEMEASURES] = [];
-    this.listTopicFields[env.AGENTBYROUTINGSERVICEMEASURES] = [];
-    this.listTopicFields[env.AGENTMEASURESMOVINGWINDOW] = [];
-    this.listTopicFields[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
-    this.listTopicFields[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
-    this.listTopicFields[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
 
     this.fData();
   }
@@ -176,7 +169,11 @@ export class ClientComponent implements OnInit {
 
     const listMeasure = this.subscribedMeasures.map(measure => measure);
     this.getListProperty(listMeasure);
-    console.log(this.listTopicProperties);
+  }
+
+
+  onConfigurationComponentChange(listTopicFields){
+    this.listTopicFields= listTopicFields;
   }
 
   /**
@@ -185,16 +182,6 @@ export class ClientComponent implements OnInit {
   public subscribeMeasures(): void {
     for (const measure of this.subscribedMeasures) {
       this.sendMessage(env.rsr, this.createSubscribeRequest(measure));
-    }
-  }
-
-  public checkItem(topic, item): void {
-    const index = this.listTopicFields[topic].indexOf(item);
-    console.log('index: ', index);
-    if (index > -1) {
-      this.listTopicFields[topic].splice(index, 1);
-    } else {
-      this.listTopicFields[topic].push(item);
     }
   }
 
