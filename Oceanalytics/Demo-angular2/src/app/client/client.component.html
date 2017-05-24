@@ -31,11 +31,9 @@
       <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length === 0 || user.name === '' || user.password === ''" (click)="subscribeMeasures()">Submit</button>
     </form>
 
-    <app-configuration [listTopicProperties]="listTopicProperties" [messages]="messages" (outputEvent)= "onConfigurationComponentChange($event)"></app-configuration>
-
     <div class="box" style="margin-top: 30px;">
       <div class="box-header">
-        <h3 class="box-title">Received Messages</h3>
+        <label>Received Messages</label>
       </div>
       <!-- /.box-header -->
       <div class="box-body no-padding">
@@ -44,7 +42,7 @@
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom">
               <ul class="nav nav-tabs">
-                <li [hidden]="!messages[env.AGENTMEASURES].length"><a href="#tab_1" data-toggle="tab" [innerHtml] = "env.AGENTMEASURES"></a></li>
+                <li class="active" [hidden]="!messages[env.AGENTMEASURES].length"><a href="#tab_1" data-toggle="tab" [innerHtml] = "env.AGENTMEASURES"></a></li>
                 <li><a href="#tab_2" data-toggle="tab" [hidden]="messages[env.AGENTBYACCOUNTMEASURES].length == 0" [innerHtml] = "env.AGENTBYACCOUNTMEASURES"></a></li>
                 <li><a href="#tab_3" data-toggle="tab" [hidden]="messages[env.ROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.ROUTINGSERVICEMEASURES"></a></li>
                 <li><a href="#tab_4" data-toggle="tab" [hidden]="messages[env.AGENTBYROUTINGSERVICEMEASURES].length == 0" [innerHtml] = "env.AGENTBYROUTINGSERVICEMEASURES"></a></li>
@@ -55,30 +53,30 @@
               </ul>
               <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
-                  <app-tabular-table [fields]="listTopicFields[env.AGENTMEASURES]" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTMEASURES]" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
-                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYACCOUNTMEASURES]" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYACCOUNTMEASURES]" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_3">
-                  <app-tabular-table [fields]="listTopicFields[env.ROUTINGSERVICEMEASURES]" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.ROUTINGSERVICEMEASURES]" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_4">
-                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYROUTINGSERVICEMEASURES]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_5">
-                  <app-tabular-table [fields]="listTopicFields[env.AGENTMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_6">
-                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_7">
-                  <app-tabular-table [fields]="listTopicFields[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_8">
-                  <app-tabular-table [fields]="listTopicFields[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
                 </div>
                 <!-- /.tab-pane -->
               </div>

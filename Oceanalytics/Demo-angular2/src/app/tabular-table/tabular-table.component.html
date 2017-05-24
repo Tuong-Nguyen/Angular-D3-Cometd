@@ -1,7 +1,20 @@
-<table class="table table-condensed">
+
+<div class="col-md-12" [hidden]="data.length == 0">
+  <label>Config Display</label> <input class="btn btn-primary btn-show-hide" type="button" name="Show/Hide" value="Show/Hide" (click)="displayTab(showTab)">
+</div>
+<div class="row" [hidden]="showTab">
+  <div class="col-md-12">
+    <div class="col-md-2" *ngFor="let item of listTopicProperties; let i = index;">
+      <input type="checkbox" id="cb1{{i}}" value="{{item}}" (click)="checkItem(item)" /> {{item}}
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<table class="table table-condensed" [hidden]="data.length == 0">
   <tr>
     <th style="width: 10px">#</th>
-
     <th *ngFor="let field of fields" [innerHtml]="field"></th>
     <th>Topic</th>
   </tr>
