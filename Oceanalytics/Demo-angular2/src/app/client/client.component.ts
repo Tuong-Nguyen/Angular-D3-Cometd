@@ -83,7 +83,6 @@ export class ClientComponent implements OnInit {
   fData(): any {
     this._kafkaProxyService.addTopic(env.result).subscribe(
       item => {
-        console.log('hello add topic');
         this._kafkaProxyService.poll().subscribe(
           data => {
             console.log('==========Client Poll Success======== ', data);
@@ -92,11 +91,9 @@ export class ClientComponent implements OnInit {
                 console.log('==============Item: ', data[i].value);
 
                 if (data[i].topic !== env.result) {
-                  console.log('==========> Push data receive to topic: ', data[i].topic);
+                  console.log('==========> Push received data to topic: ', data[i].topic);
                   this.messages[this.topics[data[i].topic]].push(data[i]);
                 } else {
-                  console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId,
-                    ' ====>instanceName', this.instanceName);
                   this.topics[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
                     // Send Pump
