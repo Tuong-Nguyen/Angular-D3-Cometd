@@ -75,10 +75,10 @@ export class KafkaProxyService {
       if (this.instanceId !== '') {
         return this.subscribeTopics();
       } else {
-        return Observable.empty();
+        return Observable.of({});
       }
     } else {
-      return Observable.empty();
+      return Observable.of({});
     }
   }
 

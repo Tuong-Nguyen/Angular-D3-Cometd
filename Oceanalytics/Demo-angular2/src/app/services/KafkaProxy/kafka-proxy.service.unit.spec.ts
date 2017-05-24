@@ -272,7 +272,7 @@ describe('KafkaProxyService - UnitTest', () => {
       service.poll()
         .take(10)
         .timestamp()
-        .reduce((acc, item, index) => {
+        .reduce((acc, item, i) => {
           acc.push({value: item.value[0].value, timestamp: item.timestamp});
           return acc;
         }, returnedItems)
