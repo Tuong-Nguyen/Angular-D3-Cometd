@@ -34,7 +34,6 @@ export class ClientComponent implements OnInit {
   };
 
   public subscribedMeasures: Array<string> = [];
-  private subscribedTopics: Array<string> = [];
 
   public options = [{
     value: env.AGENTMEASURES,
@@ -165,8 +164,6 @@ export class ClientComponent implements OnInit {
     if (index > -1) {
       this.subscribedMeasures.splice(index, 1);
     }
-    this.subscribedTopics = this.subscribedMeasures.map(measure => measure);
-    this.subscribedTopics.push(env.result);
 
     this._kafkaProxyService.removeTopic(item.value);
 
