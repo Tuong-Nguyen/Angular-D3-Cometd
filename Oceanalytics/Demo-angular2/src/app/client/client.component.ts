@@ -25,7 +25,6 @@ export class ClientComponent implements OnInit {
   public env = env;
   public messages = {};
   public listTopicProperties = {};
-  public listTopicFields = {};
   public topics = {};
 
   public user = {
@@ -166,11 +165,6 @@ export class ClientComponent implements OnInit {
     }
 
     this._kafkaProxyService.removeTopic(item.value).subscribe();
-  }
-
-
-  onConfigurationComponentChange(listTopicFields) {
-    this.listTopicFields = listTopicFields;
   }
 
   /**
