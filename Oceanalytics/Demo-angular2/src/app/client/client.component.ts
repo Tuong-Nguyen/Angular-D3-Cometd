@@ -106,7 +106,11 @@ export class ClientComponent implements OnInit {
               if (data[i].value.subscriptionRequestId === this.instanceName) {
                 // Send Pump
                 this._kafkaProxyService.addTopic(data[i].value.topic);
-                this.sendMessage(env.pump, this.createPumpRequest([data[i].value.measuresStream]));
+                // Set delay to push pump message
+                const measuresStreamTemp = [data[i].value.measuresStream];
+                setTimeout(() => {
+                  this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
+                }, 2000);
               }
             }
           }
