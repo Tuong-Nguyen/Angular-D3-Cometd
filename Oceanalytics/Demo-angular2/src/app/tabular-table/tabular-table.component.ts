@@ -18,7 +18,6 @@ export class TabularTableComponent {
 
   public checkItem(item): any {
     const index = this.fields.indexOf(item);
-    console.log('index: ', index);
     if (index > -1) {
       this.fields.splice(index, 1);
     } else {
