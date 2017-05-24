@@ -25,7 +25,7 @@ export class ClientComponent implements OnInit {
   public env = env;
   public messages = {};
   public listTopicProperties = {};
-  public topics = {};
+  private topicMap = [];
 
   public user = {
     name: '',
@@ -92,9 +92,9 @@ export class ClientComponent implements OnInit {
 
                 if (data[i].topic !== env.result) {
                   console.log('==========> Push received data from topic: ', data[i].topic);
-                  this.messages[this.topics[data[i].topic]].push(data[i]);
+                  this.messages[this.topicMap[data[i].topic]].push(data[i]);
                 } else {
-                  this.topics[data[i].value.topic] = [data[i].value.measuresStream];
+                  this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
                     // Send Pump
                     this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
