@@ -34,7 +34,6 @@ export class ClientComponent implements OnInit {
   };
 
   public subscribedMeasures: Array<string> = [];
-  private subscribedTopics: Array<string> = [];
 
   public options = [{
     value: env.AGENTMEASURES,
@@ -62,7 +61,6 @@ export class ClientComponent implements OnInit {
     label: env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW
   }
   ];
-
 
 
   constructor(private _kafkaProxyService: KafkaProxyService) {
@@ -165,8 +163,6 @@ export class ClientComponent implements OnInit {
     if (index > -1) {
       this.subscribedMeasures.splice(index, 1);
     }
-    this.subscribedTopics = this.subscribedMeasures.map(measure => measure);
-    this.subscribedTopics.push(env.result);
 
     this._kafkaProxyService.removeTopic(item.value);
 
@@ -175,8 +171,8 @@ export class ClientComponent implements OnInit {
   }
 
 
-  onConfigurationComponentChange(listTopicFields){
-    this.listTopicFields= listTopicFields;
+  onConfigurationComponentChange(listTopicFields) {
+    this.listTopicFields = listTopicFields;
   }
 
   /**
@@ -217,44 +213,44 @@ export class ClientComponent implements OnInit {
     for (let i = 0; i < listTopic.length; i++) {
       switch (listTopic[i]) {
         case env.AGENTMEASURES:
-            model = new StartOfDayAgentByAccount();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.AGENTMEASURES] = properties;
+          model = new StartOfDayAgentByAccount();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.AGENTMEASURES] = properties;
           break;
         case env.AGENTBYACCOUNTMEASURES:
-            model = new StartOfDayAgent();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.AGENTBYACCOUNTMEASURES] = properties;
+          model = new StartOfDayAgent();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.AGENTBYACCOUNTMEASURES] = properties;
           break;
         case env.ROUTINGSERVICEMEASURES:
-            model = new StartOfDayRoutingService();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.ROUTINGSERVICEMEASURES] = properties;
+          model = new StartOfDayRoutingService();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.ROUTINGSERVICEMEASURES] = properties;
           break;
         case env.AGENTBYROUTINGSERVICEMEASURES:
-            model = new StartOfDayAgentByRoutingService();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES] = properties;
+          model = new StartOfDayAgentByRoutingService();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES] = properties;
           break;
         case env.AGENTMEASURESMOVINGWINDOW:
-            model = new MovingWindowAgentByAccount();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.AGENTMEASURESMOVINGWINDOW] = properties;
+          model = new MovingWindowAgentByAccount();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.AGENTMEASURESMOVINGWINDOW] = properties;
           break;
         case env.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
-            model = new MovingWindowAgent();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = properties;
+          model = new MovingWindowAgent();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = properties;
           break;
         case env.ROUTINGSERVICEMEASURESMOVINGWINDOW:
-            model = new MovingWindowRoutingService();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = properties;
+          model = new MovingWindowRoutingService();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = properties;
           break;
         case env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
-            model = new MovingWindowAgentByRoutingService();
-            properties = Object.getOwnPropertyNames(model);
-            this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = properties;
+          model = new MovingWindowAgentByRoutingService();
+          properties = Object.getOwnPropertyNames(model);
+          this.listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = properties;
           break;
       }
     }
