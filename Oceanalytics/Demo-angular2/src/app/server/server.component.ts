@@ -2,6 +2,7 @@ import {Component, OnInit, OnChanges} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
 import {FakeDataService} from 'app/services/fake-data/api/fake-data.service';
+import {RecordInfo} from '../services/kafka-rest/model/RecordInfo';
 
 @Component({
   selector: 'app-server',
@@ -20,52 +21,54 @@ export class ServerComponent implements OnInit, OnChanges {
 
   fData(): any {
     // Pull data
-    this._kafkaProxyService.addTopic(environment.rsr);
-    this._kafkaProxyService.addTopic(environment.pump);
-    this._kafkaProxyService.poll().subscribe(
-      data => {
-        console.log('Poll ', data);
+    this._kafkaProxyService.addTopic(environment.rsr).ignoreElements()
+      .concat(this._kafkaProxyService.addTopic(environment.pump).ignoreElements())
+      .concat(this._kafkaProxyService.poll())
+      .subscribe(
+        item => {
+          const data: Array<RecordInfo> = item as Array<RecordInfo>;
+          console.log('Poll ', data);
 
-        if (data.length > 0) {
-          this.records = this.records.concat(data);
+          if (data.length > 0) {
+            this.records = this.records.concat(data);
 
-          console.log('data');
-          console.log(data);
-          console.log(this.records);
+            console.log('data');
+            console.log(data);
+            console.log(this.records);
 
-          for (let i = 0; i < data.length; i++) {
-            console.log('======> Item : ', data[i].value);
-            if (data[i].topic !== environment.pump) {
-              // Reset
-              this.isPump = false;
-              if (i === 0) {
-                this.arrTopicName = [];
+            for (let i = 0; i < data.length; i++) {
+              console.log('======> Item : ', data[i].value);
+              if (data[i].topic !== environment.pump) {
+                // Reset
+                this.isPump = false;
+                if (i === 0) {
+                  this.arrTopicName = [];
+                }
+                const topicName = data[i].value.measuresStream;
+                console.log('Topic Name: ', topicName);
+
+                this.arrTopicName.push(data[i].value.measuresStream);
+
+                // Send data to Result Topic
+                this.sendMessage(environment.result, this.createSubscriptionResponse(data[i].value.userName,
+                  data[i].value.subscriptionRequestId, topicName, topicName));
+              } else {
+                this.isPump = true;
               }
-              const topicName = data[i].value.measuresStream;
-              console.log('Topic Name: ', topicName);
-
-              this.arrTopicName.push(data[i].value.measuresStream);
-
-              // Send data to Result Topic
-              this.sendMessage(environment.result, this.createSubscriptionResponse(data[i].value.userName,
-                data[i].value.subscriptionRequestId, topicName, topicName));
-            } else {
-              this.isPump = true;
+            }
+          } else { // Send realtime data
+            if (this.isPump === true) {
+              for (let i = 0; i < this.arrTopicName.length; i++) {
+                console.log('============> push messge to topic: ', this.arrTopicName[i]);
+                this.sendMessage(this.arrTopicName[i], this.generateRealtimeData(this.arrTopicName[i]));
+              }
             }
           }
-        } else { // Send realtime data
-          if (this.isPump === true) {
-            for (let i = 0; i < this.arrTopicName.length; i++) {
-              console.log('============> push messge to topic: ', this.arrTopicName[i]);
-              this.sendMessage(this.arrTopicName[i], this.generateRealtimeData(this.arrTopicName[i]));
-            }
-          }
+        },
+        error => {
+          console.log('=====Error: =====', error);
         }
-      },
-      error => {
-        console.log('=====Poll Fail=====');
-      }
-    );
+      );
   }
 
   private generateRealtimeData(topicName: string): any {

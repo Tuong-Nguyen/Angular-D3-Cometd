@@ -89,35 +89,43 @@ export class ClientComponent implements OnInit {
   }
 
   fData(): any {
-    this._kafkaProxyService.addTopic(env.result);
-    this._kafkaProxyService.poll().subscribe(
-      data => {
-        console.log('==========Client Poll Success======== ', data);
-        if (data.length > 0) {
-          for (let i = 0; i < data.length; i++) {
-            console.log('==============Item: ', data[i].value);
+    this._kafkaProxyService.addTopic(env.result).subscribe(
+      item => {
+        console.log('hello add topic');
+        this._kafkaProxyService.poll().subscribe(
+          data => {
+            console.log('==========Client Poll Success======== ', data);
+            if (data.length > 0) {
+              for (let i = 0; i < data.length; i++) {
+                console.log('==============Item: ', data[i].value);
 
-            if (data[i].topic !== env.result) {
-              console.log('==========> Push data receive to topic: ', data[i].topic);
-              this.messages[this.topics[data[i].topic]].push(data[i]);
-            } else {
-              console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId + ' ====>instanceName', this.instanceName);
-              this.topics[data[i].value.topic] = [data[i].value.measuresStream];
-              if (data[i].value.subscriptionRequestId === this.instanceName) {
-                // Send Pump
-                this._kafkaProxyService.addTopic(data[i].value.topic);
-                // Set delay to push pump message
-                const measuresStreamTemp = [data[i].value.measuresStream];
-                setTimeout(() => {
-                  this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
-                }, 2000);
+                if (data[i].topic !== env.result) {
+                  console.log('==========> Push data receive to topic: ', data[i].topic);
+                  this.messages[this.topics[data[i].topic]].push(data[i]);
+                } else {
+                  console.log('====>subscriptionRequestId: ', data[i].value.subscriptionRequestId,
+                    ' ====>instanceName', this.instanceName);
+                  this.topics[data[i].value.topic] = [data[i].value.measuresStream];
+                  if (data[i].value.subscriptionRequestId === this.instanceName) {
+                    // Send Pump
+                    this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
+                      result => {
+                        const measuresStreamTemp = [data[i].value.measuresStream];
+                        this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
+                      }
+                    );
+                  }
+                }
               }
             }
+          },
+          error => {
+            console.log('==========Client Poll Fail ==========', error);
           }
-        }
+        );
       },
       error => {
-        console.log('==========Client Poll Fail ==========');
+        console.log('error: ', error);
       }
     );
   }
