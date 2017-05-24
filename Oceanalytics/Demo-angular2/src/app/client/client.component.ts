@@ -176,7 +176,7 @@ export class ClientComponent implements OnInit {
       this.subscribedMeasures.splice(index, 1);
     }
 
-    this._kafkaProxyService.removeTopic(item.value);
+    this._kafkaProxyService.removeTopic(item.value).subscribe();
 
     const listMeasure = this.subscribedMeasures.map(measure => measure);
     this.getListProperty(listMeasure);
