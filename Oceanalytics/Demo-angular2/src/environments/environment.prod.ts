@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
   generalErr: 'Internal error',
-  result: 'Realtimesubscriptionresponse',
-  rsr: 'Realtimesubscriptionrequest',
-  pump: 'Realtimemeasurespumpuprequest',
+  result: 'realtimesubscriptionresponse',
+  rsr: 'realtimesubscriptionrequest',
+  pump: 'realtimemeasurespumpuprequest',
   kafka_rest_proxy: 'http://10.134.44.202:8082',
   AGENTMEASURES: 'AGENTMEASURES',
   AGENTBYACCOUNTMEASURES: 'AGENTBYACCOUNTMEASURES',
