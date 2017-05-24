@@ -124,14 +124,12 @@ describe('KafkaProxyService', () => {
         .take(5)
         .subscribe(
           data => {
-            console.log(data);
             service.sendData('TestTopic', 10)
               .subscribe();
             service.sendData('TestTopic1', 11)
               .subscribe();
           },
           error => {
-            console.log('#poll something to do' + error);
             fail(error);
             done();
           },
@@ -143,18 +141,13 @@ describe('KafkaProxyService', () => {
 
     it('can unscribe data', (done) => {
       service.addTopic('TestTopic');
-      service.addTopic('TestTopic1');
       const subscription = service.poll()
         .subscribe(
           data => {
-            console.log(data);
             service.sendData('TestTopic', 10)
-              .subscribe();
-            service.sendData('TestTopic1', 11)
               .subscribe();
           },
           error => {
-            console.log('#poll something to do' + error);
             fail(error);
             done();
           }
