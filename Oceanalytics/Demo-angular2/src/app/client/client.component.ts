@@ -91,7 +91,7 @@ export class ClientComponent implements OnInit {
                 console.log('==============Item: ', data[i].value);
 
                 if (data[i].topic !== env.result) {
-                  console.log('==========> Push received data to topic: ', data[i].topic);
+                  console.log('==========> Push received data from topic: ', data[i].topic);
                   this.messages[this.topics[data[i].topic]].push(data[i]);
                 } else {
                   this.topics[data[i].value.topic] = [data[i].value.measuresStream];
