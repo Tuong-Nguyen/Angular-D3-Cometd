@@ -82,14 +82,18 @@ export class KafkaProxyService {
     }
   }
 
-  public removeTopic(topicName: string) {
+  public removeTopic(topicName: string): Observable<{}> {
     const index = this.SubscribedTopics.indexOf(topicName);
     if (index > -1) {
       this.SubscribedTopics.splice(index, 1);
 
       if (this.instanceId !== '') {
-        this.subscribeTopics().subscribe();
+        return this.subscribeTopics();
+      } else {
+        return Observable.of({});
       }
+    } else {
+      return Observable.of({});
     }
   }
 

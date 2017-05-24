@@ -71,7 +71,7 @@ describe('KafkaProxyService - UnitTest', () => {
       spyOn(mockConsumerApi, 'subscribesTopics');
       service.addTopic('test').subscribe();
 
-      service.removeTopic('test');
+      service.removeTopic('test').subscribe();
       expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
     });
 
@@ -82,7 +82,7 @@ describe('KafkaProxyService - UnitTest', () => {
         .subscribe();
       service.addTopic('test').subscribe();
 
-      service.removeTopic('test');
+      service.removeTopic('test').subscribe();
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(2);
     });
 
@@ -91,7 +91,7 @@ describe('KafkaProxyService - UnitTest', () => {
       spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
       service.createConsumerInstance()
         .subscribe();
-      service.removeTopic('test');
+      service.removeTopic('test').subscribe();
 
       expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
     });
