@@ -68,13 +68,17 @@ export class KafkaProxyService {
     return this.topicApi.produceMessageToTopic(topicName, records);
   }
 
-  public addTopic(topicName: string) {
+  public addTopic(topicName: string): Observable<{}> {
     if (this.SubscribedTopics.indexOf(topicName) < 0) {
       this.SubscribedTopics.push(topicName);
 
       if (this.instanceId !== '') {
-        this.subscribeTopics().subscribe();
+        return this.subscribeTopics();
+      } else {
+        return Observable.empty();
       }
+    } else {
+      return Observable.empty();
     }
   }
 

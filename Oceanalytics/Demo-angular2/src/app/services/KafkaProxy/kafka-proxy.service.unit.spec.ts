@@ -39,7 +39,7 @@ describe('KafkaProxyService - UnitTest', () => {
   describe('#addTopic', () => {
     it('when Consumer Instance is not created yet, do not call Consumer Api subscribesTopics', () => {
       spyOn(mockConsumerApi, 'subscribesTopics');
-      service.addTopic('test');
+      service.addTopic('test').subscribe();
       expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
     });
 
@@ -48,7 +48,7 @@ describe('KafkaProxyService - UnitTest', () => {
       spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
       service.createConsumerInstance()
         .subscribe();
-      service.addTopic('test');
+      service.addTopic('test').subscribe();
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalled();
     });
 
@@ -57,10 +57,10 @@ describe('KafkaProxyService - UnitTest', () => {
       spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
       service.createConsumerInstance()
         .subscribe();
-      service.addTopic('test');
+      service.addTopic('test').subscribe();
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalled();
 
-      service.addTopic('test');
+      service.addTopic('test').subscribe();
 
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(1);
     });
@@ -69,7 +69,7 @@ describe('KafkaProxyService - UnitTest', () => {
   describe('#removeTopic', () => {
     it('when Consumer Instance is not created yet, do not call Consumer Api subscribesTopics', () => {
       spyOn(mockConsumerApi, 'subscribesTopics');
-      service.addTopic('test');
+      service.addTopic('test').subscribe();
 
       service.removeTopic('test');
       expect(mockConsumerApi.subscribesTopics).not.toHaveBeenCalled();
@@ -80,7 +80,7 @@ describe('KafkaProxyService - UnitTest', () => {
       spyOn(mockConsumerApi, 'subscribesTopics').and.returnValue(Observable.from([{}]));
       service.createConsumerInstance()
         .subscribe();
-      service.addTopic('test');
+      service.addTopic('test').subscribe();
 
       service.removeTopic('test');
       expect(mockConsumerApi.subscribesTopics).toHaveBeenCalledTimes(2);
