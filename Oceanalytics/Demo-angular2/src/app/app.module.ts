@@ -18,15 +18,13 @@ import { FakeDataService } from 'app/services/fake-data/api/fake-data.service';
 
 import { BASE_PATH } from 'app/services/kafka-rest/variables';
 import { environment } from 'environments/environment';
-import { ConfigurationComponent } from './configuration/configuration.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ClientComponent,
     ServerComponent,
-    TabularTableComponent,
-    ConfigurationComponent
+    TabularTableComponent
   ],
   imports: [
     BrowserModule,
