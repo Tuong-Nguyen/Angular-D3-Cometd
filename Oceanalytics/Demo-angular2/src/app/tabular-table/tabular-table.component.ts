@@ -1,26 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {environment as env} from '../../environments/environment';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-tabular-table',
   templateUrl: './tabular-table.component.html',
   styleUrls: ['./tabular-table.component.css']
 })
-export class TabularTableComponent implements OnInit {
+export class TabularTableComponent {
 
   @Input() public data: Array<any>;
   @Input() public listTopicProperties: Array<any>;
 
   public fields: Array<any> = [];
-
-  public env = env;
-
   public showTab = true;
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   public checkItem(item): any {
