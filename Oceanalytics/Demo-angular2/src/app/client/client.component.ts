@@ -99,6 +99,7 @@ export class ClientComponent implements OnInit {
                   this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
                     if (data[i].value.result === env.success) {
+                      this.errMessage = '';
                       // Send Pump
                       this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
                         result => {
