@@ -9,11 +9,11 @@
     <div class="box-body">
       <form role="form">
 
-        <div class="form-group">
+        <div class="form-group" [ngClass]="{'has-error': errMessage !== ''}">
           <label for="username">Username: </label>
           <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}"/>
         </div>
-        <div class="form-group">
+        <div class="form-group" [ngClass]="{'has-error': errMessage !== ''}">
           <label for="password">Password: </label>
           <input type="password" class="form-control" id="password" placeholder="Password" [(ngModel)]="user.password" [ngModelOptions]="{standalone: true}"/>
         </div>
@@ -29,6 +29,10 @@
         </ng-select>
       </div>
       <button type="submit" class="btn btn-primary" [disabled]="subscribedMeasures.length === 0 || user.name === '' || user.password === ''" (click)="subscribeMeasures()">Submit</button>
+
+        <div class="form-group has-error" [hidden]="errMessage === ''">
+          <span class="help-block">The subscription request 'user' could be authenticated</span>
+        </div>
     </form>
 
     <div class="box" style="margin-top: 30px;">

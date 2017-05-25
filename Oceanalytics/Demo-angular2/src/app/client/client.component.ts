@@ -26,6 +26,7 @@ export class ClientComponent implements OnInit {
   public messages = {};
   public listTopicProperties = {};
   private topicMap = [];
+  public errMessage: string;
 
   public user = {
     name: '',
@@ -74,6 +75,7 @@ export class ClientComponent implements OnInit {
     this.messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW] = [];
     this.messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
     this.messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW] = [];
+    this.errMessage = ''; // Set default error message
 
     this.getListProperty();
 
@@ -96,13 +98,17 @@ export class ClientComponent implements OnInit {
                 } else {
                   this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
-                    // Send Pump
-                    this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
-                      result => {
-                        const measuresStreamTemp = [data[i].value.measuresStream];
-                        this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
-                      }
-                    );
+                    if (data[i].value.result === env.success) {
+                      // Send Pump
+                      this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
+                        result => {
+                          const measuresStreamTemp = [data[i].value.measuresStream];
+                          this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
+                        }
+                      );
+                    } else {
+                      this.errMessage = data[i].value.reason;
+                    }
                   }
                 }
               }
