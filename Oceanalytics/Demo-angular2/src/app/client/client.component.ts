@@ -104,7 +104,10 @@ export class ClientComponent implements OnInit {
                       this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
                         result => {
                           const measuresStreamTemp = [data[i].value.measuresStream];
-                          this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
+                          setTimeout(() => {
+                            console.log('++++++++++++++++> push pump message', measuresStreamTemp);
+                            this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
+                          }, 2000);
                         }
                       );
                     } else {
