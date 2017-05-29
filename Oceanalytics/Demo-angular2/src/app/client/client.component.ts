@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {environment as env} from '../../environments/environment';
 import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
@@ -62,6 +62,7 @@ export class ClientComponent implements OnInit {
   }
   ];
 
+  private topicChangesEmitter: EventEmitter<{string, boolean}>;
 
   constructor(private _kafkaProxyService: KafkaProxyService) {
   }
@@ -78,6 +79,14 @@ export class ClientComponent implements OnInit {
     this.errMessage = ''; // Set default error message
 
     this.getListProperty();
+
+    // Queue topic changes requests
+    this.topicChangesEmitter = new EventEmitter<{string, boolean}>(true);
+    this.topicChangesEmitter.flatMap((topicName, index) => {
+      if()
+      return this._kafkaProxyService.addTopic(topicName);
+
+    }).subscribe();
 
     this.fData();
   }
@@ -100,13 +109,8 @@ export class ClientComponent implements OnInit {
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
                     if (data[i].value.result === env.success) {
                       this.errMessage = '';
-                      // Send Pump
-                      const measuresStreamTemp = [data[i].value.measuresStream];
-                      this._kafkaProxyService.addTopic(data[i].value.topic).subscribe(
-                        result => {
-                          this.sendMessage(env.pump, this.createPumpRequest(measuresStreamTemp));
-                        }
-                      );
+                      // Send Pump                     
+                      this.topicChangesEmitter.emit({data[i].value.topic, true});
                     } else {
                       this.errMessage = data[i].value.reason;
                     }
@@ -168,7 +172,8 @@ export class ClientComponent implements OnInit {
       this.subscribedMeasures.splice(index, 1);
     }
 
-    this._kafkaProxyService.removeTopic(item.value).subscribe();
+    // this._kafkaProxyService.removeTopic(item.value).subscribe();
+    this.topicChangesEmitter.emit({item.value, true});
   }
 
   /**
