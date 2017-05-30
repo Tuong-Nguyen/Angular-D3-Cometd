@@ -86,6 +86,7 @@ export class ClientComponent implements OnInit {
     this.topicChangesEmitter.concatMap((topicChangeEvent, index) => {
       if (topicChangeEvent[1] === true) { // Add new measures
         return this._kafkaProxyService.addTopic(topicChangeEvent[0])
+          .delay(2000)
           .concat(this._kafkaProxyService.sendData(env.pump, this.createPumpRequest([topicChangeEvent[2]])));
       } else { // Remove a measures
         return this._kafkaProxyService.removeTopic(topicChangeEvent[0]);
