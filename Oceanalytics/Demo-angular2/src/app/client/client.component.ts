@@ -11,6 +11,7 @@ import {StartOfDayAgent} from '../services/fake-data/model/StartOfDayAgent';
 import {StartOfDayRoutingService} from '../services/fake-data/model/StartOfDayRoutingService';
 import {StartOfDayAgentByAccount} from '../services/fake-data/model/StartOfDayAgentByAccount';
 import {StartOfDayAgentByRoutingService} from '../services/fake-data/model/StartOfDayAgentByRoutingService';
+import {topicName} from '../services/kafka-rest/spec/SystemInfo';
 
 @Component({
   selector: 'app-client',
@@ -62,7 +63,7 @@ export class ClientComponent implements OnInit {
   }
   ];
 
-  private topicChangesEmitter: EventEmitter<{string, boolean}>;
+  private topicChangesEmitter: EventEmitter<[string, boolean, string]>;
 
   constructor(private _kafkaProxyService: KafkaProxyService) {
   }
@@ -81,11 +82,14 @@ export class ClientComponent implements OnInit {
     this.getListProperty();
 
     // Queue topic changes requests
-    this.topicChangesEmitter = new EventEmitter<{string, boolean}>(true);
-    this.topicChangesEmitter.flatMap((topicName, index) => {
-      if()
-      return this._kafkaProxyService.addTopic(topicName);
-
+    this.topicChangesEmitter = new EventEmitter<[string, boolean]>(true);
+    this.topicChangesEmitter.concatMap((topicChangeEvent, index) => {
+      if (topicChangeEvent[1] === true) { // Add new measures
+        return this._kafkaProxyService.addTopic(topicChangeEvent[0])
+          .concat(this._kafkaProxyService.sendData(env.pump, this.createPumpRequest([topicChangeEvent[2]])));
+      } else { // Remove a measures
+        return this._kafkaProxyService.removeTopic(topicChangeEvent[0]);
+      }
     }).subscribe();
 
     this.fData();
@@ -109,8 +113,7 @@ export class ClientComponent implements OnInit {
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
                     if (data[i].value.result === env.success) {
                       this.errMessage = '';
-                      // Send Pump                     
-                      this.topicChangesEmitter.emit({data[i].value.topic, true});
+                      this.topicChangesEmitter.emit([data[i].value.topic, true, data[i].value.measuresStream]);
                     } else {
                       this.errMessage = data[i].value.reason;
                     }
@@ -173,7 +176,7 @@ export class ClientComponent implements OnInit {
     }
 
     // this._kafkaProxyService.removeTopic(item.value).subscribe();
-    this.topicChangesEmitter.emit({item.value, true});
+    this.topicChangesEmitter.emit([item.value, false, '']);
   }
 
   /**
