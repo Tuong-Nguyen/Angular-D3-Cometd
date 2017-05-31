@@ -105,10 +105,9 @@ export class ClientComponent implements OnInit {
             if (data.length > 0) {
               for (let i = 0; i < data.length; i++) {
                 console.log('==============Item: ', data[i].value);
-
                 if (data[i].topic !== env.result) {
                   console.log('==========> Push received data from topic: ', data[i].topic);
-                  this.messages[this.topicMap[data[i].topic]].push(data[i]);
+                  this.addMessage(this.topicMap[data[i].topic], data[i]);
                 } else {
                   this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
@@ -133,6 +132,31 @@ export class ClientComponent implements OnInit {
       }
     );
   }
+
+
+  /**
+   * Adding message into array
+   * @param topic
+   * @param message
+   */
+  addMessage(topic, message): void {
+
+    const messagesArr = this.messages[topic];
+    let i = messagesArr.length
+    for ( i = 0; i < messagesArr.length; i ++) {
+      // Similar dimension so real time data will be update
+      if ( messagesArr[i].dimension === message.dimension ) {
+        this.messages[topic][i] = message;
+        break;
+      }
+    }
+
+    // For new message
+    if ( i === messagesArr.length){
+      this.messages[topic].push(message);
+    }
+  }
+
 
   /**
    * Send a message
