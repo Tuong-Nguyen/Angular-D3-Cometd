@@ -21,7 +21,7 @@
   </tr>
   <tr *ngFor="let item of data; let i = index;">
     <td [innerHtml]="i"></td>
-    <td *ngFor="let field of dimension" [innerHtml]="item.value.dimension[field]"></td>
-    <td *ngFor="let field of fields" [innerHtml]="item.value.realtimeData[field]"></td>
+    <td *ngFor="let field of dimension" [innerHtml]="item.dimension[field]"></td>
+    <td *ngFor="let field of fields" [innerHtml]="item.realtimeData[field]"></td>
   </tr>
 </table>

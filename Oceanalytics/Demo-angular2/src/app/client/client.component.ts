@@ -25,7 +25,7 @@ export class ClientComponent implements OnInit {
   public env = env;
   public messages = {};
   public listTopicProperties = {};
-  private topicMap = [];
+  private topicMap = []; // id = Realtime Topic - value = Measures Type
   public errMessage: string;
 
   public user = {
@@ -106,7 +106,7 @@ export class ClientComponent implements OnInit {
                 console.log('==============Item: ', data[i].value);
                 if (data[i].topic !== env.result) {
                   console.log('==========> Push received data from topic: ', data[i].topic);
-                  this.addMessage(this.topicMap[data[i].topic], data[i]);
+                  this.addMessage(this.topicMap[data[i].topic], data[i].value);
                 } else {
                   this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
@@ -135,63 +135,55 @@ export class ClientComponent implements OnInit {
 
   /**
    * Adding message into array
-   * @param topic
+   * @param measuresType
    * @param message
    */
-  addMessage(topic, message): void {
-    let flag = false;
-    const messagesArr = this.messages[topic];
-    let i = messagesArr.length
-    for ( i = 0; i < messagesArr.length; i ++) {
-      // Similar dimension so real time data will be update
-      if ( messagesArr[i].dimension === message.dimension ) {
-        this.messages[topic][i] = message;
-        break;
-      } else {
-        switch (message.value.measuresStream) {
-          case this.topicMap[env.AGENTMEASURES]: // AGENTMEASURES
-          case this.topicMap[env.AGENTMEASURESMOVINGWINDOW]: // AGENTMEASURESMOVINGWINDOW
-            if ( message.dimension.agentId === messagesArr[i].dimension.agentId) {
-              this.messages[topic].slice(i - 1, 0, message);
-              flag = true;
-            }
-            break;
-          case this.topicMap[env.AGENTBYACCOUNTMEASURES]: // AGENTBYACCOUNTMEASURES
-          case this.topicMap[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]: // AGENTBYACCOUNTMEASURSMOVINGWINDOW
-            if ( message.dimension.accountId === messagesArr[i].dimension.accountId) {
-              this.messages[topic].slice(i - 1, 0, message);
-              flag = true;
-            }
-            break;
-          case this.topicMap[env.ROUTINGSERVICEMEASURES]: // ROUTINGSERVICEMEASURES
-          case this.topicMap[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]: // ROUTINGSERVICEMEASURESMOVINGWINDOW
-            if ( message.dimension.routingServiceName === messagesArr[i].dimension.routingServiceName) {
-              this.messages[topic].slice(i - 1, 0, message);
-              flag = true;
-            }
-            break;
-          case this.topicMap[env.AGENTBYROUTINGSERVICEMEASURES]: // AGENTBYROUTINGSERVICEMEASURES
-          case this.topicMap[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]: // AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW
-            if ( message.dimension.agentId === messagesArr[i].dimension.agentId) {
-              this.messages[topic].slice(i - 1, 0, message);
-              flag = true;
-            }
-            break;
-        }
-      }
+  addMessage(measuresType, message): void {
+    const messagesArr = this.messages[measuresType];
+    let i = messagesArr.length;
 
-      // Break if flag is true
-      if ( flag ) {
-        break;
+    // find row of dimension
+    for (i = 0; i < messagesArr.length; i++) {
+      // Similar dimension so real time data will be update
+      if (JSON.stringify(messagesArr[i].dimension) === JSON.stringify(message.dimension)) {
+        this.messages[measuresType][i] = message;
+        return;
+      }
+    }
+
+    // find row in group
+    for (i = 0; i < messagesArr.length; i++) {
+      switch (measuresType) {
+        case env.AGENTMEASURESMOVINGWINDOW:
+          if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
+            this.messages[measuresType].splice(i - 1, 0, message);
+            return;
+          }
+          break;
+        case env.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
+          if (message.dimension.accountId === messagesArr[i].dimension.accountId) {
+            this.messages[measuresType].splice(i - 1, 0, message);
+            return;
+          }
+          break;
+        case env.ROUTINGSERVICEMEASURESMOVINGWINDOW:
+          if (message.dimension.routingServiceName === messagesArr[i].dimension.routingServiceName) {
+            this.messages[measuresType].splice(i - 1, 0, message);
+            return;
+          }
+          break;
+        case env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
+          if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
+            this.messages[measuresType].splice(i - 1, 0, message);
+            return;
+          }
+          break;
       }
     }
 
     // For new message
-    if ( i === messagesArr.length) {
-      this.messages[topic].push(message);
-    }
+    this.messages[measuresType].unshift(message);
   }
-
 
   /**
    * Send a message
