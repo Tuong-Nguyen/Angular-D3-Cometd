@@ -88,7 +88,8 @@ export class ClientComponent implements OnInit {
           .delay(2000)
           .concat(this._kafkaProxyService.sendData(env.pump, this.createPumpRequest([topicChangeEvent[2]])));
       } else { // Remove a measures
-        return this._kafkaProxyService.removeTopic(topicChangeEvent[0]);
+        return this._kafkaProxyService.removeTopic(topicChangeEvent[0])
+          .concat(this._kafkaProxyService.sendData(env.rsr, this.createSubscriptionRequest(topicChangeEvent[2], false)));
       }
     }).subscribe();
 
@@ -206,16 +207,24 @@ export class ClientComponent implements OnInit {
   }
 
   /**
-   * Create a pump request
+   * Create a subscription request
    * @param measureStreams
+   * @param isSubscribe
    * @returns {{userName: string, password: string, measuresStreams: Array<string>}}
    */
-  private createSubscribeRequest(measureStreams: string): any {
+  private createSubscriptionRequest(measureStreams: string, isSubscribe: boolean): any {
+    let request;
+    if (isSubscribe) {
+      request = 'SUBSCRIBE';
+    } else {
+      request = 'UNSUBSCRIBE';
+    }
+
     return {
       'userName': this.user.name,
       'subscriptionRequestId': this.instanceName,
       'password': this.user.password,
-      'request': 'SUBSCRIBE',
+      'request': request,
       'measuresStream': measureStreams,
       'version': '3.3'
     };
@@ -236,7 +245,7 @@ export class ClientComponent implements OnInit {
    */
   public subscribeMeasures(): void {
     for (const measure of this.subscribedMeasures) {
-      this.sendMessage(env.rsr, this.createSubscribeRequest(measure));
+      this.sendMessage(env.rsr, this.createSubscriptionRequest(measure, true));
     }
   }
 
