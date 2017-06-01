@@ -15,7 +15,7 @@
 <table class="table table-condensed" [hidden]="data.length == 0">
   <tr>
     <th style="width: 10px">#</th>
-    <th *ngFor="let field of dimension" [innerHtml] = "field"></th>
+    <th *ngFor="let field of dimension" [innerHtml] = "field" class="table-header-highlight"></th>
     <th *ngFor="let field of fields" [innerHtml]="field"></th>
 
   </tr>

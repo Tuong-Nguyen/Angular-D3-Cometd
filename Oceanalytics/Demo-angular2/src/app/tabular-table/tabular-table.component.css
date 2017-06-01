@@ -1,3 +1,7 @@
 .btn-show-hide{
   float: right;
 }
+
+.table-header-highlight{
+  color: red;
+}
