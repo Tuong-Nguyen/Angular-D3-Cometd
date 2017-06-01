@@ -57,32 +57,32 @@
               </ul>
               <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTMEASURES]" [data] = "messages[env.AGENTMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTMEASURES]" [data] = "messages[env.AGENTMEASURES]" [dimension] = "['agentId']" ></app-tabular-table>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYACCOUNTMEASURES]" [data] = "messages[env.AGENTBYACCOUNTMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYACCOUNTMEASURES]" [data] = "messages[env.AGENTBYACCOUNTMEASURES]" [dimension] = "['accountId', 'agentId']"></app-tabular-table>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_3">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.ROUTINGSERVICEMEASURES]" [data] = "messages[env.ROUTINGSERVICEMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.ROUTINGSERVICEMEASURES]" [data] = "messages[env.ROUTINGSERVICEMEASURES]" [dimension] = "['routingServiceName']"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_4">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURES]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURES]" [dimension] = "['agentId', 'routingServiceName']"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_5">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTMEASURESMOVINGWINDOW] " [dimension] = "['agentId']"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_6">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]" [data] = "messages[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]" [dimension] = "['accountId', 'agentId']"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_7">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]" [dimension] = "['routingServiceName']"></app-tabular-table>
                 </div>
                 <div class="tab-pane" id="tab_8">
-                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]"></app-tabular-table>
+                  <app-tabular-table [listTopicProperties]="listTopicProperties[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]" [data] = "messages[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]" [dimension] = "['agentId', 'routingServiceName']"></app-tabular-table>
                 </div>
-                <!-- /.tab-pane -->
+                 <!--/.tab-pane-->
               </div>
               <!-- /.tab-content -->
             </div>

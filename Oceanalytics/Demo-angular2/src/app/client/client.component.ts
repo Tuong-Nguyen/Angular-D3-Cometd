@@ -1,17 +1,16 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
-import {DatePipe} from '@angular/common';
-import {environment as env} from '../../environments/environment';
-import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
+import {Component, EventEmitter, OnInit} from "@angular/core";
+import {DatePipe} from "@angular/common";
+import {environment as env} from "../../environments/environment";
+import {KafkaProxyService} from "../services/KafkaProxy/kafka-proxy.service";
 
-import {MovingWindowAgent} from '../services/fake-data/model/MovingWindowAgent';
-import {MovingWindowRoutingService} from '../services/fake-data/model/MovingWindowRoutingService';
-import {MovingWindowAgentByAccount} from '../services/fake-data/model/MovingWindowAgentByAccount';
-import {MovingWindowAgentByRoutingService} from '../services/fake-data/model/MovingWindowAgentByRoutingService';
-import {StartOfDayAgent} from '../services/fake-data/model/StartOfDayAgent';
-import {StartOfDayRoutingService} from '../services/fake-data/model/StartOfDayRoutingService';
-import {StartOfDayAgentByAccount} from '../services/fake-data/model/StartOfDayAgentByAccount';
-import {StartOfDayAgentByRoutingService} from '../services/fake-data/model/StartOfDayAgentByRoutingService';
-import {topicName} from '../services/kafka-rest/spec/SystemInfo';
+import {MovingWindowAgent} from "../services/fake-data/model/MovingWindowAgent";
+import {MovingWindowRoutingService} from "../services/fake-data/model/MovingWindowRoutingService";
+import {MovingWindowAgentByAccount} from "../services/fake-data/model/MovingWindowAgentByAccount";
+import {MovingWindowAgentByRoutingService} from "../services/fake-data/model/MovingWindowAgentByRoutingService";
+import {StartOfDayAgent} from "../services/fake-data/model/StartOfDayAgent";
+import {StartOfDayRoutingService} from "../services/fake-data/model/StartOfDayRoutingService";
+import {StartOfDayAgentByAccount} from "../services/fake-data/model/StartOfDayAgentByAccount";
+import {StartOfDayAgentByRoutingService} from "../services/fake-data/model/StartOfDayAgentByRoutingService";
 
 @Component({
   selector: 'app-client',
@@ -140,7 +139,7 @@ export class ClientComponent implements OnInit {
    * @param message
    */
   addMessage(topic, message): void {
-
+    let flag = false;
     const messagesArr = this.messages[topic];
     let i = messagesArr.length
     for ( i = 0; i < messagesArr.length; i ++) {
@@ -148,11 +147,47 @@ export class ClientComponent implements OnInit {
       if ( messagesArr[i].dimension === message.dimension ) {
         this.messages[topic][i] = message;
         break;
+      } else {
+        switch (message.value.measuresStream) {
+          case this.topicMap[env.AGENTMEASURES]: // AGENTMEASURES
+          case this.topicMap[env.AGENTMEASURESMOVINGWINDOW]: // AGENTMEASURESMOVINGWINDOW
+            if ( message.dimension.agentId === messagesArr[i].dimension.agentId) {
+              this.messages[topic].slice(i - 1, 0, message);
+              flag = true;
+            }
+            break;
+          case this.topicMap[env.AGENTBYACCOUNTMEASURES]: // AGENTBYACCOUNTMEASURES
+          case this.topicMap[env.AGENTBYACCOUNTMEASURSMOVINGWINDOW]: // AGENTBYACCOUNTMEASURSMOVINGWINDOW
+            if ( message.dimension.accountId === messagesArr[i].dimension.accountId) {
+              this.messages[topic].slice(i - 1, 0, message);
+              flag = true;
+            }
+            break;
+          case this.topicMap[env.ROUTINGSERVICEMEASURES]: // ROUTINGSERVICEMEASURES
+          case this.topicMap[env.ROUTINGSERVICEMEASURESMOVINGWINDOW]: // ROUTINGSERVICEMEASURESMOVINGWINDOW
+            if ( message.dimension.routingServiceName === messagesArr[i].dimension.routingServiceName) {
+              this.messages[topic].slice(i - 1, 0, message);
+              flag = true;
+            }
+            break;
+          case this.topicMap[env.AGENTBYROUTINGSERVICEMEASURES]: // AGENTBYROUTINGSERVICEMEASURES
+          case this.topicMap[env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW]: // AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW
+            if ( message.dimension.agentId === messagesArr[i].dimension.agentId) {
+              this.messages[topic].slice(i - 1, 0, message);
+              flag = true;
+            }
+            break;
+        }
+      }
+
+      // Break if flag is true
+      if ( flag ) {
+        break;
       }
     }
 
     // For new message
-    if ( i === messagesArr.length){
+    if ( i === messagesArr.length) {
       this.messages[topic].push(message);
     }
   }

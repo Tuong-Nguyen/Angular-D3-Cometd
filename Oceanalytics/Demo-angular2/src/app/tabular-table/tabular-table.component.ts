@@ -9,9 +9,11 @@ export class TabularTableComponent {
 
   @Input() public data: Array<any>;
   @Input() public listTopicProperties: Array<any>;
+  @Input() public dimension: Array<any>;
 
   public fields: Array<any> = [];
   public showTab = true;
+  public buttonLabel = 'Show';
 
   constructor() {
   }
@@ -27,5 +29,12 @@ export class TabularTableComponent {
 
   public displayTab(showTab): void {
     this.showTab = !showTab;
+
+    // Change button label
+    if ( this.showTab === true) {
+      this.buttonLabel = 'Show';
+    } else {
+      this.buttonLabel = 'Hide';
+    }
   }
 }

@@ -1,6 +1,6 @@
 
 <div class="col-md-12" [hidden]="data.length == 0">
-  <label>Config Display</label> <input class="btn btn-primary btn-show-hide" type="button" name="Show/Hide" value="Show/Hide" (click)="displayTab(showTab)">
+  <label>Config Display</label> <input class="btn btn-primary btn-show-hide" type="button" name="Show/Hide" value="{{buttonLabel}}" (click)="displayTab(showTab)">
 </div>
 <div class="row" [hidden]="showTab">
   <div class="col-md-12">
@@ -15,12 +15,13 @@
 <table class="table table-condensed" [hidden]="data.length == 0">
   <tr>
     <th style="width: 10px">#</th>
+    <th *ngFor="let field of dimension" [innerHtml] = "field"></th>
     <th *ngFor="let field of fields" [innerHtml]="field"></th>
-    <th>Topic</th>
+
   </tr>
   <tr *ngFor="let item of data; let i = index;">
     <td [innerHtml]="i"></td>
+    <td *ngFor="let field of dimension" [innerHtml]="item.value.dimension[field]"></td>
     <td *ngFor="let field of fields" [innerHtml]="item.value.realtimeData[field]"></td>
-    <td [innerHtml]="item.topic"></td>
   </tr>
 </table>
