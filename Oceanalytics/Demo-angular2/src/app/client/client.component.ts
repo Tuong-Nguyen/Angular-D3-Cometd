@@ -146,7 +146,7 @@ export class ClientComponent implements OnInit {
     for (let i = 0; i < messagesArr.length; i++) {
       // Similar dimension so real time data will be update
       if (JSON.stringify(messagesArr[i].dimension) === JSON.stringify(message.dimension)) {
-        this.messages[measuresType][i] = message;
+        messagesArr[i] = message;
         return;
       }
     }
@@ -156,25 +156,25 @@ export class ClientComponent implements OnInit {
       switch (measuresType) {
         case env.AGENTMEASURESMOVINGWINDOW:
           if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i - 1, 0, message);
             return;
           }
           break;
         case env.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
           if (message.dimension.accountId === messagesArr[i].dimension.accountId) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i - 1, 0, message);
             return;
           }
           break;
         case env.ROUTINGSERVICEMEASURESMOVINGWINDOW:
           if (message.dimension.routingServiceName === messagesArr[i].dimension.routingServiceName) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i - 1, 0, message);
             return;
           }
           break;
         case env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
           if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i - 1, 0, message);
             return;
           }
           break;
@@ -182,7 +182,7 @@ export class ClientComponent implements OnInit {
     }
 
     // Not found: Add to top
-    this.messages[measuresType].unshift(message);
+    messagesArr.unshift(message);
   }
 
   /**
