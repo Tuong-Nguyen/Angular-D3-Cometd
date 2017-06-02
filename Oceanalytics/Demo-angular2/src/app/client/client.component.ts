@@ -156,32 +156,32 @@ export class ClientComponent implements OnInit {
       switch (measuresType) {
         case env.AGENTMEASURESMOVINGWINDOW:
           if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
-            messagesArr.splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
         case env.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
           if (message.dimension.accountId === messagesArr[i].dimension.accountId) {
-            messagesArr.splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
         case env.ROUTINGSERVICEMEASURESMOVINGWINDOW:
           if (message.dimension.routingServiceName === messagesArr[i].dimension.routingServiceName) {
-            messagesArr.splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
         case env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
           if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
-            messagesArr.splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
       }
     }
 
-    // Not found: Add to top
+    // Add to top
     messagesArr.unshift(message);
   }
 
