@@ -1,16 +1,16 @@
-import {Component, EventEmitter, OnInit} from "@angular/core";
-import {DatePipe} from "@angular/common";
-import {environment as env} from "../../environments/environment";
-import {KafkaProxyService} from "../services/KafkaProxy/kafka-proxy.service";
+import {Component, EventEmitter, OnInit} from '@angular/core';
+import {DatePipe} from '@angular/common';
+import {environment as env} from '../../environments/environment';
+import {KafkaProxyService} from '../services/KafkaProxy/kafka-proxy.service';
 
-import {MovingWindowAgent} from "../services/fake-data/model/MovingWindowAgent";
-import {MovingWindowRoutingService} from "../services/fake-data/model/MovingWindowRoutingService";
-import {MovingWindowAgentByAccount} from "../services/fake-data/model/MovingWindowAgentByAccount";
-import {MovingWindowAgentByRoutingService} from "../services/fake-data/model/MovingWindowAgentByRoutingService";
-import {StartOfDayAgent} from "../services/fake-data/model/StartOfDayAgent";
-import {StartOfDayRoutingService} from "../services/fake-data/model/StartOfDayRoutingService";
-import {StartOfDayAgentByAccount} from "../services/fake-data/model/StartOfDayAgentByAccount";
-import {StartOfDayAgentByRoutingService} from "../services/fake-data/model/StartOfDayAgentByRoutingService";
+import {MovingWindowAgent} from '../services/fake-data/model/MovingWindowAgent';
+import {MovingWindowRoutingService} from '../services/fake-data/model/MovingWindowRoutingService';
+import {MovingWindowAgentByAccount} from '../services/fake-data/model/MovingWindowAgentByAccount';
+import {MovingWindowAgentByRoutingService} from '../services/fake-data/model/MovingWindowAgentByRoutingService';
+import {StartOfDayAgent} from '../services/fake-data/model/StartOfDayAgent';
+import {StartOfDayRoutingService} from '../services/fake-data/model/StartOfDayRoutingService';
+import {StartOfDayAgentByAccount} from '../services/fake-data/model/StartOfDayAgentByAccount';
+import {StartOfDayAgentByRoutingService} from '../services/fake-data/model/StartOfDayAgentByRoutingService';
 
 @Component({
   selector: 'app-client',
@@ -141,49 +141,48 @@ export class ClientComponent implements OnInit {
    */
   addMessage(measuresType, message): void {
     const messagesArr = this.messages[measuresType];
-    let i = messagesArr.length;
 
     // find row of dimension
-    for (i = 0; i < messagesArr.length; i++) {
+    for (let i = 0; i < messagesArr.length; i++) {
       // Similar dimension so real time data will be update
       if (JSON.stringify(messagesArr[i].dimension) === JSON.stringify(message.dimension)) {
-        this.messages[measuresType][i] = message;
+        messagesArr[i] = message;
         return;
       }
     }
 
-    // find row in group
-    for (i = 0; i < messagesArr.length; i++) {
+    // find group of dimension
+    for (let i = 0; i < messagesArr.length; i++) {
       switch (measuresType) {
         case env.AGENTMEASURESMOVINGWINDOW:
           if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
         case env.AGENTBYACCOUNTMEASURSMOVINGWINDOW:
           if (message.dimension.accountId === messagesArr[i].dimension.accountId) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
         case env.ROUTINGSERVICEMEASURESMOVINGWINDOW:
           if (message.dimension.routingServiceName === messagesArr[i].dimension.routingServiceName) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
         case env.AGENTBYROUTINGSERVICEMEASURESMOVINGWINDOW:
           if (message.dimension.agentId === messagesArr[i].dimension.agentId) {
-            this.messages[measuresType].splice(i - 1, 0, message);
+            messagesArr.splice(i, 0, message);
             return;
           }
           break;
       }
     }
 
-    // For new message
-    this.messages[measuresType].unshift(message);
+    // Add to top
+    messagesArr.unshift(message);
   }
 
   /**
