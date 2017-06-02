@@ -109,8 +109,8 @@ export class ClientComponent implements OnInit {
                   console.log('==========> Push received data from topic: ', data[i].topic);
                   this.addMessage(this.topicMap[data[i].topic], data[i].value);
                 } else {
-                  this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                   if (data[i].value.subscriptionRequestId === this.instanceName) {
+                    this.topicMap[data[i].value.topic] = [data[i].value.measuresStream];
                     if (data[i].value.result === env.success) {
                       this.errMessage = '';
                       this.topicChangesEmitter.emit([data[i].value.topic, true, data[i].value.measuresStream]);
