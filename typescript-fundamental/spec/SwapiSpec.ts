@@ -1,15 +1,15 @@
-import {AxiosPromise, AxiosResponse} from "axios";
-import Swapi from "../src/Swapi";
+import {AxiosResponse} from 'axios';
+import {Swapi} from '../src/Swapi';
 
 /**
  * Created by QuanLe on 4/29/2017.
  */
-describe("getPeople", () => {
+describe('getPeople', () => {
     it("with id 1 returns 'Luke Skywalker'", (done) => {
         const swapi: Swapi = new Swapi();
         const promise: Promise<AxiosResponse> = swapi.getPerson(1) as Promise<AxiosResponse>;
         promise.then((response) => {
-            expect(response.data.name).toBe("Luke Skywalker");
+            expect(response.data.name).toBe('Luke Skywalker');
             done();
         })
             .catch((reason) => {
@@ -17,7 +17,7 @@ describe("getPeople", () => {
             });
     }, 5000);
 
-    it("with invalid ID fails with 404 status code", (done) => {
+    it('with invalid ID fails with 404 status code', (done) => {
         const swapi: Swapi = new Swapi();
         const promise: Promise<AxiosResponse> = swapi.getPerson(-1) as Promise<AxiosResponse>;
         promise.catch((reason) => {
