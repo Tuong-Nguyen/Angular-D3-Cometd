@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BarchartFormComponent } from './barchart-form/barchart-form.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { MdButtonModule, MdInputModule, MdIconModule } from '@angular/material';
+import { MdButtonModule, MdInputModule, MdIconModule, MdGridListModule } from '@angular/material';
+import {FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,9 @@ import { MdButtonModule, MdInputModule, MdIconModule } from '@angular/material';
     BrowserAnimationsModule,
     MdButtonModule,
     MdInputModule,
-    MdIconModule
+    MdIconModule,
+    MdGridListModule,
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]
