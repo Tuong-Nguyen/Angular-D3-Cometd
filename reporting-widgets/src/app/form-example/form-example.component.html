@@ -1,0 +1,28 @@
+<h1>Example Form</h1>
+<form (ngSubmit)="onSubmit(f)" #f="ngForm">
+<div fxLayout="column wrap" fxFlexAlign="center" >
+  <div>
+    <md-input-container>
+      <input mdInput placeholder="Username" name="username" ngModel/>
+    </md-input-container>
+  </div>
+  <div fxFlex>
+    <button md-raised-button>Suggest an Username</button>
+  </div>
+  <div fxFlex>
+    <md-input-container>
+      <input mdInput type="email" placeholder="Mail" name="mail" ngModel/>
+    </md-input-container>
+  </div>
+  <div fxFlex>
+    <md-select placeholder="Secret Questions" ngModel name="secret">
+      <md-option *ngFor="let question of secrectQuestions" [value]="question.value">
+        {{ question.viewValue }}
+      </md-option>
+    </md-select>
+  </div>
+  <div fxFlex>
+    <button md-raised-button color="primary">Save</button>
+  </div>
+</div>
+</form>
