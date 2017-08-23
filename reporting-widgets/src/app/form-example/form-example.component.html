@@ -1,28 +1,39 @@
 <h1>Example Form</h1>
 <form (ngSubmit)="onSubmit()" #f="ngForm">
-<div fxLayout="column wrap" fxFlexAlign="center" >
+<div fxLayout="column">
   <div>
     <md-input-container>
-      <input mdInput placeholder="Username" name="username" ngModel/>
+      <input mdInput placeholder="Username" name="username" required
+             ngModel #username="ngModel"/>
+      <md-error *ngIf="username.hasError('required')">
+        Username is <strong>required</strong>
+      </md-error>
     </md-input-container>
   </div>
-  <div fxFlex>
+  <div>
     <button md-raised-button>Suggest an Username</button>
   </div>
-  <div fxFlex>
+  <div>
     <md-input-container>
-      <input mdInput type="email" placeholder="Mail" name="mail" ngModel/>
+      <input mdInput placeholder="Mail" name="mail" email
+             ngModel required #mail="ngModel"/>
+      <md-error *ngIf="(!mail.hasError('required') && mail.hasError('email'))">
+        Please enter a valid email address
+      </md-error>
+      <md-error *ngIf="mail.hasError('required')">
+        Email is <strong>required</strong>
+      </md-error>
     </md-input-container>
   </div>
-  <div fxFlex>
+  <div>
     <md-select placeholder="Secret Questions" ngModel name="secret">
       <md-option *ngFor="let question of secrectQuestions" [value]="question.value">
         {{ question.viewValue }}
       </md-option>
     </md-select>
   </div>
-  <div fxFlex>
-    <button md-raised-button color="primary">Save</button>
+  <div>
+    <button md-raised-button color="primary" [disabled]="f.invalid">Save</button>
   </div>
 </div>
 </form>
