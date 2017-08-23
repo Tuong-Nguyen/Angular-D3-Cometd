@@ -1,0 +1,4 @@
+{
+  "verbose": true,
+  "ignore": ["*.ts", "node_modules/"]
+}

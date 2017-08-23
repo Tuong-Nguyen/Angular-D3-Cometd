@@ -18,11 +18,14 @@
     "tslint": "^5.1.0",
     "typescript": "^2.3.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
   "scripts": {
     "compile": "tsc -p .",
     "compile:watch": "tsc --watch -p .",
     "test": "jasmine",
+    "test:watch": "nodemon -x npm run test",
     "generate-mock-data": "node ./src/json-schema/GenerateMockData.js",
     "start-mockapi": "json-server src/api/db.json --port 3001",
     "start-mockapi-middleware": "json-server src/api/db.json --middlewares src/server/middlewares/delayMiddleware.js --port 3001"
