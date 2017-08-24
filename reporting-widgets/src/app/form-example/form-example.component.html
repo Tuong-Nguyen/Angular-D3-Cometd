@@ -4,6 +4,7 @@
     <div fxLayout="column" id="user-data" ngModelGroup="userData" #userData="ngModelGroup">
       <div>
         <md-input-container>
+          <md-icon mdPrefix>face</md-icon>
           <input mdInput placeholder="Username" name="username" required
                  ngModel #username="ngModel"/>
           <md-error *ngIf="username.hasError('required')">
@@ -16,6 +17,7 @@
       </div>
       <div>
         <md-input-container>
+          <md-icon mdPrefix>email</md-icon>
           <input mdInput placeholder="Mail" name="mail" email
                  ngModel required #mail="ngModel"/>
           <md-error *ngIf="(!mail.hasError('required') && mail.hasError('email'))">
