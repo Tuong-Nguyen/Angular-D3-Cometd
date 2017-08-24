@@ -1,45 +1,50 @@
 <h1>Example Form</h1>
 <form (ngSubmit)="onSubmit()" #f="ngForm">
-<div fxLayout="column">
-  <div>
-    <md-input-container>
-      <input mdInput placeholder="Username" name="username" required
-             ngModel #username="ngModel"/>
-      <md-error *ngIf="username.hasError('required')">
-        Username is <strong>required</strong>
-      </md-error>
-    </md-input-container>
-  </div>
-  <div>
-    <button md-raised-button>Suggest an Username</button>
-  </div>
-  <div>
-    <md-input-container>
-      <input mdInput placeholder="Mail" name="mail" email
-             ngModel required #mail="ngModel"/>
-      <md-error *ngIf="(!mail.hasError('required') && mail.hasError('email'))">
-        Please enter a valid email address
-      </md-error>
-      <md-error *ngIf="mail.hasError('required')">
-        Email is <strong>required</strong>
-      </md-error>
-    </md-input-container>
-  </div>
-  <div>
-    <md-select placeholder="Secret Questions" [ngModel]="defaultQuestion" name="secretQuestion">
-      <md-option *ngFor="let question of secrectQuestions" [value]="question.value">
-        {{ question.viewValue }}
-      </md-option>
-    </md-select>
-  </div>
-  <div>
-    <md-input-container>
+  <div fxLayout="column">
+    <div fxLayout="column" id="user-data" ngModelGroup="userData" #userData="ngModelGroup">
+      <div>
+        <md-input-container>
+          <input mdInput placeholder="Username" name="username" required
+                 ngModel #username="ngModel"/>
+          <md-error *ngIf="username.hasError('required')">
+            Username is <strong>required</strong>
+          </md-error>
+        </md-input-container>
+      </div>
+      <div>
+        <button md-raised-button>Suggest an Username</button>
+      </div>
+      <div>
+        <md-input-container>
+          <input mdInput placeholder="Mail" name="mail" email
+                 ngModel required #mail="ngModel"/>
+          <md-error *ngIf="(!mail.hasError('required') && mail.hasError('email'))">
+            Please enter a valid email address
+          </md-error>
+          <md-error *ngIf="mail.hasError('required')">
+            Email is <strong>required</strong>
+          </md-error>
+        </md-input-container>
+      </div>
+      <div>
+        <md-error *ngIf="userData.invalid && userData.touched">User Data invalid</md-error>
+      </div>
+    </div>
+    <div>
+      <md-select placeholder="Secret Questions" [ngModel]="defaultQuestion" name="secretQuestion">
+        <md-option *ngFor="let question of secrectQuestions" [value]="question.value">
+          {{ question.viewValue }}
+        </md-option>
+      </md-select>
+    </div>
+    <div>
+      <md-input-container>
       <textarea mdInput placeholder="Question Answer"
-        name="answerQuestion" rows="3" ngModel></textarea>
-    </md-input-container>
+                name="answerQuestion" rows="3" ngModel></textarea>
+      </md-input-container>
+    </div>
+    <div>
+      <button md-raised-button color="primary" [disabled]="f.invalid">Save</button>
+    </div>
   </div>
-  <div>
-    <button md-raised-button color="primary" [disabled]="f.invalid">Save</button>
-  </div>
-</div>
 </form>
