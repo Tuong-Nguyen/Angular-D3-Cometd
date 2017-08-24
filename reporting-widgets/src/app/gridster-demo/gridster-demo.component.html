@@ -1,0 +1,7 @@
+<div style="width: 800px; height: 800px">
+<gridster [options]="options">
+  <gridster-item [item]="item" *ngFor="let item of dashboard">
+    {{'y:' + item.y + ', x:' + item.x}}
+  </gridster-item>
+</gridster>
+</div>

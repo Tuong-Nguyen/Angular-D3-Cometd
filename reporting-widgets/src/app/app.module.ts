@@ -8,12 +8,15 @@ import { MdButtonModule, MdSelectModule, MdInputModule, MdIconModule, MdGridList
 import {FlexLayoutModule } from '@angular/flex-layout';
 import {FormsModule} from '@angular/forms';
 import { FormExampleComponent } from './form-example/form-example.component';
+import {GridsterModule} from 'angular-gridster2';
+import { GridsterDemoComponent } from './gridster-demo/gridster-demo.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BarchartFormComponent,
-    FormExampleComponent
+    FormExampleComponent,
+    GridsterDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +27,8 @@ import { FormExampleComponent } from './form-example/form-example.component';
     MdIconModule,
     MdGridListModule,
     FlexLayoutModule,
-    MdSelectModule
+    MdSelectModule,
+    GridsterModule
   ],
   providers: [],
   bootstrap: [AppComponent]
