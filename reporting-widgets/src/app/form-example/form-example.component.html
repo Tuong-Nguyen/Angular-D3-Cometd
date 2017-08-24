@@ -26,11 +26,17 @@
     </md-input-container>
   </div>
   <div>
-    <md-select placeholder="Secret Questions" ngModel name="secret">
+    <md-select placeholder="Secret Questions" [ngModel]="defaultQuestion" name="secretQuestion">
       <md-option *ngFor="let question of secrectQuestions" [value]="question.value">
         {{ question.viewValue }}
       </md-option>
     </md-select>
+  </div>
+  <div>
+    <md-input-container>
+      <textarea mdInput placeholder="Question Answer"
+        name="answerQuestion" rows="3" ngModel></textarea>
+    </md-input-container>
   </div>
   <div>
     <button md-raised-button color="primary" [disabled]="f.invalid">Save</button>

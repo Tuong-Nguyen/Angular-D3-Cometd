@@ -8,6 +8,7 @@ import {NgForm} from '@angular/forms';
 })
 export class FormExampleComponent {
   @ViewChild('f') aForm: NgForm;
+  defaultQuestion = 0;
   secrectQuestions = [
     {value: 0, viewValue: 'Your first Pet?'},
     {value: 1, viewValue: 'Who is your best friend?'},
