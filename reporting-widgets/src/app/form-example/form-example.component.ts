@@ -1,10 +1,13 @@
 import {Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {LoggingService} from '../logging.service';
+import {TestService} from "../test.service";
 
 @Component({
   selector: 'app-form-example',
   templateUrl: './form-example.component.html',
-  styleUrls: ['./form-example.component.css']
+  styleUrls: ['./form-example.component.css'],
+  providers: [LoggingService, TestService]
 })
 export class FormExampleComponent {
   @ViewChild('f') aForm: NgForm;
@@ -15,7 +18,9 @@ export class FormExampleComponent {
     {value: 2, viewValue: 'What is first birthday gift?'}
   ];
 
+  constructor(private loggingService: LoggingService) {}
+
   onSubmit() {
-    console.log(this.aForm.value);
+    this.loggingService.logFormValueObject(this.aForm.value);
   }
 }
