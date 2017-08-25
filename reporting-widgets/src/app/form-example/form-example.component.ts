@@ -15,11 +15,7 @@ export class FormExampleComponent {
     {value: 2, viewValue: 'What is first birthday gift?'}
   ];
 
-  // onSubmit(form: HTMLFormElement) {
-  //   console.log(form);
-  // }
-
   onSubmit() {
-    console.log(this.aForm);
+    console.log(this.aForm.value);
   }
 }
