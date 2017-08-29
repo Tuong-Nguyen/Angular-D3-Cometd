@@ -1,5 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <app-form-example></app-form-example>
+<ul>
+  <li><a routerLink="/gridster">Gridster</a></li>
+  <li><a routerLink="/form-example">Form example</a></li>
+</ul>
+<button md-button color="primary" (click)="onNavigate()">Go to Gridster</button>
+<div>
+  <router-outlet></router-outlet>
 </div>
 

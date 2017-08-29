@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {LoggingService} from '../logging.service';
-import {TestService} from "../test.service";
+import {TestService} from '../test.service';
 
 @Component({
   selector: 'app-form-example',
